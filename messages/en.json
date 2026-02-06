@@ -1,0 +1,295 @@
+{
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "architecture": "Architecture",
+    "urban": "Urban",
+    "studio": "Studio",
+    "about": "About Us",
+    "team": "Team",
+    "partners": "Partners",
+    "principles": "Principles",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero": {
+      "title": "URBAN SPACE",
+      "subtitle": "Architectural Studio",
+      "description": "Creating exceptional spaces that inspire and endure. Where vision meets precision in modern architecture.",
+      "cta": "View Projects",
+      "ctaSecondary": "Learn More",
+      "scrollHint": "Scroll to explore"
+    },
+    "featured": {
+      "badge": "Featured Work",
+      "title": "Featured Projects",
+      "viewAll": "View All Projects"
+    },
+    "stats": {
+      "badge": "Our Impact",
+      "title": "Building Excellence",
+      "description": "Numbers that reflect our commitment to architectural innovation",
+      "projects": "Projects Completed",
+      "years": "Years of Excellence",
+      "awards": "Design Awards",
+      "clients": "Satisfied Clients",
+      "satisfaction": "Client Satisfaction"
+    },
+    "services": {
+      "badge": "What We Do",
+      "title": "Our Services",
+      "description": "Comprehensive architectural solutions tailored to your vision",
+      "viewAll": "View All Services",
+      "items": {
+        "architecture": {
+          "title": "Architectural Design",
+          "description": "Complete architectural solutions from concept to realization"
+        },
+        "urban": {
+          "title": "Urban Planning",
+          "description": "Sustainable urban development and city planning strategies"
+        },
+        "interior": {
+          "title": "Interior Design",
+          "description": "Thoughtful interior spaces that enhance everyday living"
+        },
+        "consulting": {
+          "title": "Consulting",
+          "description": "Expert guidance for your architectural projects"
+        }
+      }
+    },
+    "testimonials": {
+      "badge": "Client Stories",
+      "title": "What Our Clients Say",
+      "description": "Trusted by industry leaders and private clients alike",
+      "items": [
+        {
+          "quote": "URBAN SPACE transformed our vision into reality with exceptional attention to detail and innovative design solutions.",
+          "author": "Giorgi Beridze",
+          "role": "Property Developer",
+          "company": "Tbilisi Development Group"
+        },
+        {
+          "quote": "Their approach to sustainable architecture and urban planning is truly world-class. A pleasure to work with.",
+          "author": "Nino Khutsishvili",
+          "role": "CEO",
+          "company": "Green Buildings Georgia"
+        },
+        {
+          "quote": "The team's creativity and professionalism exceeded all our expectations. Our new headquarters is a masterpiece.",
+          "author": "David Maisuradze",
+          "role": "Director",
+          "company": "Tech Innovation Center"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Start Your Project?",
+      "description": "Let's create something extraordinary together. Contact us to discuss your architectural vision.",
+      "button": "Get in Touch"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "description": "Explore our portfolio of architectural and urban planning projects.",
+    "all": "All",
+    "loading": "Loading projects...",
+    "resultsCount": "Showing {count} projects",
+    "filter": {
+      "category": "Category",
+      "type": "Type",
+      "status": "Status"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "name": "By Name"
+    },
+    "emptyState": {
+      "title": "No projects found",
+      "description": "Try adjusting your filters or check back later for new projects."
+    },
+    "categories": {
+      "ARCHITECTURE": "Architecture",
+      "URBAN": "Urban"
+    },
+    "types": {
+      "RESIDENTIAL_MULTI": "Multi-family Residential",
+      "PUBLIC_MULTIFUNCTIONAL": "Public/Multifunctional",
+      "INDIVIDUAL_HOUSE": "Individual House",
+      "URBAN_PLANNING": "Urban Planning",
+      "COMPETITION": "Competition"
+    },
+    "statuses": {
+      "ONGOING": "Ongoing",
+      "COMPLETED": "Completed"
+    },
+    "details": {
+      "year": "Year",
+      "location": "Location",
+      "area": "Area",
+      "sqm": "sq.m",
+      "client": "Client",
+      "status": "Status",
+      "description": "Description",
+      "gallery": "Gallery",
+      "relatedProjects": "Related Projects",
+      "backToProjects": "Back to Projects"
+    }
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Learn about our team, philosophy, and approach to architecture.",
+    "about": {
+      "badge": "About Us",
+      "title": "About Us",
+      "description": "URBAN SPACE is an architectural studio specializing in modern architectural and urban solutions. We believe in creating spaces that inspire, endure, and enhance the human experience.",
+      "mission": "Our Mission",
+      "missionText": "To create exceptional architectural solutions that harmonize innovation with sustainability, while respecting cultural context and enhancing quality of life.",
+      "vision": "Our Vision",
+      "visionText": "To be recognized as a leading architectural practice that shapes the future of urban living through thoughtful, innovative design."
+    },
+    "team": {
+      "badge": "Our Team",
+      "title": "Our Team",
+      "description": "Meet the talented professionals behind URBAN SPACE"
+    },
+    "partners": {
+      "badge": "Collaborations",
+      "title": "Partners",
+      "description": "We work with industry leaders to deliver exceptional results"
+    },
+    "principles": {
+      "badge": "Our Philosophy",
+      "title": "Core Principles",
+      "description": "The values that guide our work",
+      "items": {
+        "innovation": {
+          "title": "Innovation",
+          "description": "Pushing boundaries while respecting architectural traditions"
+        },
+        "sustainability": {
+          "title": "Sustainability",
+          "description": "Designing with environmental responsibility at the core"
+        },
+        "collaboration": {
+          "title": "Collaboration",
+          "description": "Working closely with clients to realize their vision"
+        },
+        "excellence": {
+          "title": "Excellence",
+          "description": "Maintaining the highest standards in every project"
+        }
+      }
+    }
+  },
+  "services": {
+    "title": "Services",
+    "description": "Comprehensive architectural and urban planning services tailored to your needs.",
+    "process": {
+      "badge": "Our Process",
+      "title": "How We Work",
+      "description": "Our proven process ensures successful project delivery from concept to completion.",
+      "consultation": {
+        "title": "Consultation",
+        "description": "We begin with a thorough understanding of your vision, requirements, and project goals through detailed discussions."
+      },
+      "concept": {
+        "title": "Concept Development",
+        "description": "Our team develops initial concepts and ideas, exploring various design directions that align with your vision."
+      },
+      "design": {
+        "title": "Design Development",
+        "description": "We refine the chosen concept into detailed architectural drawings, specifications, and 3D visualizations."
+      },
+      "development": {
+        "title": "Technical Documentation",
+        "description": "Complete construction documents, technical specifications, and coordination with engineering teams."
+      },
+      "supervision": {
+        "title": "Construction Supervision",
+        "description": "We oversee the construction process to ensure the design is executed to the highest standards."
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "We'd love to hear from you. Let's discuss your project.",
+    "form": {
+      "title": "Send us a message",
+      "description": "Fill out the form below and we'll get back to you within 24 hours.",
+      "name": "Name",
+      "namePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+995 XXX XXX XXX",
+      "subject": "Subject",
+      "subjectPlaceholder": "How can we help?",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your project...",
+      "cadastralCode": "Cadastral Code",
+      "buildingFunction": "Building Function",
+      "area": "Area",
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Your message has been sent successfully! We'll get back to you soon.",
+      "error": "An error occurred. Please try again."
+    },
+    "info": {
+      "title": "Contact Information",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "hours": {
+      "title": "Office Hours",
+      "weekdays": "Monday - Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "closed": "Closed"
+    },
+    "social": "Follow Us"
+  },
+  "footer": {
+    "ctaTitle": "Ready to Transform Your Vision?",
+    "ctaDescription": "Let's discuss your next project and create something extraordinary together.",
+    "ctaButton": "Start a Project",
+    "description": "Architectural studio specializing in modern architectural and urban solutions.",
+    "allProjects": "All Projects",
+    "subscribed": "Subscribed!",
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Subscribe to our newsletter for the latest projects and insights.",
+      "placeholder": "Enter your email",
+      "button": "Subscribe",
+      "success": "Thank you for subscribing!",
+      "error": "Please enter a valid email"
+    },
+    "links": {
+      "company": "Company",
+      "services": "Services",
+      "projects": "Projects",
+      "contact": "Contact"
+    },
+    "rights": "All rights reserved",
+    "follow": "Follow Us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "notFound": "Not Found",
+    "back": "Back",
+    "learnMore": "Learn More",
+    "viewMore": "View More",
+    "seeAll": "See All",
+    "readMore": "Read More",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous"
+  }
+}

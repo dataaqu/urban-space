@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id            String          @id @default(cuid())
+  slug          String          @unique
+  titleKa       String
+  titleEn       String
+  descriptionKa String?
+  descriptionEn String?
+  category      ProjectCategory
+  type          ProjectType
+  images        String[]
+  featured      Boolean         @default(false)
+  status        ProjectStatus   @default(COMPLETED)
+  year          Int?
+  location      String?
+  area          Float?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+enum ProjectCategory {
+  ARCHITECTURE
+  URBAN
+}
+
+enum ProjectType {
+  RESIDENTIAL_MULTI
+  PUBLIC_MULTIFUNCTIONAL
+  INDIVIDUAL_HOUSE
+  URBAN_PLANNING
+  COMPETITION
+}
+
+enum ProjectStatus {
+  ONGOING
+  COMPLETED
+}
+
+model TeamMember {
+  id         String  @id @default(cuid())
+  nameKa     String
+  nameEn     String
+  positionKa String
+  positionEn String
+  image      String?
+  order      Int     @default(0)
+}
+
+model Partner {
+  id      String  @id @default(cuid())
+  name    String
+  logo    String?
+  website String?
+  order   Int     @default(0)
+}
+
+model Service {
+  id            String  @id @default(cuid())
+  titleKa       String
+  titleEn       String
+  descriptionKa String?
+  descriptionEn String?
+  icon          String?
+  order         Int     @default(0)
+}
+
+model ContactSubmission {
+  id               String   @id @default(cuid())
+  name             String
+  email            String
+  phone            String?
+  message          String
+  cadastralCode    String?
+  buildingFunction String?
+  area             Float?
+  createdAt        DateTime @default(now())
+  read             Boolean  @default(false)
+}
+
+model SiteSettings {
+  id           String  @id @default(cuid())
+  address      String?
+  email        String?
+  phone        String?
+  facebookUrl  String?
+  instagramUrl String?
+  mapLat       Float?
+  mapLng       Float?
+}
