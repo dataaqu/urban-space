@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@/i18n/routing';
+import { Link, usePathname } from '@/i18n/routing';
 import Navigation from './Navigation';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
@@ -9,6 +9,9 @@ import { useState } from 'react';
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+  const isOverHero = isHomePage && !isScrolled;
 
   const headerHeight = useTransform(scrollY, [0, 100], ['5rem', '4rem']);
   const backgroundColor = useTransform(
@@ -41,7 +44,9 @@ export default function Header() {
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"
+        className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent ${
+          isOverHero ? 'via-white/20' : 'via-primary-500/50'
+        } to-transparent transition-colors duration-500`}
       />
 
       {/* Bottom Border - Luxury */}
@@ -52,30 +57,50 @@ export default function Header() {
 
       <div className="container-premium h-full">
         <div className="flex items-center justify-between h-full">
-          {/* Logo - Luxury */}
+          {/* Logo */}
           <motion.div style={{ scale: logoScale }}>
-            <Link href="/" className="flex items-center group relative">
-              {/* Logo Glow Effect */}
+            <Link href="/" className="flex items-center gap-2 group relative">
               <div className="absolute -inset-2 bg-primary-500/0 group-hover:bg-primary-500/5 rounded-lg transition-all duration-500" />
               <motion.span
-                className="relative text-xl md:text-2xl font-bold tracking-tight"
+                className="relative text-lg tracking-[0.15em] font-semibold"
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.2 }}
               >
-                <span className={`transition-colors duration-300 ${isScrolled ? 'text-secondary-900' : 'text-secondary-900'}`}>
+                <span
+                  className={`transition-colors duration-500 ${
+                    isOverHero ? 'text-white' : 'text-secondary-900'
+                  }`}
+                >
                   URBAN
                 </span>
-                <span className="text-shimmer">SPACE</span>
+                {' '}
+                <span
+                  className={`transition-colors duration-500 ${
+                    isOverHero ? 'text-white' : 'text-shimmer'
+                  }`}
+                >
+                  SPACE
+                </span>
               </motion.span>
+              {/* Accent Bar */}
+              <span
+                className={`w-2 h-6 rounded-sm transition-colors duration-500 ${
+                  isOverHero ? 'bg-white' : 'bg-primary-500'
+                }`}
+              />
             </Link>
           </motion.div>
 
           {/* Navigation */}
           <div className="flex items-center gap-8">
-            <Navigation isScrolled={isScrolled} />
+            <Navigation isScrolled={isScrolled} isOverHero={isOverHero} />
             {/* Luxury Divider */}
-            <div className="hidden md:block h-5 w-px bg-gradient-to-b from-transparent via-primary-500/30 to-transparent" />
-            <LanguageSwitcher isScrolled={isScrolled} />
+            <div
+              className={`hidden md:block h-5 w-px bg-gradient-to-b from-transparent ${
+                isOverHero ? 'via-white/30' : 'via-primary-500/30'
+              } to-transparent transition-colors duration-500`}
+            />
+            <LanguageSwitcher isScrolled={isScrolled} isOverHero={isOverHero} />
           </div>
         </div>
       </div>

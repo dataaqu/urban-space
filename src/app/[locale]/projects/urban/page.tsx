@@ -1,23 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import ProjectGrid from '@/components/projects/ProjectGrid';
+import ProjectCardMinimal from '@/components/projects/ProjectCardMinimal';
 import type { Project } from '@/types';
 
+const heightPatterns = [350, 280, 280, 380];
+
 export default function UrbanProjectsPage() {
-  const t = useTranslations('projects');
-  const navT = useTranslations('navigation');
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const activeType = searchParams.get('type');
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setIsLoading(true);
+      const params = new URLSearchParams();
+      params.append('category', 'URBAN');
+      if (activeType) params.append('type', activeType);
+
       try {
-        const response = await fetch('/api/projects?category=URBAN');
+        const response = await fetch(`/api/projects?${params.toString()}`);
         const data = await response.json();
-        setProjects(data);
+        setProjects(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching projects:', error);
       } finally {
@@ -26,32 +33,51 @@ export default function UrbanProjectsPage() {
     };
 
     fetchProjects();
-  }, []);
+  }, [activeType]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <div className="w-8 h-[2px] bg-[#E0E0E0] rounded-full overflow-hidden">
+          <div className="h-full bg-[#333333] rounded-full animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
+  const leftColumn = projects.filter((_, i) => i % 2 === 0);
+  const rightColumn = projects.filter((_, i) => i % 2 === 1);
 
   return (
-    <div className="min-h-screen bg-secondary-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-4xl font-bold text-secondary-900 mb-2">
-            {navT('urban')}
-          </h1>
-          <p className="text-secondary-600 mb-8">
-            {t('categories.URBAN')}
-          </p>
+    <div className="px-10 md:px-[100px] py-10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex gap-10"
+      >
+        {/* Left Column */}
+        <div className="flex-1 flex flex-col gap-10">
+          {leftColumn.map((project, i) => (
+            <ProjectCardMinimal
+              key={project.id}
+              project={project}
+              height={heightPatterns[i % heightPatterns.length]}
+            />
+          ))}
+        </div>
 
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
-            </div>
-          ) : (
-            <ProjectGrid projects={projects} />
-          )}
-        </motion.div>
-      </div>
+        {/* Right Column */}
+        <div className="flex-1 flex flex-col gap-10">
+          {rightColumn.map((project, i) => (
+            <ProjectCardMinimal
+              key={project.id}
+              project={project}
+              height={heightPatterns[(i + 1) % heightPatterns.length]}
+            />
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }

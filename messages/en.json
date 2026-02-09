@@ -120,21 +120,32 @@
       "PUBLIC_MULTIFUNCTIONAL": "Public/Multifunctional",
       "INDIVIDUAL_HOUSE": "Individual House",
       "URBAN_PLANNING": "Urban Planning",
-      "COMPETITION": "Competition"
+      "COMPETITION": "Competition",
+      "GRG": "GRG",
+      "GDG": "GDG"
+    },
+    "subtypes": {
+      "RESIDENTIAL_MULTI": "Residential Multifunctional",
+      "PUBLIC_MULTIFUNCTIONAL": "Public Multifunctional",
+      "INDIVIDUAL_HOUSE": "Residential House",
+      "GRG": "GRG",
+      "GDG": "GDG"
     },
     "statuses": {
       "ONGOING": "Ongoing",
       "COMPLETED": "Completed"
     },
     "details": {
+      "overview": "Project Overview",
       "year": "Year",
       "location": "Location",
       "area": "Area",
       "sqm": "sq.m",
       "client": "Client",
       "status": "Status",
+      "type": "Type",
       "description": "Description",
-      "gallery": "Gallery",
+      "gallery": "Project Gallery",
       "relatedProjects": "Related Projects",
       "backToProjects": "Back to Projects"
     }
@@ -216,7 +227,7 @@
   },
   "contact": {
     "title": "Contact",
-    "subtitle": "We'd love to hear from you. Let's discuss your project.",
+    "subtitle": "Contact us about our projects",
     "form": {
       "title": "Send us a message",
       "description": "Fill out the form below and we'll get back to you within 24 hours.",
@@ -233,16 +244,21 @@
       "cadastralCode": "Cadastral Code",
       "buildingFunction": "Building Function",
       "area": "Area",
-      "submit": "Send Message",
+      "submit": "Send",
       "sending": "Sending...",
       "success": "Your message has been sent successfully! We'll get back to you soon.",
       "error": "An error occurred. Please try again."
     },
     "info": {
       "title": "Contact Information",
+      "office": "Office",
       "address": "Address",
+      "addressLine1": "15 Rustaveli Avenue",
+      "addressLine2": "Tbilisi 0108, Georgia",
       "phone": "Phone",
-      "email": "Email"
+      "email": "Email",
+      "mapTitle": "Our Location",
+      "mapAddress": "Tbilisi, Georgia"
     },
     "hours": {
       "title": "Office Hours",
@@ -251,7 +267,7 @@
       "sunday": "Sunday",
       "closed": "Closed"
     },
-    "social": "Follow Us"
+    "social": "Social Media"
   },
   "footer": {
     "ctaTitle": "Ready to Transform Your Vision?",

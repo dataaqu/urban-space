@@ -13,9 +13,10 @@ interface NavItem {
 
 interface NavigationProps {
   isScrolled?: boolean;
+  isOverHero?: boolean;
 }
 
-export default function Navigation({ isScrolled = false }: NavigationProps) {
+export default function Navigation({ isScrolled = false, isOverHero = false }: NavigationProps) {
   const t = useTranslations('navigation');
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -65,15 +66,21 @@ export default function Navigation({ isScrolled = false }: NavigationProps) {
               href={item.href}
               className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 group ${
                 isActive(item.href)
-                  ? 'text-primary-600'
-                  : 'text-secondary-600 hover:text-secondary-900'
+                  ? isOverHero
+                    ? 'text-white'
+                    : 'text-primary-600'
+                  : isOverHero
+                    ? 'text-white/70 hover:text-white'
+                    : 'text-secondary-600 hover:text-secondary-900'
               }`}
             >
               <span className="relative z-10">{item.label}</span>
 
               {/* Animated Underline */}
               <span
-                className={`absolute left-4 right-4 bottom-1 h-0.5 bg-primary-500 transition-transform duration-300 origin-left ${
+                className={`absolute left-4 right-4 bottom-1 h-0.5 transition-transform duration-300 origin-left ${
+                  isOverHero ? 'bg-white' : 'bg-primary-500'
+                } ${
                   isActive(item.href) ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
                 }`}
               />
@@ -131,7 +138,9 @@ export default function Navigation({ isScrolled = false }: NavigationProps) {
 
       {/* Mobile Menu Button */}
       <button
-        className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-secondary-100 transition-colors"
+        className={`md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg transition-colors ${
+          isOverHero ? 'hover:bg-white/10' : 'hover:bg-secondary-100'
+        }`}
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
       >
@@ -141,21 +150,27 @@ export default function Navigation({ isScrolled = false }: NavigationProps) {
               rotate: isMobileMenuOpen ? 45 : 0,
               y: isMobileMenuOpen ? 6 : 0,
             }}
-            className="block h-0.5 w-full bg-secondary-700 rounded-full origin-center"
+            className={`block h-0.5 w-full rounded-full origin-center ${
+              isOverHero ? 'bg-white' : 'bg-secondary-700'
+            }`}
           />
           <motion.span
             animate={{
               opacity: isMobileMenuOpen ? 0 : 1,
               x: isMobileMenuOpen ? -10 : 0,
             }}
-            className="block h-0.5 w-full bg-secondary-700 rounded-full"
+            className={`block h-0.5 w-full rounded-full ${
+              isOverHero ? 'bg-white' : 'bg-secondary-700'
+            }`}
           />
           <motion.span
             animate={{
               rotate: isMobileMenuOpen ? -45 : 0,
               y: isMobileMenuOpen ? -6 : 0,
             }}
-            className="block h-0.5 w-full bg-secondary-700 rounded-full origin-center"
+            className={`block h-0.5 w-full rounded-full origin-center ${
+              isOverHero ? 'bg-white' : 'bg-secondary-700'
+            }`}
           />
         </div>
       </button>

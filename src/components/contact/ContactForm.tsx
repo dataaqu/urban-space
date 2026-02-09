@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import Button from '@/components/ui/Button';
-import Input, { Textarea } from '@/components/ui/Input';
 
 export default function ContactForm() {
   const t = useTranslations('contact.form');
@@ -20,11 +18,7 @@ export default function ContactForm() {
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
-      phone: formData.get('phone'),
       message: formData.get('message'),
-      cadastralCode: formData.get('cadastralCode'),
-      buildingFunction: formData.get('buildingFunction'),
-      area: formData.get('area'),
     };
 
     try {
@@ -55,62 +49,46 @@ export default function ContactForm() {
       onSubmit={handleSubmit}
       className="space-y-6"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Input
-          label={t('name')}
+      {/* Name Field */}
+      <div className="space-y-2">
+        <label htmlFor="name" className="block text-sm text-[#333333]">
+          {t('name')}
+        </label>
+        <input
+          type="text"
           name="name"
           id="name"
           required
-          placeholder={t('name')}
+          className="w-full h-12 px-4 bg-white border border-[#DDDDDD] rounded focus:outline-none focus:border-black transition-colors"
         />
-        <Input
-          label={t('email')}
+      </div>
+
+      {/* Email Field */}
+      <div className="space-y-2">
+        <label htmlFor="email" className="block text-sm text-[#333333]">
+          {t('email')}
+        </label>
+        <input
+          type="email"
           name="email"
           id="email"
-          type="email"
           required
-          placeholder={t('email')}
+          className="w-full h-12 px-4 bg-white border border-[#DDDDDD] rounded focus:outline-none focus:border-black transition-colors"
         />
       </div>
 
-      <Input
-        label={t('phone')}
-        name="phone"
-        id="phone"
-        type="tel"
-        placeholder={t('phone')}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Input
-          label={t('cadastralCode')}
-          name="cadastralCode"
-          id="cadastralCode"
-          placeholder={t('cadastralCode')}
-        />
-        <Input
-          label={t('buildingFunction')}
-          name="buildingFunction"
-          id="buildingFunction"
-          placeholder={t('buildingFunction')}
-        />
-        <Input
-          label={t('area')}
-          name="area"
-          id="area"
-          type="number"
-          placeholder={t('area')}
+      {/* Message Field */}
+      <div className="space-y-2">
+        <label htmlFor="message" className="block text-sm text-[#333333]">
+          {t('message')}
+        </label>
+        <textarea
+          name="message"
+          id="message"
+          required
+          className="w-full h-[160px] p-4 bg-white border border-[#DDDDDD] rounded resize-none focus:outline-none focus:border-black transition-colors"
         />
       </div>
-
-      <Textarea
-        label={t('message')}
-        name="message"
-        id="message"
-        required
-        rows={5}
-        placeholder={t('message')}
-      />
 
       {submitStatus === 'success' && (
         <motion.p
@@ -132,9 +110,13 @@ export default function ContactForm() {
         </motion.p>
       )}
 
-      <Button type="submit" isLoading={isSubmitting} size="lg">
-        {t('submit')}
-      </Button>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-[180px] h-12 bg-black text-white text-base font-medium rounded hover:bg-[#333333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? '...' : t('submit')}
+      </button>
     </motion.form>
   );
 }

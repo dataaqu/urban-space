@@ -1,212 +1,247 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
-import Button from '@/components/ui/Button';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/routing';
-import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations';
+import { useState, useEffect, useCallback } from 'react';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+
+const heroImages = [
+  '/poto/1.webp',
+  '/poto/2.webp',
+  '/poto/3.webp',
+  '/poto/4.webp',
+  '/poto/5.webp',
+];
 
 export default function Hero() {
-  const t = useTranslations('home.hero');
-  const containerRef = useRef<HTMLDivElement>(null);
+  const nav = useTranslations('navigation');
+  const sub = useTranslations('projects');
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [archOpen, setArchOpen] = useState(false);
+  const [urbanOpen, setUrbanOpen] = useState(false);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
+  const goToSlide = useCallback((index: number) => {
+    setActiveSlide(index);
+  }, []);
 
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
-  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center bg-gradient-luxury overflow-hidden"
-    >
-      {/* Marble Effect Background */}
-      <div className="absolute inset-0 marble-effect-dark" />
+    <>
+      {/* Loader */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-white/80 backdrop-blur-sm"
+          >
+            <div className="relative flex flex-col items-center gap-6">
+              {/* Logo */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                className="flex items-center gap-3"
+              >
+                <span className="text-[#0A0A0A] text-3xl md:text-4xl font-semibold tracking-[0.2em] font-sans">
+                  URBAN SPACE
+                </span>
+                <span className="w-2.5 h-8 rounded-sm bg-[#0A0A0A]" />
+              </motion.div>
 
-      {/* Luxury Grid Pattern Overlay */}
-      <motion.div
-        style={{ y: backgroundY }}
-        className="absolute inset-0 grid-overlay-luxury"
-      />
+              {/* Loading bar */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
+                className="w-48 h-[2px] bg-black/10 rounded-full overflow-hidden"
+              >
+                <motion.div
+                  initial={{ width: '0%' }}
+                  animate={{ width: '100%' }}
+                  transition={{ duration: 2, delay: 0.8, ease: [0.19, 1, 0.22, 1] }}
+                  className="h-full bg-[#0A0A0A]/60 rounded-full"
+                />
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Parallax Background Elements */}
-      <motion.div
-        style={{ y: backgroundY }}
-        className="absolute inset-0"
-      >
-        {/* Dramatic Gold Glow Effects */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.2, scale: 1 }}
-          transition={{ duration: 4, repeat: Infinity, repeatType: 'reverse' }}
-          className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary-500 rounded-full filter blur-[150px]"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            repeatType: 'reverse',
-            delay: 1.5,
+      {/* Hero */}
+      <section className="relative h-screen -mt-16 overflow-hidden bg-[#0A0A0A]">
+        {/* Background Images Carousel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSlide}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            className="absolute inset-0"
+          >
+            <img
+              src={heroImages[activeSlide]}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Gradient Overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to top, rgba(0,0,0,0.44) 0%, rgba(0,0,0,0.12) 40%, rgba(0,0,0,0.56) 100%)',
           }}
-          className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-primary-400 rounded-full filter blur-[130px]"
         />
-        {/* Additional Ambient Light */}
+
+        {/* Top Bar - Logo & Language Switcher */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            repeatType: 'reverse',
-            delay: 2,
-          }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-300 rounded-full filter blur-[200px]"
-        />
-
-        {/* Decorative Lines - Enhanced */}
-        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-primary-500/0 via-primary-500/30 to-primary-500/0" />
-        <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-primary-500/0 via-primary-500/15 to-primary-500/0" />
-        <div className="absolute top-0 left-2/3 w-px h-full bg-gradient-to-b from-primary-500/0 via-primary-500/10 to-primary-500/0" />
-
-        {/* Horizontal Decorative Lines */}
-        <div className="absolute top-1/4 left-0 h-px w-full bg-gradient-to-r from-transparent via-primary-500/10 to-transparent" />
-        <div className="absolute bottom-1/3 left-0 h-px w-full bg-gradient-to-r from-transparent via-primary-500/10 to-transparent" />
-      </motion.div>
-
-      {/* Corner Brackets - Luxury Frame */}
-      <div className="absolute top-8 left-8 w-20 h-20 border-t-2 border-l-2 border-primary-500/30" />
-      <div className="absolute top-8 right-8 w-20 h-20 border-t-2 border-r-2 border-primary-500/30" />
-      <div className="absolute bottom-8 left-8 w-20 h-20 border-b-2 border-l-2 border-primary-500/30" />
-      <div className="absolute bottom-8 right-8 w-20 h-20 border-b-2 border-r-2 border-primary-500/30" />
-
-      {/* Main Content */}
-      <motion.div
-        style={{ y: textY, opacity }}
-        className="relative z-10 container-premium text-center"
-      >
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="max-w-4xl mx-auto"
+          animate={{ opacity: loading ? 0 : 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="absolute top-0 left-0 right-0 h-20 flex items-center justify-between px-8 md:px-[60px] z-20"
         >
-          {/* Premium Badge - Enhanced */}
-          <motion.div variants={staggerItem} className="mb-10">
-            <span className="inline-flex items-center px-5 py-2 text-xs font-medium tracking-[0.2em] uppercase bg-primary-500/10 text-primary-400 border border-primary-500/30 rounded-full backdrop-blur-sm shadow-gold-border">
-              <span className="w-1.5 h-1.5 bg-primary-500 rounded-full mr-3 animate-pulse" />
-              Architecture & Urban Design
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-white text-lg font-semibold tracking-[0.15em] font-sans">
+              URBAN SPACE
             </span>
-          </motion.div>
+            <span className="w-2 h-6 rounded-sm bg-white" />
+          </Link>
 
-          {/* Main Title with Serif Font - Luxury */}
-          <motion.h1
-            variants={staggerItem}
-            className="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-8 tracking-tightest text-shadow-lg"
-          >
-            {t('title').split(' ').map((word, index) => (
-              <span key={index} className="inline-block">
-                {index === 1 ? (
-                  <span className="text-shimmer">{word}</span>
-                ) : (
-                  word
-                )}
-                {index < t('title').split(' ').length - 1 && '\u00A0'}
-              </span>
-            ))}
-          </motion.h1>
-
-          {/* Subtitle with Gold Accent - Enhanced */}
-          <motion.p
-            variants={staggerItem}
-            className="text-xl md:text-2xl lg:text-3xl text-primary-300/90 mb-8 font-light tracking-wider"
-          >
-            {t('subtitle')}
-          </motion.p>
-
-          {/* Decorative Divider - Luxury */}
-          <motion.div
-            variants={staggerItem}
-            className="flex items-center justify-center gap-6 mb-10"
-          >
-            <span className="w-16 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-primary-500" />
-            <span className="w-3 h-3 rounded-full bg-primary-500 shadow-gold-glow-intense" />
-            <span className="w-16 h-px bg-gradient-to-l from-transparent via-primary-500/50 to-primary-500" />
-          </motion.div>
-
-          {/* Description - Enhanced */}
-          <motion.p
-            variants={staggerItem}
-            className="text-lg md:text-xl text-secondary-300/80 mb-14 max-w-2xl mx-auto leading-relaxed"
-          >
-            {t('description')}
-          </motion.p>
-
-          {/* CTA Buttons - Luxury Style */}
-          <motion.div
-            variants={staggerItem}
-            className="flex flex-col sm:flex-row items-center justify-center gap-5"
-          >
-            <Link href="/projects">
-              <Button
-                size="lg"
-                variant="gold"
-                className="min-w-[200px] shadow-luxury-gold hover:shadow-gold-glow-intense transition-shadow duration-500"
-                rightIcon={
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                }
-              >
-                {t('cta')}
-              </Button>
-            </Link>
-            <Link href="/studio">
-              <Button
-                size="lg"
-                variant="outline-animated"
-                className="min-w-[200px] border-primary-500/40 hover:border-primary-500/80"
-              >
-                {t('ctaSecondary') || 'Learn More'}
-              </Button>
-            </Link>
-          </motion.div>
+          <LanguageSwitcher isOverHero />
         </motion.div>
-      </motion.div>
 
-      {/* Scroll Indicator - Luxury */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20"
-      >
+        {/* Carousel Dots - Right Side Vertical */}
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex flex-col items-center gap-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loading ? 0 : 1 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="absolute right-8 md:right-[60px] top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-10"
         >
-          <span className="text-xs uppercase tracking-[0.3em] text-primary-400/50 font-light">
-            Scroll
-          </span>
-          <div className="relative w-7 h-12 border-2 border-primary-500/40 rounded-full">
-            <motion.div
-              animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-1/2 top-2 -translate-x-1/2 w-1.5 h-3 bg-primary-500 rounded-full shadow-glow-gold"
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-[3px] h-8 rounded-sm transition-colors duration-300 ${
+                index === activeSlide ? 'bg-white' : 'bg-white/25'
+              }`}
+              aria-label={`Slide ${index + 1}`}
             />
-          </div>
+          ))}
         </motion.div>
-      </motion.div>
 
-      {/* Bottom Gradient Fade - Enhanced */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-accent-50 via-accent-50/80 to-transparent" />
-    </section>
+        {/* Bottom Navigation */}
+        <motion.nav
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="absolute bottom-0 left-0 right-0 h-20 flex items-center justify-between px-8 md:px-[60px] z-10"
+        >
+          {/* Left - Project Categories */}
+          <div className="hidden md:flex items-center gap-10 lg:gap-[60px]">
+            {/* Architecture Projects */}
+            <div
+              className="relative"
+              onMouseEnter={() => setArchOpen(true)}
+              onMouseLeave={() => setArchOpen(false)}
+            >
+              <Link href="/projects/architecture" className="flex flex-col gap-1">
+                <span className="text-white text-[15px] font-sans font-bold">
+                  {nav('architecture')} {nav('projects').toLowerCase()}
+                </span>
+                <span className="block h-[2px] bg-white" style={{ width: 180 }} />
+              </Link>
+              <AnimatePresence>
+                {archOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                    className="absolute bottom-full left-0 mb-3 flex flex-col gap-2 min-w-[220px] bg-black/30 backdrop-blur-md rounded-lg px-4 py-3"
+                  >
+                    <Link href="/projects/architecture?type=RESIDENTIAL_MULTI" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.RESIDENTIAL_MULTI')}
+                    </Link>
+                    <Link href="/projects/architecture?type=PUBLIC_MULTIFUNCTIONAL" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.PUBLIC_MULTIFUNCTIONAL')}
+                    </Link>
+                    <Link href="/projects/architecture?type=INDIVIDUAL_HOUSE" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.INDIVIDUAL_HOUSE')}
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Urban Projects */}
+            <div
+              className="relative"
+              onMouseEnter={() => setUrbanOpen(true)}
+              onMouseLeave={() => setUrbanOpen(false)}
+            >
+              <Link href="/projects/urban" className="flex flex-col gap-1">
+                <span className="text-white text-[15px] font-sans font-bold">
+                  {nav('urban')} {nav('projects').toLowerCase()}
+                </span>
+                <span className="block h-[2px] bg-white" style={{ width: 140 }} />
+              </Link>
+              <AnimatePresence>
+                {urbanOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                    className="absolute bottom-full left-0 mb-3 flex flex-col gap-2 min-w-[120px] bg-black/30 backdrop-blur-md rounded-lg px-4 py-3"
+                  >
+                    <Link href="/projects/urban?type=GRG" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.GRG')}
+                    </Link>
+                    <Link href="/projects/urban?type=GDG" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.GDG')}
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Right - Studio & Contact */}
+          <div className="hidden md:flex items-center gap-12 lg:gap-20">
+            <Link href="/studio" className="flex flex-col gap-1">
+              <span className="text-white text-[15px] font-sans font-bold">
+                {nav('studio').toLowerCase()}
+              </span>
+              <span className="block h-[2px] bg-white" style={{ width: 90 }} />
+            </Link>
+            <Link href="/contact" className="flex flex-col gap-1">
+              <span className="text-white text-[15px] font-sans font-bold">
+                {nav('contact').toLowerCase()}
+              </span>
+              <span className="block h-[2px] bg-white" style={{ width: 90 }} />
+            </Link>
+          </div>
+        </motion.nav>
+      </section>
+    </>
   );
 }

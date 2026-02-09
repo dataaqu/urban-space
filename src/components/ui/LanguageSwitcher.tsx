@@ -6,9 +6,10 @@ import { motion } from 'framer-motion';
 
 interface LanguageSwitcherProps {
   isScrolled?: boolean;
+  isOverHero?: boolean;
 }
 
-export default function LanguageSwitcher({ isScrolled = false }: LanguageSwitcherProps) {
+export default function LanguageSwitcher({ isScrolled = false, isOverHero = false }: LanguageSwitcherProps) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -23,27 +24,42 @@ export default function LanguageSwitcher({ isScrolled = false }: LanguageSwitche
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={toggleLocale}
-      className="relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 hover:bg-secondary-100"
+      className={`relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
+        isOverHero ? 'hover:bg-white/10' : 'hover:bg-secondary-100'
+      }`}
     >
-      {/* Active Indicator Background */}
       <span className="relative flex items-center gap-1.5">
         <span
           className={`transition-all duration-300 ${
             locale === 'ka'
-              ? 'text-primary-600 font-semibold'
-              : 'text-secondary-400'
+              ? isOverHero
+                ? 'text-white font-semibold'
+                : 'text-primary-600 font-semibold'
+              : isOverHero
+                ? 'text-white/40'
+                : 'text-secondary-400'
           }`}
         >
-          KA
+          ქარ
         </span>
 
-        <span className="w-px h-4 bg-secondary-200" />
+        <span
+          className={`transition-colors duration-300 ${
+            isOverHero ? 'text-white/30' : 'text-secondary-300'
+          }`}
+        >
+          /
+        </span>
 
         <span
           className={`transition-all duration-300 ${
             locale === 'en'
-              ? 'text-primary-600 font-semibold'
-              : 'text-secondary-400'
+              ? isOverHero
+                ? 'text-white font-semibold'
+                : 'text-primary-600 font-semibold'
+              : isOverHero
+                ? 'text-white/40'
+                : 'text-secondary-400'
           }`}
         >
           EN
