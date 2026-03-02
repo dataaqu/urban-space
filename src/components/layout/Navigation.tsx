@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
 interface NavItem {
   href: string;
@@ -19,6 +20,7 @@ interface NavigationProps {
 export default function Navigation({ isScrolled = false, isOverHero = false }: NavigationProps) {
   const t = useTranslations('navigation');
   const pathname = usePathname();
+  const studioOverlay = useStudioOverlay();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -59,9 +61,21 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
           <li
             key={item.href}
             className="relative"
-            onMouseEnter={() => item.children && setOpenDropdown(item.href)}
+            onMouseEnter={() => item.children && item.href !== '/studio' && setOpenDropdown(item.href)}
             onMouseLeave={() => setOpenDropdown(null)}
           >
+            {item.href === '/studio' ? (
+              <button
+                onClick={studioOverlay.open}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 group ${
+                  isOverHero
+                    ? 'text-white/70 hover:text-white'
+                    : 'text-secondary-600 hover:text-secondary-900'
+                }`}
+              >
+                <span className="relative z-10">{item.label}</span>
+              </button>
+            ) : (
             <Link
               href={item.href}
               className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 group ${
@@ -86,7 +100,7 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
               />
 
               {/* Dropdown Indicator */}
-              {item.children && (
+              {item.children && item.href !== '/studio' && (
                 <motion.svg
                   animate={{ rotate: openDropdown === item.href ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
@@ -99,6 +113,7 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
                 </motion.svg>
               )}
             </Link>
+            )}
 
             {/* Dropdown Menu */}
             <AnimatePresence>
@@ -223,18 +238,27 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <Link
-                        href={item.href}
-                        className={`block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
-                          isActive(item.href)
-                            ? 'text-primary-600 bg-primary-50'
-                            : 'text-secondary-700 hover:bg-secondary-50'
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {item.label}
-                      </Link>
-                      {item.children && (
+                      {item.href === '/studio' ? (
+                        <button
+                          className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 text-secondary-700 hover:bg-secondary-50"
+                          onClick={() => { setIsMobileMenuOpen(false); studioOverlay.open(); }}
+                        >
+                          {item.label}
+                        </button>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className={`block px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
+                            isActive(item.href)
+                              ? 'text-primary-600 bg-primary-50'
+                              : 'text-secondary-700 hover:bg-secondary-50'
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                      {item.children && item.href !== '/studio' && (
                         <ul className="mt-1 ml-4 space-y-1">
                           {item.children.map((child) => (
                             <li key={child.href}>

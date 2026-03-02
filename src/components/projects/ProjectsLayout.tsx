@@ -6,17 +6,19 @@ import { Link, usePathname } from '@/i18n/routing';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
 interface ProjectsLayoutProps {
   children: React.ReactNode;
 }
 
 const architectureTypes = ['RESIDENTIAL_MULTI', 'PUBLIC_MULTIFUNCTIONAL', 'INDIVIDUAL_HOUSE'] as const;
-const urbanTypes = ['GRG', 'GDG'] as const;
+const urbanTypes = ['URBAN_PLANNING', 'COMPETITION'] as const;
 
 export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
   const nav = useTranslations('navigation');
   const t = useTranslations('projects');
+  const studioOverlay = useStudioOverlay();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const activeType = searchParams.get('type');
@@ -128,9 +130,9 @@ export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
                 {nav('architecture')} {nav('projects').toLowerCase()}
               </Link>
               <div className="h-px bg-[#E0E0E0]" />
-              <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans">
+              <button onClick={() => { setMobileMenuOpen(false); studioOverlay.open(); }} className="text-[14px] text-[#666666] font-sans text-left">
                 {nav('studio')}
-              </Link>
+              </button>
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans">
                 {nav('contact')}
               </Link>
@@ -141,15 +143,15 @@ export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
 
       {/* Sub Navigation - Type Filters */}
       {showSubNav && (
-        <div className="h-[50px] flex items-center justify-center gap-10 px-6 md:px-10 bg-white overflow-x-auto">
+        <div className="h-auto py-3 md:h-[50px] md:py-0 flex flex-wrap md:flex-nowrap items-center justify-center gap-4 md:gap-10 px-4 md:px-10 bg-white overflow-x-auto scrollbar-hide">
           {subtypes.map((type) => (
             <Link
               key={type}
               href={`${pathname}?type=${type}`}
-              className={`text-[13px] font-sans whitespace-nowrap transition-colors ${
+              className={`text-[12px] md:text-[13px] font-sans whitespace-nowrap transition-colors px-3 py-1.5 md:px-0 md:py-0 rounded-full md:rounded-none ${
                 activeType === type
-                  ? 'text-[#000000]'
-                  : 'text-[#666666] hover:text-[#333333]'
+                  ? 'text-[#000000] bg-[#F0F0F0] md:bg-transparent font-medium md:font-normal'
+                  : 'text-[#666666] hover:text-[#333333] bg-[#F8F8F8] md:bg-transparent'
               }`}
             >
               {t(`subtypes.${type}`)}
@@ -164,13 +166,13 @@ export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
       </div>
 
       {/* Footer */}
-      <footer className="h-[60px] flex items-center justify-end gap-20 px-10 md:px-[100px] bg-white">
-        <Link href="/studio" className="flex flex-col items-center gap-1">
+      <footer className="hidden md:flex h-[60px] items-center justify-end gap-20 px-10 md:px-[100px] bg-white">
+        <button onClick={studioOverlay.open} className="flex flex-col items-center gap-1">
           <span className="block h-px bg-[#CCCCCC] w-20" />
           <span className="text-[14px] text-[#333333] font-sans">
             {nav('studio').toLowerCase()}
           </span>
-        </Link>
+        </button>
         <Link href="/contact" className="flex flex-col items-center gap-1">
           <span className="block h-px bg-[#CCCCCC] w-20" />
           <span className="text-[14px] text-[#333333] font-sans">

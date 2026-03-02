@@ -129,7 +129,9 @@
       "PUBLIC_MULTIFUNCTIONAL": "საზოგადოებრივი მრავალფუნქციური",
       "INDIVIDUAL_HOUSE": "საცხოვრებელი სახლი",
       "GRG": "GRG",
-      "GDG": "GDG"
+      "GDG": "GDG",
+      "URBAN_PLANNING": "ქალაქგეგმარებითი",
+      "COMPETITION": "კონკურსი"
     },
     "statuses": {
       "ONGOING": "მიმდინარე",

@@ -1,39 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import ProjectCardMinimal from '@/components/projects/ProjectCardMinimal';
-import type { Project } from '@/types';
+import { useProjects } from '@/hooks/useProjects';
 
 const heightPatterns = [350, 280, 280, 380];
 
 export default function UrbanProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
   const activeType = searchParams.get('type');
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setIsLoading(true);
-      const params = new URLSearchParams();
-      params.append('category', 'URBAN');
-      if (activeType) params.append('type', activeType);
-
-      try {
-        const response = await fetch(`/api/projects?${params.toString()}`);
-        const data = await response.json();
-        setProjects(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, [activeType]);
+  const params: Record<string, string> = { category: 'URBAN' };
+  if (activeType) params.type = activeType;
+  const { projects, isLoading } = useProjects(params);
 
   if (isLoading) {
     return (

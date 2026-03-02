@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/routing';
 import { useState, useEffect, useCallback } from 'react';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
 const heroImages = [
   '/poto/1.webp',
@@ -17,17 +18,27 @@ const heroImages = [
 export default function Hero() {
   const nav = useTranslations('navigation');
   const sub = useTranslations('projects');
+  const studioOverlay = useStudioOverlay();
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [archOpen, setArchOpen] = useState(false);
   const [urbanOpen, setUrbanOpen] = useState(false);
+  const [mobileArchOpen, setMobileArchOpen] = useState(false);
+  const [mobileUrbanOpen, setMobileUrbanOpen] = useState(false);
 
   const goToSlide = useCallback((index: number) => {
     setActiveSlide(index);
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2800);
+    if (sessionStorage.getItem('loaderShown')) {
+      setLoading(false);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setLoading(false);
+      sessionStorage.setItem('loaderShown', '1');
+    }, 2800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -163,12 +174,14 @@ export default function Hero() {
               onMouseEnter={() => setArchOpen(true)}
               onMouseLeave={() => setArchOpen(false)}
             >
-              <Link href="/projects/architecture" className="flex flex-col gap-1">
-                <span className="text-white text-[15px] font-sans font-bold">
-                  {nav('architecture')} {nav('projects').toLowerCase()}
-                </span>
-                <span className="block h-[2px] bg-white" style={{ width: 180 }} />
-              </Link>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/projects/architecture" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+                  <span className="text-white text-[15px] font-sans font-bold">
+                    {nav('architecture')} {nav('projects').toLowerCase()}
+                  </span>
+                  <span className="block h-[2px] bg-white" style={{ width: 180 }} />
+                </Link>
+              </motion.div>
               <AnimatePresence>
                 {archOpen && (
                   <motion.div
@@ -198,12 +211,14 @@ export default function Hero() {
               onMouseEnter={() => setUrbanOpen(true)}
               onMouseLeave={() => setUrbanOpen(false)}
             >
-              <Link href="/projects/urban" className="flex flex-col gap-1">
-                <span className="text-white text-[15px] font-sans font-bold">
-                  {nav('urban')} {nav('projects').toLowerCase()}
-                </span>
-                <span className="block h-[2px] bg-white" style={{ width: 140 }} />
-              </Link>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/projects/urban" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+                  <span className="text-white text-[15px] font-sans font-bold">
+                    {nav('urban')} {nav('projects').toLowerCase()}
+                  </span>
+                  <span className="block h-[2px] bg-white" style={{ width: 140 }} />
+                </Link>
+              </motion.div>
               <AnimatePresence>
                 {urbanOpen && (
                   <motion.div
@@ -213,11 +228,11 @@ export default function Hero() {
                     transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
                     className="absolute bottom-full left-0 mb-3 flex flex-col gap-2 min-w-[120px] bg-black/30 backdrop-blur-md rounded-lg px-4 py-3"
                   >
-                    <Link href="/projects/urban?type=GRG" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.GRG')}
+                    <Link href="/projects/urban?type=URBAN_PLANNING" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.URBAN_PLANNING')}
                     </Link>
-                    <Link href="/projects/urban?type=GDG" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.GDG')}
+                    <Link href="/projects/urban?type=COMPETITION" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                      {sub('subtypes.COMPETITION')}
                     </Link>
                   </motion.div>
                 )}
@@ -227,20 +242,102 @@ export default function Hero() {
 
           {/* Right - Studio & Contact */}
           <div className="hidden md:flex items-center gap-12 lg:gap-20">
-            <Link href="/studio" className="flex flex-col gap-1">
-              <span className="text-white text-[15px] font-sans font-bold">
-                {nav('studio').toLowerCase()}
-              </span>
-              <span className="block h-[2px] bg-white" style={{ width: 90 }} />
-            </Link>
-            <Link href="/contact" className="flex flex-col gap-1">
-              <span className="text-white text-[15px] font-sans font-bold">
-                {nav('contact').toLowerCase()}
-              </span>
-              <span className="block h-[2px] bg-white" style={{ width: 90 }} />
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <button onClick={studioOverlay.open} className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+                <span className="text-white text-[15px] font-sans font-bold">
+                  {nav('studio').toLowerCase()}
+                </span>
+                <span className="block h-[2px] bg-white" style={{ width: 90 }} />
+              </button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link href="/contact" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
+                <span className="text-white text-[15px] font-sans font-bold">
+                  {nav('contact').toLowerCase()}
+                </span>
+                <span className="block h-[2px] bg-white" style={{ width: 90 }} />
+              </Link>
+            </motion.div>
           </div>
         </motion.nav>
+
+        {/* Mobile Bottom Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="absolute bottom-0 left-0 right-0 md:hidden z-10"
+        >
+          <AnimatePresence>
+            {mobileArchOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                className="overflow-hidden bg-black/40 backdrop-blur-md border-b border-white/10"
+              >
+                <div className="flex flex-col gap-2 px-6 py-3">
+                  <Link href="/projects/architecture?type=RESIDENTIAL_MULTI" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                    {sub('subtypes.RESIDENTIAL_MULTI')}
+                  </Link>
+                  <Link href="/projects/architecture?type=PUBLIC_MULTIFUNCTIONAL" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                    {sub('subtypes.PUBLIC_MULTIFUNCTIONAL')}
+                  </Link>
+                  <Link href="/projects/architecture?type=INDIVIDUAL_HOUSE" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                    {sub('subtypes.INDIVIDUAL_HOUSE')}
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+            {mobileUrbanOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                className="overflow-hidden bg-black/40 backdrop-blur-md border-b border-white/10"
+              >
+                <div className="flex flex-col gap-2 px-6 py-3">
+                  <Link href="/projects/urban?type=URBAN_PLANNING" onClick={() => setMobileUrbanOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                    {sub('subtypes.URBAN_PLANNING')}
+                  </Link>
+                  <Link href="/projects/urban?type=COMPETITION" onClick={() => setMobileUrbanOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
+                    {sub('subtypes.COMPETITION')}
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div className="flex items-center justify-around px-4 py-4 bg-black/30 backdrop-blur-md">
+            <button
+              onClick={() => { setMobileArchOpen(!mobileArchOpen); setMobileUrbanOpen(false); }}
+              className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200"
+            >
+              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
+                {nav('architecture')}
+              </span>
+            </button>
+            <button
+              onClick={() => { setMobileUrbanOpen(!mobileUrbanOpen); setMobileArchOpen(false); }}
+              className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200"
+            >
+              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
+                {nav('urban')}
+              </span>
+            </button>
+            <button onClick={studioOverlay.open} className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
+              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
+                {nav('studio')}
+              </span>
+            </button>
+            <Link href="/contact" className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
+              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
+                {nav('contact')}
+              </span>
+            </Link>
+          </div>
+        </motion.div>
       </section>
     </>
   );

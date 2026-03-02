@@ -67,9 +67,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-playfair)', 'Georgia', 'serif'],
+        sans: ['var(--font-dachi)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-dachi)', 'var(--font-playfair)', 'Georgia', 'serif'],
         serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        dachi: ['var(--font-dachi)', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.075em',

@@ -129,7 +129,9 @@
       "PUBLIC_MULTIFUNCTIONAL": "Public Multifunctional",
       "INDIVIDUAL_HOUSE": "Residential House",
       "GRG": "GRG",
-      "GDG": "GDG"
+      "GDG": "GDG",
+      "URBAN_PLANNING": "Urban Planning",
+      "COMPETITION": "Competition"
     },
     "statuses": {
       "ONGOING": "Ongoing",

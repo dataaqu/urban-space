@@ -25,9 +25,29 @@ export async function GET(request: NextRequest) {
     const projects = await prisma.project.findMany({
       where,
       orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        slug: true,
+        titleKa: true,
+        titleEn: true,
+        descriptionKa: true,
+        descriptionEn: true,
+        category: true,
+        type: true,
+        images: true,
+        featured: true,
+        status: true,
+        year: true,
+        location: true,
+        area: true,
+      },
     });
 
-    return NextResponse.json(projects);
+    return NextResponse.json(projects, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      },
+    });
   } catch (error) {
     console.error('Error fetching projects:', error);
     return NextResponse.json(

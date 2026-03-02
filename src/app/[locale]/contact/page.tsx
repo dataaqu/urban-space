@@ -17,14 +17,17 @@ export default async function ContactPage() {
     <div className="min-h-screen bg-white">
       {/* Content */}
       <div className="px-6 md:px-16 lg:px-[120px] py-20">
-        {/* Hero - Centered */}
-        <div className="text-center py-[60px]">
-          <h1 className="font-sans text-[48px] font-bold text-black mb-6">
-            {t('title')}
-          </h1>
-          <p className="text-lg text-[#666666]">
-            {t('subtitle')}
+        {/* Map Section */}
+        <div className="mb-[60px]">
+          <h2 className="text-2xl font-semibold text-black mb-6">
+            {t('info.mapTitle')}
+          </h2>
+          <p className="text-sm text-[#666666] mb-6">
+            {t('info.mapAddress')}
           </p>
+          <div className="rounded-lg overflow-hidden">
+            <GoogleMap />
+          </div>
         </div>
 
         {/* Main: Info Left + Form Right */}
@@ -94,18 +97,6 @@ export default async function ContactPage() {
           </div>
         </div>
 
-        {/* Map Section */}
-        <div className="mt-[60px] pt-[60px] border-t border-[#EEEEEE]">
-          <h2 className="text-2xl font-semibold text-black mb-6">
-            {t('info.mapTitle')}
-          </h2>
-          <p className="text-sm text-[#666666] mb-6">
-            {t('info.mapAddress')}
-          </p>
-          <div className="rounded-lg overflow-hidden">
-            <GoogleMap />
-          </div>
-        </div>
       </div>
     </div>
   );
