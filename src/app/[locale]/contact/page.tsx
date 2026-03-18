@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getTranslations } from 'next-intl/server';
 import ContactForm from '@/components/contact/ContactForm';
 import GoogleMap from '@/components/contact/GoogleMap';

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';
 import { getHeroSlides } from '@/lib/content';
