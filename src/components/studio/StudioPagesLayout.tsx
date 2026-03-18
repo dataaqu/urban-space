@@ -15,7 +15,7 @@ const studioTabs = [
   { href: '/studio', key: 'about' },
   { href: '/studio/team', key: 'team' },
   { href: '/studio/partners', key: 'partners' },
-  { href: '/services', key: 'services' },
+  { href: '/studio/services', key: 'services' },
 ] as const;
 
 export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) {

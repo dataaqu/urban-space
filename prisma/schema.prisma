@@ -7,6 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AdminUser {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  hashedPassword String
+  name           String?
+  role           String   @default("admin")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SiteContent {
+  id        String      @id @default(cuid())
+  key       String
+  section   String
+  valueKa   String
+  valueEn   String
+  type      ContentType @default(TEXT)
+  order     Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([section, key])
+}
+
+enum ContentType {
+  TEXT
+  RICH_TEXT
+  IMAGE
+}
+
+model HeroSlide {
+  id      String  @id @default(cuid())
+  image   String
+  titleKa String?
+  titleEn String?
+  order   Int     @default(0)
+  active  Boolean @default(true)
+}
+
 model Project {
   id            String          @id @default(cuid())
   slug          String          @unique
@@ -87,11 +126,14 @@ model ContactSubmission {
 
 model SiteSettings {
   id           String  @id @default(cuid())
+  logo         String?
+  favicon      String?
   address      String?
   email        String?
   phone        String?
   facebookUrl  String?
   instagramUrl String?
+  linkedinUrl  String?
   mapLat       Float?
   mapLng       Float?
 }

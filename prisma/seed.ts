@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { hashSync } from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -6,12 +7,36 @@ async function main() {
   console.log('Seeding database...');
 
   // Clear existing data
+  await prisma.adminUser.deleteMany();
+  await prisma.heroSlide.deleteMany();
+  await prisma.siteContent.deleteMany();
   await prisma.contactSubmission.deleteMany();
   await prisma.project.deleteMany();
   await prisma.teamMember.deleteMany();
   await prisma.partner.deleteMany();
   await prisma.service.deleteMany();
   await prisma.siteSettings.deleteMany();
+
+  // Create Admin User
+  const adminUser = await prisma.adminUser.create({
+    data: {
+      email: 'admin@urbanspace.ge',
+      hashedPassword: hashSync('admin123', 12),
+      name: 'Admin',
+      role: 'admin',
+    },
+  });
+  console.log(`Created admin user: ${adminUser.email}`);
+
+  // Create Hero Slides
+  const heroSlides = await Promise.all([
+    prisma.heroSlide.create({ data: { image: '/poto/1.webp', titleKa: 'არქიტექტურული ხედვა', titleEn: 'Architectural Vision', order: 0 } }),
+    prisma.heroSlide.create({ data: { image: '/poto/2.webp', titleKa: 'ურბანული სივრცე', titleEn: 'Urban Space', order: 1 } }),
+    prisma.heroSlide.create({ data: { image: '/poto/3.webp', titleKa: 'თანამედროვე დიზაინი', titleEn: 'Modern Design', order: 2 } }),
+    prisma.heroSlide.create({ data: { image: '/poto/4.webp', titleKa: 'ინოვაციური გადაწყვეტა', titleEn: 'Innovative Solutions', order: 3 } }),
+    prisma.heroSlide.create({ data: { image: '/poto/5.webp', titleKa: 'მდგრადი მშენებლობა', titleEn: 'Sustainable Building', order: 4 } }),
+  ]);
+  console.log(`Created ${heroSlides.length} hero slides`);
 
   // Create Projects
   const projects = await Promise.all([

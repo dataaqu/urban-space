@@ -36,30 +36,6 @@
       "clients": "Satisfied Clients",
       "satisfaction": "Client Satisfaction"
     },
-    "services": {
-      "badge": "What We Do",
-      "title": "Our Services",
-      "description": "Comprehensive architectural solutions tailored to your vision",
-      "viewAll": "View All Services",
-      "items": {
-        "architecture": {
-          "title": "Architectural Design",
-          "description": "Complete architectural solutions from concept to realization"
-        },
-        "urban": {
-          "title": "Urban Planning",
-          "description": "Sustainable urban development and city planning strategies"
-        },
-        "interior": {
-          "title": "Interior Design",
-          "description": "Thoughtful interior spaces that enhance everyday living"
-        },
-        "consulting": {
-          "title": "Consulting",
-          "description": "Expert guidance for your architectural projects"
-        }
-      }
-    },
     "testimonials": {
       "badge": "Client Stories",
       "title": "What Our Clients Say",
@@ -162,7 +138,11 @@
       "mission": "Our Mission",
       "missionText": "To create exceptional architectural solutions that harmonize innovation with sustainability, while respecting cultural context and enhancing quality of life.",
       "vision": "Our Vision",
-      "visionText": "To be recognized as a leading architectural practice that shapes the future of urban living through thoughtful, innovative design."
+      "visionText": "To be recognized as a leading architectural practice that shapes the future of urban living through thoughtful, innovative design.",
+      "paragraph1": "The company employs over 40 specialists: architects, urban planning specialists, engineers, designers, and visualization specialists. We also collaborate with leading specialists from other fields, which enables us to offer our clients a more comprehensive service.",
+      "paragraph2": "Since the very first day of the company's establishment, Artstudio Project has consistently involved young architects, students, and interns in its activities; their creativity and fresh perspective merges with the knowledge of experienced architects, which ultimately yields a collaborative, refined product.",
+      "paragraph3": "Through collaboration with local and international consultants and partners, Artstudio Project continuously develops its skills.",
+      "paragraph4": "Our clients include numerous private and legal entities across Georgia."
     },
     "team": {
       "badge": "Our Team",
@@ -195,35 +175,6 @@
           "title": "Excellence",
           "description": "Maintaining the highest standards in every project"
         }
-      }
-    }
-  },
-  "services": {
-    "title": "Services",
-    "description": "Comprehensive architectural and urban planning services tailored to your needs.",
-    "process": {
-      "badge": "Our Process",
-      "title": "How We Work",
-      "description": "Our proven process ensures successful project delivery from concept to completion.",
-      "consultation": {
-        "title": "Consultation",
-        "description": "We begin with a thorough understanding of your vision, requirements, and project goals through detailed discussions."
-      },
-      "concept": {
-        "title": "Concept Development",
-        "description": "Our team develops initial concepts and ideas, exploring various design directions that align with your vision."
-      },
-      "design": {
-        "title": "Design Development",
-        "description": "We refine the chosen concept into detailed architectural drawings, specifications, and 3D visualizations."
-      },
-      "development": {
-        "title": "Technical Documentation",
-        "description": "Complete construction documents, technical specifications, and coordination with engineering teams."
-      },
-      "supervision": {
-        "title": "Construction Supervision",
-        "description": "We oversee the construction process to ensure the design is executed to the highest standards."
       }
     }
   },
@@ -288,7 +239,6 @@
     },
     "links": {
       "company": "Company",
-      "services": "Services",
       "projects": "Projects",
       "contact": "Contact"
     },

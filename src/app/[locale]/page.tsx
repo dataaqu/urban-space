@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';
+import { getHeroSlides } from '@/lib/content';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home.hero' });
@@ -10,6 +11,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
-export default function HomePage() {
-  return <Hero />;
+export default async function HomePage() {
+  const slides = await getHeroSlides();
+  return <Hero slides={slides} />;
 }

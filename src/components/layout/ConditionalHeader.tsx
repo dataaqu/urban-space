@@ -6,12 +6,12 @@ import Footer from './Footer';
 
 export function ConditionalHeader() {
   const pathname = usePathname();
-  if (pathname === '/' || pathname.startsWith('/projects') || pathname === '/contact' || pathname.startsWith('/studio') || pathname === '/services') return null;
+  if (pathname === '/' || pathname.startsWith('/projects') || pathname === '/contact' || pathname.startsWith('/studio')) return null;
   return <Header />;
 }
 
 export function ConditionalFooter() {
   const pathname = usePathname();
-  if (pathname === '/' || pathname.startsWith('/projects') || pathname === '/contact' || pathname.startsWith('/studio') || pathname === '/services') return null;
+  if (pathname === '/' || pathname.startsWith('/projects') || pathname === '/contact' || pathname.startsWith('/studio')) return null;
   return <Footer />;
 }

@@ -2,12 +2,13 @@
 
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useState, useEffect, useCallback } from 'react';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
-const heroImages = [
+const fallbackImages = [
   '/poto/1.webp',
   '/poto/2.webp',
   '/poto/3.webp',
@@ -15,7 +16,23 @@ const heroImages = [
   '/poto/5.webp',
 ];
 
-export default function Hero() {
+interface HeroSlide {
+  id: string;
+  image: string;
+  titleKa: string | null;
+  titleEn: string | null;
+  order: number;
+  active: boolean;
+}
+
+interface HeroProps {
+  slides?: HeroSlide[];
+}
+
+export default function Hero({ slides }: HeroProps) {
+  const heroImages = slides && slides.length > 0
+    ? slides.map(s => s.image)
+    : fallbackImages;
   const nav = useTranslations('navigation');
   const sub = useTranslations('projects');
   const studioOverlay = useStudioOverlay();
@@ -105,10 +122,13 @@ export default function Hero() {
             transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
             className="absolute inset-0"
           >
-            <img
+            <Image
               src={heroImages[activeSlide]}
               alt=""
-              className="w-full h-full object-cover"
+              fill
+              priority={activeSlide === 0}
+              sizes="100vw"
+              className="object-cover"
             />
           </motion.div>
         </AnimatePresence>

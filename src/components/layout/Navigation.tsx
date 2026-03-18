@@ -44,8 +44,7 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
         { href: '/studio/principles', label: t('principles') },
       ],
     },
-    { href: '/services', label: t('services') },
-    { href: '/contact', label: t('contact') },
+{ href: '/contact', label: t('contact') },
   ];
 
   const isActive = (href: string) => {
