@@ -22,8 +22,8 @@ const playfair = Playfair_Display({
   weight: ['400', '500', '600', '700'],
 });
 
-const dachi = localFont({
-  src: '../Dachi the Lynx-46841546889.otf',
+const aptos = localFont({
+  src: '../Aptos-Display.ttf',
   variable: '--font-dachi',
   display: 'swap',
 });
@@ -48,7 +48,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${playfair.variable} ${dachi.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${playfair.variable} ${aptos.variable}`}>
       <body className="min-h-screen flex flex-col font-sans bg-accent-50 text-secondary-900">
         <NextIntlClientProvider messages={messages}>
           <StudioOverlayProvider>
