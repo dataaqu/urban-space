@@ -5,133 +5,106 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { motion, AnimatePresence } from 'framer-motion';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
-import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
 interface StudioPagesLayoutProps {
   children: React.ReactNode;
 }
 
-const studioTabs = [
-  { href: '/studio', key: 'about' },
-  { href: '/studio/team', key: 'team' },
-  { href: '/studio/partners', key: 'partners' },
-  { href: '/studio/services', key: 'services' },
-] as const;
-
 export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) {
   const nav = useTranslations('navigation');
-  const studioOverlay = useStudioOverlay();
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [projectsOpen, setProjectsOpen] = useState(false);
+
+  const navItems = [
+    { href: '/projects/architecture', label: nav('projects') },
+    { href: '/studio', label: nav('studio') },
+    { href: '/contact', label: nav('contact') },
+  ];
 
   return (
     <div className="min-h-screen bg-white flex flex-col -mt-16">
       {/* Header */}
-      <header className="h-[60px] flex items-center justify-between px-6 md:px-[60px] border-b border-[#000000] bg-white sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-[#000000] text-[16px] font-semibold tracking-[2px] font-sans">
+      <header className="h-20 flex items-center justify-between px-8 md:px-[60px] bg-white sticky top-0 z-50">
+        {/* Logo */}
+        <Link href="/" className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+          <span className="text-[#0A0A0A] text-[28px] font-bold tracking-[0.2em] font-sans">
             URBAN SPACE
           </span>
-          <span className="w-[6px] h-5 bg-[#000000]" />
+          <span className="text-[#0A0A0A]/50 text-[8px] tracking-[0.25em] uppercase font-light">
+            Architecture & Urban Planning
+          </span>
         </Link>
 
-        {/* Center Navigation - Studio Tabs (Desktop) */}
-        <nav className="hidden md:flex items-center">
-          {studioTabs.map((tab, i) => (
-            <div key={tab.key} className="flex items-center">
-              {i > 0 && <span className="text-[#999999] text-[14px] mx-1">|</span>}
-              <Link
-                href={tab.href}
-                className="flex flex-col items-center gap-1 px-5"
-              >
-                <span
-                  className={`text-[14px] font-sans transition-colors ${
-                    pathname === tab.href ? 'text-[#000000] font-medium' : 'text-[#666666] hover:text-[#333333]'
-                  }`}
+        {/* Center Navigation */}
+        <nav className="hidden md:flex items-center gap-1">
+          {/* Projects with dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setProjectsOpen(true)}
+            onMouseLeave={() => setProjectsOpen(false)}
+          >
+            <span className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300 cursor-pointer">
+              {nav('projects')}
+            </span>
+            <AnimatePresence>
+              {projectsOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                  className="absolute top-full left-0 mt-2 flex flex-col gap-1.5 bg-white border border-gray-200 rounded-lg px-5 py-3 whitespace-nowrap shadow-sm"
                 >
-                  {nav(tab.key)}
-                </span>
-                {pathname === tab.href && (
-                  <motion.span
-                    layoutId="studioUnderline"
-                    className="block h-[3px] bg-[#000000] w-[100px]"
-                  />
-                )}
-              </Link>
-            </div>
-          ))}
+                  <Link href="/projects/architecture" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-200">
+                    {nav('architecture')} {nav('projects').toLowerCase()}
+                  </Link>
+                  <Link href="/projects/urban" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-200">
+                    {nav('urban')} {nav('projects').toLowerCase()}
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <span className="text-gray-300 mx-3">|</span>
+
+          {/* Studio */}
+          <Link
+            href="/studio"
+            className={`text-sm font-sans transition-colors duration-300 ${
+              pathname === '/studio' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
+            }`}
+          >
+            {nav('studio')}
+          </Link>
+
+          <span className="text-gray-300 mx-3">|</span>
+
+          {/* Contact */}
+          <Link
+            href="/contact"
+            className={`text-sm font-sans transition-colors duration-300 ${
+              pathname === '/contact' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
+            }`}
+          >
+            {nav('contact')}
+          </Link>
         </nav>
 
-        {/* Language Switcher + Mobile Menu */}
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher />
-
-          <button
-            className="md:hidden w-10 h-10 flex items-center justify-center"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <div className="w-5 h-3.5 flex flex-col justify-between">
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
-            </div>
-          </button>
-        </div>
+        {/* Language Switcher */}
+        <LanguageSwitcher />
       </header>
-
-      {/* Mobile Navigation */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-b border-[#000000] overflow-hidden z-40"
-          >
-            <div className="px-6 py-4 flex flex-col gap-3">
-              {studioTabs.map((tab) => (
-                <Link
-                  key={tab.key}
-                  href={tab.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`text-[14px] font-sans ${pathname === tab.href ? 'text-[#000000] font-medium' : 'text-[#666666]'}`}
-                >
-                  {nav(tab.key)}
-                </Link>
-              ))}
-              <div className="h-px bg-[#E0E0E0]" />
-              <Link href="/projects/architecture" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans">
-                {nav('projects')}
-              </Link>
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans">
-                {nav('contact')}
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Content */}
       <div className="flex-1">
         {children}
       </div>
 
-      {/* Footer - Desktop only */}
-      <footer className="hidden md:flex h-[60px] items-center justify-end gap-20 px-10 md:px-[100px] bg-white">
-        <Link href="/projects/architecture" className="flex flex-col items-center gap-1">
-          <span className="block h-px bg-[#CCCCCC] w-20" />
-          <span className="text-[14px] text-[#333333] font-sans">
-            {nav('projects').toLowerCase()}
-          </span>
-        </Link>
-        <Link href="/contact" className="flex flex-col items-center gap-1">
-          <span className="block h-px bg-[#CCCCCC] w-20" />
-          <span className="text-[14px] text-[#333333] font-sans">
-            {nav('contact').toLowerCase()}
-          </span>
-        </Link>
+      {/* Footer */}
+      <footer className="text-center py-6">
+        <p className="text-[10px] text-gray-400">
+          &copy; 2026 URBAN SPACE. All rights reserved.
+        </p>
       </footer>
     </div>
   );

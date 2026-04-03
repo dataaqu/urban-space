@@ -7,6 +7,14 @@ export async function getHeroSlides() {
   });
 }
 
+export async function getFeaturedProjects() {
+  return prisma.project.findMany({
+    where: { featured: true, featuredOrder: { not: null } },
+    orderBy: { featuredOrder: 'asc' },
+    take: 5,
+  });
+}
+
 export async function getSiteSettings() {
   let settings = await prisma.siteSettings.findFirst();
   if (!settings) {

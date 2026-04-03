@@ -38,12 +38,19 @@ enum ContentType {
 }
 
 model HeroSlide {
-  id      String  @id @default(cuid())
-  image   String
-  titleKa String?
-  titleEn String?
-  order   Int     @default(0)
-  active  Boolean @default(true)
+  id       String        @id @default(cuid())
+  image    String
+  videoUrl String?
+  type     HeroSlideType @default(IMAGE)
+  titleKa  String?
+  titleEn  String?
+  order    Int           @default(0)
+  active   Boolean       @default(true)
+}
+
+enum HeroSlideType {
+  IMAGE
+  VIDEO
 }
 
 model Project {
@@ -57,6 +64,7 @@ model Project {
   type          ProjectType
   images        String[]
   featured      Boolean         @default(false)
+  featuredOrder Int?
   status        ProjectStatus   @default(COMPLETED)
   year          Int?
   location      String?

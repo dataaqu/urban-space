@@ -1,24 +1,18 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { Link } from '@/i18n/routing';
-import { useState, useEffect, useCallback } from 'react';
-import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
-import { useStudioOverlay } from '@/components/studio/StudioOverlay';
+import { useState, useEffect } from 'react';
 
 const fallbackImages = [
-  '/poto/1.webp',
   '/poto/2.webp',
-  '/poto/3.webp',
-  '/poto/4.webp',
-  '/poto/5.webp',
 ];
 
 interface HeroSlide {
   id: string;
   image: string;
+  videoUrl: string | null;
+  type: 'IMAGE' | 'VIDEO';
   titleKa: string | null;
   titleEn: string | null;
   order: number;
@@ -30,22 +24,15 @@ interface HeroProps {
 }
 
 export default function Hero({ slides }: HeroProps) {
-  const heroImages = slides && slides.length > 0
-    ? slides.map(s => s.image)
-    : fallbackImages;
-  const nav = useTranslations('navigation');
-  const sub = useTranslations('projects');
-  const studioOverlay = useStudioOverlay();
+  const heroSlides: { src: string; type: 'IMAGE' | 'VIDEO' }[] = slides && slides.length > 0
+    ? slides.map(s => ({
+        src: s.type === 'VIDEO' && s.videoUrl ? s.videoUrl : s.image,
+        type: s.type,
+      }))
+    : fallbackImages.map(img => ({ src: img, type: 'IMAGE' as const }));
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [archOpen, setArchOpen] = useState(false);
-  const [urbanOpen, setUrbanOpen] = useState(false);
-  const [mobileArchOpen, setMobileArchOpen] = useState(false);
-  const [mobileUrbanOpen, setMobileUrbanOpen] = useState(false);
-
-  const goToSlide = useCallback((index: number) => {
-    setActiveSlide(index);
-  }, []);
 
   useEffect(() => {
     if (sessionStorage.getItem('loaderShown')) {
@@ -62,8 +49,8 @@ export default function Hero({ slides }: HeroProps) {
   useEffect(() => {
     if (loading) return;
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % heroImages.length);
-    }, 6000);
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 120000);
     return () => clearInterval(interval);
   }, [loading]);
 
@@ -74,38 +61,27 @@ export default function Hero({ slides }: HeroProps) {
         {loading && (
           <motion.div
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
+            transition={{ duration: 1, ease: [0.19, 1, 0.22, 1] }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-white/80 backdrop-blur-sm"
           >
-            <div className="relative flex flex-col items-center gap-6">
-              {/* Logo */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                className="flex items-center gap-3"
-              >
-                <span className="text-[#0A0A0A] text-3xl md:text-4xl font-semibold tracking-[0.2em] font-sans">
-                  URBAN SPACE
-                </span>
-                <span className="w-2.5 h-8 rounded-sm bg-[#0A0A0A]" />
-              </motion.div>
-
-              {/* Loading bar */}
-              <motion.div
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
+              className="relative flex flex-col items-center"
+            >
+              <span className="text-[#0A0A0A] text-3xl md:text-5xl font-bold tracking-[0.2em] font-sans">
+                URBAN SPACE
+              </span>
+              <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.4 }}
-                className="w-48 h-[2px] bg-black/10 rounded-full overflow-hidden"
+                transition={{ duration: 0.8, delay: 1.2, ease: [0.19, 1, 0.22, 1] }}
+                className="mt-4 text-[#0A0A0A]/60 text-sm md:text-base tracking-[0.25em] uppercase font-light"
               >
-                <motion.div
-                  initial={{ width: '0%' }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 2, delay: 0.8, ease: [0.19, 1, 0.22, 1] }}
-                  className="h-full bg-[#0A0A0A]/60 rounded-full"
-                />
-              </motion.div>
-            </div>
+                Architecture & Urban Planning
+              </motion.p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -113,25 +89,39 @@ export default function Hero({ slides }: HeroProps) {
       {/* Hero */}
       <section className="relative h-screen -mt-16 overflow-hidden bg-[#0A0A0A]">
         {/* Background Images Carousel */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.div
             key={activeSlide}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1] }}
+            transition={{ duration: 2, ease: [0.19, 1, 0.22, 1] }}
             className="absolute inset-0"
           >
-            <Image
-              src={heroImages[activeSlide]}
-              alt=""
-              fill
-              priority={activeSlide === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
+            {heroSlides[activeSlide].type === 'VIDEO' ? (
+              <video
+                src={heroSlides[activeSlide].src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src={heroSlides[activeSlide].src}
+                alt=""
+                fill
+                priority={activeSlide === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+            )}
           </motion.div>
         </AnimatePresence>
+
+        {/* Light Overlay */}
+        <div className="absolute inset-0 bg-white/20" />
 
         {/* Gradient Overlay */}
         <div
@@ -141,223 +131,6 @@ export default function Hero({ slides }: HeroProps) {
               'linear-gradient(to top, rgba(0,0,0,0.44) 0%, rgba(0,0,0,0.12) 40%, rgba(0,0,0,0.56) 100%)',
           }}
         />
-
-        {/* Top Bar - Logo & Language Switcher */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: loading ? 0 : 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="absolute top-0 left-0 right-0 h-20 flex items-center justify-between px-8 md:px-[60px] z-20"
-        >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-white text-lg font-semibold tracking-[0.15em] font-sans">
-              URBAN SPACE
-            </span>
-            <span className="w-2 h-6 rounded-sm bg-white" />
-          </Link>
-
-          <LanguageSwitcher isOverHero />
-        </motion.div>
-
-        {/* Carousel Dots - Right Side Vertical */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: loading ? 0 : 1 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="absolute right-8 md:right-[60px] top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 z-10"
-        >
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-[3px] h-8 rounded-sm transition-colors duration-300 ${
-                index === activeSlide ? 'bg-white' : 'bg-white/25'
-              }`}
-              aria-label={`Slide ${index + 1}`}
-            />
-          ))}
-        </motion.div>
-
-        {/* Bottom Navigation */}
-        <motion.nav
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="absolute bottom-0 left-0 right-0 h-20 flex items-center justify-between px-8 md:px-[60px] z-10"
-        >
-          {/* Left - Project Categories */}
-          <div className="hidden md:flex items-center gap-10 lg:gap-[60px]">
-            {/* Architecture Projects */}
-            <div
-              className="relative"
-              onMouseEnter={() => setArchOpen(true)}
-              onMouseLeave={() => setArchOpen(false)}
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link href="/projects/architecture" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
-                  <span className="text-white text-[15px] font-sans font-bold">
-                    {nav('architecture')} {nav('projects').toLowerCase()}
-                  </span>
-                  <span className="block h-[2px] bg-white" style={{ width: 180 }} />
-                </Link>
-              </motion.div>
-              <AnimatePresence>
-                {archOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                    className="absolute bottom-full left-0 mb-3 flex flex-col gap-2 min-w-[220px] bg-black/30 backdrop-blur-md rounded-lg px-4 py-3"
-                  >
-                    <Link href="/projects/architecture?type=RESIDENTIAL_MULTI" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.RESIDENTIAL_MULTI')}
-                    </Link>
-                    <Link href="/projects/architecture?type=PUBLIC_MULTIFUNCTIONAL" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.PUBLIC_MULTIFUNCTIONAL')}
-                    </Link>
-                    <Link href="/projects/architecture?type=INDIVIDUAL_HOUSE" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.INDIVIDUAL_HOUSE')}
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Urban Projects */}
-            <div
-              className="relative"
-              onMouseEnter={() => setUrbanOpen(true)}
-              onMouseLeave={() => setUrbanOpen(false)}
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link href="/projects/urban" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
-                  <span className="text-white text-[15px] font-sans font-bold">
-                    {nav('urban')} {nav('projects').toLowerCase()}
-                  </span>
-                  <span className="block h-[2px] bg-white" style={{ width: 140 }} />
-                </Link>
-              </motion.div>
-              <AnimatePresence>
-                {urbanOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                    className="absolute bottom-full left-0 mb-3 flex flex-col gap-2 min-w-[120px] bg-black/30 backdrop-blur-md rounded-lg px-4 py-3"
-                  >
-                    <Link href="/projects/urban?type=URBAN_PLANNING" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.URBAN_PLANNING')}
-                    </Link>
-                    <Link href="/projects/urban?type=COMPETITION" className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                      {sub('subtypes.COMPETITION')}
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Right - Studio & Contact */}
-          <div className="hidden md:flex items-center gap-12 lg:gap-20">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <button onClick={studioOverlay.open} className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
-                <span className="text-white text-[15px] font-sans font-bold">
-                  {nav('studio').toLowerCase()}
-                </span>
-                <span className="block h-[2px] bg-white" style={{ width: 90 }} />
-              </button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/contact" className="flex flex-col gap-1 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-300">
-                <span className="text-white text-[15px] font-sans font-bold">
-                  {nav('contact').toLowerCase()}
-                </span>
-                <span className="block h-[2px] bg-white" style={{ width: 90 }} />
-              </Link>
-            </motion.div>
-          </div>
-        </motion.nav>
-
-        {/* Mobile Bottom Navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="absolute bottom-0 left-0 right-0 md:hidden z-10"
-        >
-          <AnimatePresence>
-            {mobileArchOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                className="overflow-hidden bg-black/40 backdrop-blur-md border-b border-white/10"
-              >
-                <div className="flex flex-col gap-2 px-6 py-3">
-                  <Link href="/projects/architecture?type=RESIDENTIAL_MULTI" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                    {sub('subtypes.RESIDENTIAL_MULTI')}
-                  </Link>
-                  <Link href="/projects/architecture?type=PUBLIC_MULTIFUNCTIONAL" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                    {sub('subtypes.PUBLIC_MULTIFUNCTIONAL')}
-                  </Link>
-                  <Link href="/projects/architecture?type=INDIVIDUAL_HOUSE" onClick={() => setMobileArchOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                    {sub('subtypes.INDIVIDUAL_HOUSE')}
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-            {mobileUrbanOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                className="overflow-hidden bg-black/40 backdrop-blur-md border-b border-white/10"
-              >
-                <div className="flex flex-col gap-2 px-6 py-3">
-                  <Link href="/projects/urban?type=URBAN_PLANNING" onClick={() => setMobileUrbanOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                    {sub('subtypes.URBAN_PLANNING')}
-                  </Link>
-                  <Link href="/projects/urban?type=COMPETITION" onClick={() => setMobileUrbanOpen(false)} className="text-white/70 text-sm font-sans hover:text-white transition-colors duration-200">
-                    {sub('subtypes.COMPETITION')}
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="flex items-center justify-around px-4 py-4 bg-black/30 backdrop-blur-md">
-            <button
-              onClick={() => { setMobileArchOpen(!mobileArchOpen); setMobileUrbanOpen(false); }}
-              className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200"
-            >
-              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
-                {nav('architecture')}
-              </span>
-            </button>
-            <button
-              onClick={() => { setMobileUrbanOpen(!mobileUrbanOpen); setMobileArchOpen(false); }}
-              className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200"
-            >
-              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
-                {nav('urban')}
-              </span>
-            </button>
-            <button onClick={studioOverlay.open} className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
-              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
-                {nav('studio')}
-              </span>
-            </button>
-            <Link href="/contact" className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
-              <span className="text-white text-[11px] font-sans font-bold text-center leading-tight">
-                {nav('contact')}
-              </span>
-            </Link>
-          </div>
-        </motion.div>
       </section>
     </>
   );

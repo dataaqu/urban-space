@@ -34,7 +34,7 @@ export default function LanguageSwitcher({ isScrolled = false, isOverHero = fals
             locale === 'ka'
               ? isOverHero
                 ? 'text-white font-semibold'
-                : 'text-primary-600 font-semibold'
+                : 'text-[#0A0A0A] font-semibold'
               : isOverHero
                 ? 'text-white/40'
                 : 'text-secondary-400'
@@ -56,7 +56,7 @@ export default function LanguageSwitcher({ isScrolled = false, isOverHero = fals
             locale === 'en'
               ? isOverHero
                 ? 'text-white font-semibold'
-                : 'text-primary-600 font-semibold'
+                : 'text-[#0A0A0A] font-semibold'
               : isOverHero
                 ? 'text-white/40'
                 : 'text-secondary-400'

@@ -30,11 +30,7 @@ async function main() {
 
   // Create Hero Slides
   const heroSlides = await Promise.all([
-    prisma.heroSlide.create({ data: { image: '/poto/1.webp', titleKa: 'არქიტექტურული ხედვა', titleEn: 'Architectural Vision', order: 0 } }),
-    prisma.heroSlide.create({ data: { image: '/poto/2.webp', titleKa: 'ურბანული სივრცე', titleEn: 'Urban Space', order: 1 } }),
-    prisma.heroSlide.create({ data: { image: '/poto/3.webp', titleKa: 'თანამედროვე დიზაინი', titleEn: 'Modern Design', order: 2 } }),
-    prisma.heroSlide.create({ data: { image: '/poto/4.webp', titleKa: 'ინოვაციური გადაწყვეტა', titleEn: 'Innovative Solutions', order: 3 } }),
-    prisma.heroSlide.create({ data: { image: '/poto/5.webp', titleKa: 'მდგრადი მშენებლობა', titleEn: 'Sustainable Building', order: 4 } }),
+    prisma.heroSlide.create({ data: { image: '/poto/2.webp', titleKa: 'ურბანული სივრცე', titleEn: 'Urban Space', order: 0 } }),
   ]);
   console.log(`Created ${heroSlides.length} hero slides`);
 

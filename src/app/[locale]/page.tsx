@@ -2,7 +2,9 @@ export const dynamic = 'force-dynamic';
 
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';
-import { getHeroSlides } from '@/lib/content';
+import HomeNav from '@/components/home/HomeNav';
+import SelectedWork from '@/components/home/SelectedWork';
+import { getHeroSlides, getFeaturedProjects } from '@/lib/content';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home.hero' });
@@ -14,6 +16,15 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 }
 
 export default async function HomePage() {
-  const slides = await getHeroSlides();
-  return <Hero slides={slides} />;
+  const [slides, featuredProjects] = await Promise.all([
+    getHeroSlides(),
+    getFeaturedProjects(),
+  ]);
+  return (
+    <>
+      <HomeNav />
+      <Hero slides={slides} />
+      <SelectedWork projects={featuredProjects} />
+    </>
+  );
 }

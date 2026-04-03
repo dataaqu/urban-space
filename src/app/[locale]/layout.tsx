@@ -2,17 +2,16 @@ import { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Inter, Playfair_Display } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Noto_Sans, Playfair_Display } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
-import { StudioOverlayProvider } from '@/components/studio/StudioOverlay';
 import '@/app/globals.css';
 
-const inter = Inter({
+const notoSans = Noto_Sans({
   subsets: ['latin', 'latin-ext'],
-  variable: '--font-inter',
+  variable: '--font-noto-sans',
   display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 const playfair = Playfair_Display({
@@ -20,12 +19,6 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
-});
-
-const aptos = localFont({
-  src: '../Aptos-Display.ttf',
-  variable: '--font-dachi',
-  display: 'swap',
 });
 
 interface LocaleLayoutProps {
@@ -48,14 +41,12 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${playfair.variable} ${aptos.variable}`}>
+    <html lang={locale} className={`${notoSans.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col font-sans bg-accent-50 text-secondary-900">
         <NextIntlClientProvider messages={messages}>
-          <StudioOverlayProvider>
             <ConditionalHeader />
             <main className="flex-1 pt-16">{children}</main>
             <ConditionalFooter />
-          </StudioOverlayProvider>
         </NextIntlClientProvider>
       </body>
     </html>

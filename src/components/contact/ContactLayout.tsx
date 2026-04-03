@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { motion, AnimatePresence } from 'framer-motion';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
-import { useStudioOverlay } from '@/components/studio/StudioOverlay';
 
 interface ContactLayoutProps {
   children: React.ReactNode;
@@ -13,7 +12,6 @@ interface ContactLayoutProps {
 
 export default function ContactLayout({ children }: ContactLayoutProps) {
   const nav = useTranslations('navigation');
-  const studioOverlay = useStudioOverlay();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -108,9 +106,9 @@ export default function ContactLayout({ children }: ContactLayoutProps) {
                 {nav('architecture')} {nav('projects').toLowerCase()}
               </Link>
               <div className="h-px bg-[#E0E0E0]" />
-              <button onClick={() => { setMobileMenuOpen(false); studioOverlay.open(); }} className="text-[14px] text-[#666666] font-sans text-left">
+              <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans text-left">
                 {nav('studio')}
-              </button>
+              </Link>
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#000000] font-medium font-sans">
                 {nav('contact')}
               </Link>
@@ -126,12 +124,12 @@ export default function ContactLayout({ children }: ContactLayoutProps) {
 
       {/* Footer - Desktop only */}
       <footer className="hidden md:flex h-[60px] items-center justify-end gap-20 px-10 md:px-[100px] bg-white">
-        <button onClick={studioOverlay.open} className="flex flex-col items-center gap-1">
+        <Link href="/studio" className="flex flex-col items-center gap-1">
           <span className="block h-px bg-[#CCCCCC] w-20" />
           <span className="text-[14px] text-[#333333] font-sans">
             {nav('studio').toLowerCase()}
           </span>
-        </button>
+        </Link>
         <Link href="/contact" className="flex flex-col items-center gap-1">
           <span className="block h-px bg-[#CCCCCC] w-20" />
           <span className="text-[14px] text-[#333333] font-sans">

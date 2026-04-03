@@ -24,6 +24,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     location: project?.location || '',
     area: project?.area || '',
     featured: project?.featured || false,
+    featuredOrder: project?.featuredOrder || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,6 +43,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         images,
         year: Number(form.year),
         area: form.area ? Number(form.area) : null,
+        featuredOrder: form.featuredOrder ? Number(form.featuredOrder) : null,
       };
 
       const url = project
@@ -186,7 +188,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           </div>
         </div>
 
-        <div>
+        <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -197,6 +199,24 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             />
             <span className="text-sm font-medium text-secondary-700">Featured პროექტი</span>
           </label>
+          {form.featured && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-secondary-700">რიგითობა (1-5):</label>
+              <select
+                name="featuredOrder"
+                value={form.featuredOrder}
+                onChange={handleChange}
+                className="px-3 py-1.5 border border-gray-200 rounded-lg outline-none text-sm"
+              >
+                <option value="">არჩევა</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          )}
         </div>
       </div>
 

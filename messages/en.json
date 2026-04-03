@@ -23,7 +23,8 @@
     },
     "featured": {
       "badge": "Featured Work",
-      "title": "Featured Projects",
+      "title": "Selected work",
+      "subtitle": "Projects defining our practice",
       "viewAll": "View All Projects"
     },
     "stats": {

@@ -23,7 +23,8 @@
     },
     "featured": {
       "badge": "გამორჩეული ნამუშევრები",
-      "title": "გამორჩეული პროექტები",
+      "title": "Selected work",
+      "subtitle": "Projects defining our practice",
       "viewAll": "ყველა პროექტის ნახვა"
     },
     "stats": {
