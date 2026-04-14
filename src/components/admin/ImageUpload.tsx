@@ -34,13 +34,14 @@ export default function ImageUpload({
         body: formData,
       });
 
-      if (!res.ok) throw new Error('Upload failed');
-
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
       onChange(data.url);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('სურათის ატვირთვა ვერ მოხერხდა');
+      const message = error instanceof Error ? error.message : 'Upload failed';
+      alert(`სურათის ატვირთვა ვერ მოხერხდა: ${message}`);
     } finally {
       setUploading(false);
     }
