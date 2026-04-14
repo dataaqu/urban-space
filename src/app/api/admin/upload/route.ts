@@ -4,7 +4,7 @@ export const maxDuration = 60;
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { uploadImage, deleteImage } from '@/lib/cloudinary';
+import { uploadImage, deleteImage, getR2KeyFromUrl } from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -41,13 +41,14 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    const { publicId } = await request.json();
+    const { publicId, url } = await request.json();
 
-    if (!publicId) {
-      return NextResponse.json({ error: 'No publicId provided' }, { status: 400 });
+    const key = publicId || (url ? getR2KeyFromUrl(url) : null);
+    if (!key) {
+      return NextResponse.json({ error: 'No publicId or url provided' }, { status: 400 });
     }
 
-    await deleteImage(publicId);
+    await deleteImage(key);
 
     return NextResponse.json({ success: true });
   } catch (error) {

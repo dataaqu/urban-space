@@ -14,9 +14,26 @@ export default function VideoUpload({ value, onChange, onRemove, folder = 'urban
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const deleteFromR2 = async (videoUrl: string) => {
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoUrl }),
+      });
+      if (!res.ok) console.error('Failed to delete from R2');
+    } catch (e) {
+      console.error('Delete error:', e);
+    }
+  };
+
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
+      if (value) {
+        await deleteFromR2(value);
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folder', folder);
@@ -26,13 +43,14 @@ export default function VideoUpload({ value, onChange, onRemove, folder = 'urban
         body: formData,
       });
 
-      if (!res.ok) throw new Error('Upload failed');
-
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
       onChange(data.url);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('ვიდეოს ატვირთვა ვერ მოხერხდა');
+      const message = error instanceof Error ? error.message : 'Upload failed';
+      alert(`ვიდეოს ატვირთვა ვერ მოხერხდა: ${message}`);
     } finally {
       setUploading(false);
     }
@@ -68,7 +86,10 @@ export default function VideoUpload({ value, onChange, onRemove, folder = 'urban
             {onRemove && (
               <button
                 type="button"
-                onClick={onRemove}
+                onClick={async () => {
+                  if (value) await deleteFromR2(value);
+                  onRemove();
+                }}
                 className="px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600"
               >
                 წაშლა

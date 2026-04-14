@@ -22,9 +22,27 @@ export default function ImageUpload({
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const deleteFromR2 = async (imageUrl: string) => {
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: imageUrl }),
+      });
+      if (!res.ok) console.error('Failed to delete from R2');
+    } catch (e) {
+      console.error('Delete error:', e);
+    }
+  };
+
   const handleUpload = async (file: File) => {
     setUploading(true);
     try {
+      // Delete old image from R2 before uploading new one
+      if (value) {
+        await deleteFromR2(value);
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folder', folder);
@@ -83,7 +101,10 @@ export default function ImageUpload({
             {onRemove && (
               <button
                 type="button"
-                onClick={onRemove}
+                onClick={async () => {
+                  if (value) await deleteFromR2(value);
+                  onRemove();
+                }}
                 className="px-3 py-1.5 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600"
               >
                 წაშლა
