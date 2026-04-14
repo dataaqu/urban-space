@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';
 import HomeNav from '@/components/home/HomeNav';
 import SelectedWork from '@/components/home/SelectedWork';
-import { getHeroSlides, getFeaturedProjects } from '@/lib/content';
+import { getHeroSlides, getFeaturedProjects, getContentMap } from '@/lib/content';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home.hero' });
@@ -16,15 +16,16 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 }
 
 export default async function HomePage() {
-  const [slides, featuredProjects] = await Promise.all([
+  const [slides, featuredProjects, homeContent] = await Promise.all([
     getHeroSlides(),
     getFeaturedProjects(),
+    getContentMap('home'),
   ]);
   return (
     <>
       <HomeNav />
       <Hero slides={slides} />
-      <SelectedWork projects={featuredProjects} />
+      <SelectedWork projects={featuredProjects} content={homeContent} />
     </>
   );
 }

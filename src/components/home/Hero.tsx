@@ -50,7 +50,7 @@ export default function Hero({ slides }: HeroProps) {
     if (loading) return;
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 120000);
+    }, 60000);
     return () => clearInterval(interval);
   }, [loading]);
 

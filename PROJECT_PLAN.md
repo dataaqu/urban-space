@@ -1,20 +1,20 @@
-# Urban Space - Admin Panel
+# Urban Space - Admin Panel V2 (Restructure)
 
 ## Project Overview
 
 | Field | Value |
 |-------|-------|
-| **Project Name** | Urban Space Admin Panel |
+| **Project Name** | Urban Space Admin Panel - Restructure |
 | **Type** | Full-Stack Web App |
-| **Status** | In Progress |
-| **Created** | 2026-03-18 |
-| **Last Updated** | 2026-03-18 |
-| **Progress** | 18/19 tasks (95%) |
+| **Status** | Planning |
+| **Created** | 2026-04-14 |
+| **Last Updated** | 2026-04-14 |
+| **Progress** | 0/14 tasks (0%) |
 | **Plugin Version** | 1.1.1 |
 
 ### Description
 
-ადმინ პანელის შექმნა Urban Space არქიტექტურული სტუდიის ვებსაიტისთვის. ადმინისტრატორს შეეძლება ყველა ტექსტური კონტენტის, სურათების, ლოგოს და დინამიური მონაცემების მართვა ორ ენაზე (ქართული/ინგლისური).
+ადმინ პანელის რესტრუქტურიზაცია: ზედმეტი სექციების მოშორება (Dashboard, Team, Partners, Messages, Settings, Content), პროექტების მართვის გადაკეთება გვერდი-ბეისიდ სისტემაზე, Tiptap rich text ედიტორის დამატება. პროექტს ექნება სახელი, კატეგორია და გვერდები (1-სურათიანი ან 2-სურათიანი).
 
 ### Target Users
 
@@ -30,283 +30,234 @@
 | Database | PostgreSQL (Railway) |
 | ORM | Prisma |
 | Auth | NextAuth.js (Credentials Provider) |
-| Image Storage | Cloudinary |
+| Image Storage | Cloudflare R2 |
+| Rich Text | Tiptap (ProseMirror) |
 | i18n | next-intl (ka/en) |
 
 ---
 
-## Phase 1: Foundation - ავტორიზაცია და ინფრასტრუქტურა
+## Phase 1: Cleanup - ზედმეტი სექციების მოშორება
 
 ### Overview
-ადმინ პანელის საფუძვლის შექმნა: ავტორიზაცია, დაცული როუტები, Cloudinary ინტეგრაცია და ადმინ layout.
+ადმინ პანელიდან ზედმეტი გვერდების, კომპონენტების, API routes-ის და sidebar ლინკების მოშორება. მხოლოდ Projects და Auth რჩება.
 
-#### T1.1: NextAuth.js ინტეგრაცია
-- [x] **Status**: DONE
-- **Complexity**: High
+#### T1.1: Dashboard, Team, Partners, Messages, Settings, Content გვერდების წაშლა
+- [ ] **Status**: TODO
+- **Complexity**: Medium
 - **Dependencies**: None
 - **Description**:
-  - NextAuth.js-ის დაყენება და კონფიგურაცია
-  - Credentials Provider (email/password) დაყენება
-  - Admin მომხმარებლის მოდელის დამატება Prisma სქემაში (email, hashedPassword, name, role)
-  - JWT session strategy კონფიგურაცია
-  - Seed სკრიპტი საწყისი ადმინ მომხმარებლისთვის
-  - bcrypt პაროლის ჰეშირებისთვის
+  - წაშლა: `src/app/admin/(dashboard)/page.tsx` (dashboard)
+  - წაშლა: `src/app/admin/(dashboard)/team/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/partners/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/messages/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/settings/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/content/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/hero/page.tsx`
+  - წაშლა: `src/app/admin/(dashboard)/services/page.tsx`
+  - Dashboard layout-ში default redirect `/admin/projects`-ზე
 
-#### T1.2: ადმინ Middleware და Route Protection
-- [x] **Status**: DONE
+#### T1.2: შესაბამისი კომპონენტების და API routes-ის წაშლა
+- [ ] **Status**: TODO
 - **Complexity**: Medium
 - **Dependencies**: T1.1
 - **Description**:
-  - Middleware შექმნა `/admin` როუტების დასაცავად
-  - არაავტორიზებული მომხმარებლების redirect login გვერდზე
-  - Session validation ყველა API endpoint-ისთვის
-  - CSRF protection
+  - წაშლა: `src/components/admin/TeamManager.tsx`
+  - წაშლა: `src/components/admin/PartnersManager.tsx`
+  - წაშლა: `src/components/admin/ServicesManager.tsx`
+  - წაშლა: `src/components/admin/MessagesInbox.tsx`
+  - წაშლა: `src/app/api/admin/team/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/partners/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/services/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/messages/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/settings/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/content/` (ფოლდერი)
+  - წაშლა: `src/app/api/admin/hero/` (ფოლდერი)
 
-#### T1.3: ადმინ Login გვერდი
-- [x] **Status**: DONE
-- **Complexity**: Medium
+#### T1.3: AdminSidebar განახლება
+- [ ] **Status**: TODO
+- **Complexity**: Low
 - **Dependencies**: T1.1
 - **Description**:
-  - `/admin/login` გვერდის შექმნა
-  - Login ფორმა (email + password)
-  - Error handling (არასწორი მონაცემები)
-  - Redirect dashboard-ზე წარმატებული login-ის შემდეგ
+  - Sidebar-დან ზედმეტი ლინკების მოშორება
+  - დარჩენილი ნავიგაცია: Projects (list), New Project
+  - Login-ის შემდეგ redirect `/admin/projects`-ზე (dashboard-ის ნაცვლად)
 
-#### T1.4: ადმინ Layout და Dashboard
-- [x] **Status**: DONE
-- **Complexity**: Medium
+---
+
+## Phase 2: DB Schema - ProjectPage მოდელი
+
+### Overview
+Prisma სქემის განახლება: Project მოდელის გამარტივება და ProjectPage მოდელის დამატება.
+
+#### T2.1: Prisma Schema განახლება
+- [ ] **Status**: TODO
+- **Complexity**: High
 - **Dependencies**: T1.2
 - **Description**:
-  - ადმინ პანელის layout (sidebar navigation, header with user info)
-  - Dashboard გვერდი სტატისტიკით (პროექტების რაოდენობა, წაუკითხავი შეტყობინებები, გუნდის წევრები)
-  - Logout ფუნქციონალი
-  - Responsive design (mobile sidebar)
+  - Project მოდელის გამარტივება:
+    - დარჩენილი ველები: id, slug, titleKa, titleEn, category (ARCHITECTURE/URBAN), createdAt, updatedAt
+    - მოსაშორებელი ველები: descriptionKa/En, type, images[], featured, featuredOrder, status, year, location, area
+  - ახალი `ProjectPage` მოდელის შექმნა:
+    ```
+    model ProjectPage {
+      id        String   @id @default(cuid())
+      projectId String
+      project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+      type      PageType // SINGLE_IMAGE, DOUBLE_IMAGE
+      order     Int
+      image1    String   // პირველი (ან ერთადერთი) სურათი
+      image2    String?  // მეორე სურათი (მხოლოდ DOUBLE_IMAGE-ისთვის)
+      textKa    String?  // ტექსტი ქართულად (მხოლოდ SINGLE_IMAGE-ისთვის)
+      textEn    String?  // ტექსტი ინგლისურად (მხოლოდ SINGLE_IMAGE-ისთვის)
+      createdAt DateTime @default(now())
+      updatedAt DateTime @updatedAt
+    }
+    enum PageType {
+      SINGLE_IMAGE
+      DOUBLE_IMAGE
+    }
+    ```
+  - პირველი გვერდი (hero): ავტომატურად იქმნება SINGLE_IMAGE ტიპით პროექტის შექმნისას
+  - Migration გაშვება და ტესტი
 
-#### T1.5: Cloudinary ინტეგრაცია
-- [x] **Status**: DONE
-- **Complexity**: Medium
+---
+
+## Phase 3: Rich Text & UI - Tiptap და ახალი ფორმები
+
+### Overview
+Tiptap ედიტორის ინტეგრაცია და პროექტის ახალი CRUD ინტერფეისის შექმნა.
+
+#### T3.1: Tiptap Rich Text ედიტორის კომპონენტი
+- [ ] **Status**: TODO
+- **Complexity**: High
 - **Dependencies**: None
 - **Description**:
-  - Cloudinary SDK-ის დაყენება და კონფიგურაცია
-  - Reusable ImageUpload კომპონენტის შექმნა (drag & drop, preview)
-  - API route სურათის ატვირთვისთვის (`/api/admin/upload`)
-  - სურათის წაშლის ფუნქციონალი
-  - Auto-optimization (format, quality, resize)
+  - `@tiptap/react`, `@tiptap/starter-kit` და საჭირო extensions-ის ინსტალაცია
+  - Reusable `RichTextEditor` კომპონენტის შექმნა (`src/components/admin/RichTextEditor.tsx`)
+  - ფუნქციონალი: Bold, Italic, Headings, Lists, Links
+  - HTML output (შენახვა DB-ში)
+  - Toolbar სტილიზაცია Tailwind-ით
+  - Ka/En ტაბები ორ ენაზე ტექსტისთვის
 
-#### T1.6: Content მოდელის დამატება DB-ში
-- [x] **Status**: DONE
+#### T3.2: პროექტის შექმნის ფორმის გადაკეთება
+- [ ] **Status**: TODO
 - **Complexity**: High
-- **Dependencies**: None
+- **Dependencies**: T2.1, T3.1
 - **Description**:
-  - Prisma სქემაში `SiteContent` მოდელის დამატება (key, section, valueKa, valueEn, type: TEXT/IMAGE/RICH_TEXT)
-  - `HeroSlide` მოდელი (image, titleKa, titleEn, order)
-  - `SiteSettings` მოდელის გაფართოება (logo, favicon)
-  - Migration გაშვება
-  - Seed სკრიპტი არსებული messages JSON-დან მონაცემების DB-ში გადასატანად
+  - `/admin/projects/new` ფორმის გადაკეთება:
+    - სახელი (Ka/En)
+    - კატეგორია (Architecture / Urban) dropdown
+  - პროექტის შექმნისას ავტომატურად იქმნება პირველი გვერდი (SINGLE_IMAGE ტიპი)
+  - Save ღილაკი → redirect პროექტის რედაქტირებაზე
+
+#### T3.3: პროექტის რედაქტირების გვერდი - გვერდების მართვა
+- [ ] **Status**: TODO
+- **Complexity**: High
+- **Dependencies**: T3.2
+- **Description**:
+  - `/admin/projects/[id]/edit` გვერდის გადაკეთება:
+    - ზედა ნაწილი: პროექტის სახელი (Ka/En) და კატეგორია
+    - ქვედა ნაწილი: გვერდების სია (ordered)
+  - თითოეული გვერდისთვის:
+    - ტიპის ჩვენება (1 სურათიანი / 2 სურათიანი)
+    - Preview thumbnails
+    - Edit / Delete ღილაკები
+    - რიგის შეცვლა (up/down arrows)
+  - "გვერდის დამატება" ღილაკი:
+    - ტიპის არჩევა: "1 სურათიანი" ან "2 სურათიანი"
+    - 1 სურათიანი: სურათის ატვირთვა + Tiptap ტექსტი (Ka/En)
+    - 2 სურათიანი: 2 სურათის ატვირთვა
+
+#### T3.4: გვერდის რედაქტირების მოდალი/ფორმა
+- [ ] **Status**: TODO
+- **Complexity**: Medium
+- **Dependencies**: T3.3
+- **Description**:
+  - გვერდის რედაქტირების modal ან inline form
+  - SINGLE_IMAGE ტიპი:
+    - სურათის შეცვლა (ImageUpload კომპონენტი)
+    - ტექსტი Ka (Tiptap RichTextEditor)
+    - ტექსტი En (Tiptap RichTextEditor)
+  - DOUBLE_IMAGE ტიპი:
+    - სურათი 1 (ImageUpload)
+    - სურათი 2 (ImageUpload)
+  - Save / Cancel ღილაკები
 
 ---
 
-## Phase 2: Core - კონტენტის მართვა
+## Phase 4: API & Frontend - ბექენდი და ფრონტის განახლება
 
 ### Overview
-ძირითადი CRUD ოპერაციები: პროექტები, ტექსტური კონტენტი, სურათები.
+API endpoints-ის განახლება და ფრონტენდის პროექტის გვერდის გადაწყობა ახალ მონაცემთა სტრუქტურაზე.
 
-#### T2.1: პროექტების მართვა - სია და წაშლა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.4
-- **Description**:
-  - `/admin/projects` გვერდი პროექტების ცხრილით
-  - ფილტრაცია (კატეგორია, ტიპი, სტატუსი)
-  - ძებნა სახელით
-  - პროექტის წაშლა (confirmation dialog)
-  - Pagination
-
-#### T2.2: პროექტის დამატება/რედაქტირება
-- [x] **Status**: DONE
+#### T4.1: API Routes განახლება
+- [ ] **Status**: TODO
 - **Complexity**: High
-- **Dependencies**: T1.5, T2.1
+- **Dependencies**: T2.1
 - **Description**:
-  - `/admin/projects/new` და `/admin/projects/[id]/edit` გვერდები
-  - ფორმა ყველა ველით (titleKa/En, descriptionKa/En, category, type, status, year, location, area, featured)
-  - მრავალი სურათის ატვირთვა Cloudinary-ში
-  - სურათების რიგის შეცვლა (drag & drop reorder)
-  - Slug-ის ავტომატური გენერაცია
-  - Form validation
+  - `POST /api/admin/projects` - პროექტის შექმნა (name, category) + ავტომატური პირველი გვერდი
+  - `PUT /api/admin/projects/[id]` - პროექტის სახელის/კატეგორიის განახლება
+  - `DELETE /api/admin/projects/[id]` - პროექტის წაშლა (cascade pages)
+  - `POST /api/admin/projects/[id]/pages` - გვერდის დამატება
+  - `PUT /api/admin/projects/[id]/pages/[pageId]` - გვერდის განახლება
+  - `DELETE /api/admin/projects/[id]/pages/[pageId]` - გვერდის წაშლა
+  - `PUT /api/admin/projects/[id]/pages/reorder` - გვერდების რიგის შეცვლა
 
-#### T2.3: Hero სლაიდერის მართვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.5, T1.6
-- **Description**:
-  - `/admin/hero` გვერდი
-  - სლაიდების სია drag & drop რიგის შეცვლით
-  - სლაიდის დამატება (სურათი + ტექსტი Ka/En)
-  - სლაიდის რედაქტირება და წაშლა
-  - Preview ფუნქციონალი
-
-#### T2.4: ტექსტური კონტენტის მართვა
-- [x] **Status**: DONE
-- **Complexity**: High
-- **Dependencies**: T1.6
-- **Description**:
-  - `/admin/content` გვერდი სექციებით (Home, Studio, Contact, Footer)
-  - თითოეული სექციისთვის inline editing (Ka/En)
-  - ტექსტის ტიპები: მოკლე ტექსტი, გრძელი ტექსტი (textarea)
-  - ცვლილებების შენახვა (save/discard)
-  - Content sections: hero.title, hero.subtitle, hero.description, studio.about, footer.cta, და სხვა
-
-#### T2.5: ლოგოს და საიტის პარამეტრების მართვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.5, T1.6
-- **Description**:
-  - `/admin/settings` გვერდი
-  - ლოგოს ატვირთვა/ცვლილება
-  - Favicon ატვირთვა
-  - საკონტაქტო ინფორმაცია (მისამართი, ტელეფონი, email)
-  - სოციალური ქსელების ბმულები (Facebook, Instagram)
-  - Google Map კოორდინატები
-
----
-
-## Phase 3: Advanced - დამატებითი მართვა
-
-### Overview
-გუნდი, პარტნიორები, სერვისები, კონტაქტ ინბოქსი.
-
-#### T3.1: გუნდის წევრების მართვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.5, T1.4
-- **Description**:
-  - `/admin/team` გვერდი
-  - წევრის დამატება (nameKa/En, positionKa/En, image)
-  - რიგის შეცვლა (drag & drop)
-  - რედაქტირება და წაშლა
-
-#### T3.2: პარტნიორების მართვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.5, T1.4
-- **Description**:
-  - `/admin/partners` გვერდი
-  - პარტნიორის დამატება (name, logo, website)
-  - ლოგოს ატვირთვა
-  - რიგის შეცვლა და წაშლა
-
-#### T3.3: სერვისების მართვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.4
-- **Description**:
-  - `/admin/services` გვერდი
-  - სერვისის დამატება (titleKa/En, descriptionKa/En, icon)
-  - რიგის შეცვლა
-  - რედაქტირება და წაშლა
-
-#### T3.4: კონტაქტ შეტყობინებების ინბოქსი
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.4
-- **Description**:
-  - `/admin/messages` გვერდი
-  - შეტყობინებების სია (თარიღით, სტატუსით)
-  - წაკითხულად/წაუკითხავად მარკირება
-  - შეტყობინების დეტალების ნახვა
-  - წაშლა
-  - Dashboard-ზე წაუკითხავი შეტყობინებების counter
-
-#### T3.5: About გვერდის კონტენტი
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T2.4
-- **Description**:
-  - Studio about სექციის ტექსტების მართვა (mission, vision, paragraphs)
-  - About გვერდის სურათის ცვლილება
-  - Principles სექციის რედაქტირება (4 პრინციპი: title + description Ka/En)
-
----
-
-## Phase 4: Integration - ფრონტენდთან დაკავშირება
-
-### Overview
-ფრონტენდის გადაწყობა DB კონტენტის გამოყენებაზე, ტესტირება.
-
-#### T4.1: ფრონტენდის გადაწყობა - DB კონტენტი
-- [x] **Status**: DONE
-- **Complexity**: High
-- **Dependencies**: T2.4, T1.6
-- **Description**:
-  - Home გვერდის კომპონენტების გადაწყობა DB-დან კონტენტის წამოსაღებად
-  - Hero კომპონენტის გადაწყობა HeroSlide მოდელზე
-  - Footer კომპონენტის გადაწყობა DB კონტენტზე
-  - Studio გვერდების გადაწყობა
-  - Contact info DB-დან SiteSettings-იდან
-  - next-intl fallback: DB content პრიორიტეტით, JSON fallback
-
-#### T4.2: ლოგოს დინამიური ჩვენება
-- [x] **Status**: DONE
-- **Complexity**: Low
-- **Dependencies**: T2.5
-- **Description**:
-  - Header-ში ლოგოს DB/Cloudinary-დან ჩვენება
-  - Footer-ში ლოგო
-  - Favicon დინამიური ჩატვირთვა
-  - Fallback default ლოგოზე
-
-#### T4.3: სურათების ოპტიმიზაცია
-- [x] **Status**: DONE
+#### T4.2: პროექტების სიის გვერდის განახლება
+- [ ] **Status**: TODO
 - **Complexity**: Medium
 - **Dependencies**: T4.1
 - **Description**:
-  - Next.js Image კომპონენტთან Cloudinary URL-ების ინტეგრაცია
-  - Responsive images (srcset)
-  - Lazy loading
-  - Blur placeholder-ები
+  - `/admin/projects` გვერდის განახლება
+  - ცხრილი: სახელი, კატეგორია, გვერდების რაოდენობა, თარიღი
+  - ფილტრაცია კატეგორიით (Architecture / Urban)
+  - Edit / Delete ღილაკები
 
-#### T4.4: API Endpoints-ის დაცვა
-- [x] **Status**: DONE
-- **Complexity**: Medium
-- **Dependencies**: T1.2
-- **Description**:
-  - ყველა admin API endpoint-ის დაცვა session validation-ით
-  - POST/PUT/DELETE ენდპოინტებისთვის auth middleware
-  - Rate limiting
-  - Input validation და sanitization
-
-#### T4.5: ტესტირება და Deploy
+#### T4.3: ფრონტენდის პროექტის შიდა გვერდის გადაწყობა
 - [ ] **Status**: TODO
-- **Note**: მზადაა ტესტირებისთვის. ფუნქციონალი დასრულებულია.
-- **Complexity**: Medium
-- **Dependencies**: T4.1, T4.2, T4.3, T4.4
+- **Complexity**: High
+- **Dependencies**: T4.1
 - **Description**:
-  - ადმინ პანელის ფუნქციონალური ტესტირება
-  - Mobile responsiveness ტესტი
-  - Image upload/delete ტესტი
-  - Auth flow ტესტი
-  - Production deployment (environment variables)
+  - `ProjectDetailClient.tsx` კომპონენტის განახლება:
+    - მონაცემები ProjectPage მოდელიდან
+    - პირველი გვერდი (hero): სურათი ცენტრში + ტექსტები გვერდებზე
+    - შემდეგი გვერდები: SINGLE_IMAGE → სურათი + rich text, DOUBLE_IMAGE → 2 სურათი
+    - პაგინაციის წერტილები
+  - Public API endpoint `/api/projects/[id]` - პროექტის + გვერდების მიღება
+  - Rich text HTML-ის რენდერინგი ფრონტზე
+
+#### T4.4: პროექტების ლისტინგის გვერდის განახლება
+- [ ] **Status**: TODO
+- **Complexity**: Medium
+- **Dependencies**: T4.1
+- **Description**:
+  - Architecture/Urban გვერდების განახლება ახალი მონაცემთა სტრუქტურაზე
+  - პროექტის thumbnail = პირველი გვერდის image1
+  - სახელი და ლოკაცია ბმულით
 
 ---
 
 ## Original Specification Analysis
 
-**Source:** მომხმარებლის მოთხოვნა (ვერბალური)
+**Source:** მომხმარებლის მოთხოვნა (ვერბალური, 2026-04-14)
 
-### Extracted Requirements
-- ადმინ პანელი საიტის კონტენტის მართვისთვის
-- სურათების ცვლილება (Hero, Projects, Team, Partners, About)
-- ტექსტური ცვლილება (ყველა გვერდზე, ორ ენაზე)
-- ლოგოს ცვლილება
-- ავტორიზაცია (შესასვლელი მონაცემები)
+### ძირითადი მოთხოვნები
+
+1. **მოსაშორებელი სექციები:** Dashboard, Team, Partners, Messages, Settings, Content, Hero, Services
+2. **პროექტის ახალი სტრუქტურა:**
+   - სახელი (Ka/En) + კატეგორია (Architecture/Urban)
+   - ძირითადი ინფორმაციის ველები (year, location, area, status, type) მოშორება
+   - გვერდი-ბეისიდ სისტემა: 1-სურათიანი (სურათი + ტექსტი) ან 2-სურათიანი (2 სურათი)
+3. **Rich Text ედიტორი:** Tiptap - ტექსტების მარტივი რედაქტირება
+4. **Hero გვერდი:** ავტომატურად იქმნება პროექტის შექმნისას
 
 ### Clarifications Made
-- **Auth:** NextAuth.js (Credentials Provider) — მომხმარებლის არჩევანი
-- **Image Storage:** Cloudinary — მომხმარებლის არჩევანი
-- **Content Management:** DB-ში გადატანა — მომხმარებლის არჩევანი
+- **Rich Text ბიბლიოთეკა:** Tiptap (ProseMirror) — მომხმარებლის არჩევანი
+- **Hero გვერდი:** ავტომატურად იქმნება — მომხმარებლის არჩევანი
+- **არსებული გეგმა:** გადაწერა — მომხმარებლის არჩევანი
 
 ### Summary Statistics
-- **Features:** 9 extracted
-- **Tasks:** 19 generated
+- **Features:** 6 extracted
+- **Tasks:** 14 generated
 - **Phases:** 4 created
-- **Estimated Models:** Admin, SiteContent, HeroSlide + existing models
+- **New Models:** ProjectPage (PageType enum)

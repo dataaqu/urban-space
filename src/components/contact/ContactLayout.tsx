@@ -15,66 +15,64 @@ export default function ContactLayout({ children }: ContactLayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isUrban = pathname.startsWith('/projects/urban');
-  const isArchitecture = pathname.startsWith('/projects/architecture');
-
   return (
     <div className="min-h-screen bg-white flex flex-col -mt-16">
       {/* Header */}
-      <header className="h-[60px] flex items-center justify-between px-6 md:px-[60px] border-b border-[#000000] bg-white sticky top-0 z-50">
+      <header className="h-20 flex items-center justify-between px-8 md:px-[60px] bg-white sticky top-0 z-50">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-[#000000] text-[16px] font-semibold tracking-[2px] font-sans">
+        <Link href="/" className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
+          <span className="text-[#0A0A0A] text-[28px] font-bold tracking-[0.2em] font-sans">
             URBAN SPACE
           </span>
-          <span className="w-[6px] h-5 bg-[#000000]" />
+          <span className="text-[#0A0A0A]/50 text-[8px] tracking-[0.25em] uppercase font-light">
+            Architecture & Urban Planning
+          </span>
         </Link>
 
         {/* Center Navigation */}
-        <nav className="hidden md:flex items-center">
-          <Link
-            href="/projects/urban"
-            className="flex flex-col items-center gap-1 px-5"
-          >
-            <span
-              className={`text-[14px] font-sans transition-colors ${
-                isUrban ? 'text-[#000000] font-medium' : 'text-[#666666] hover:text-[#333333]'
-              }`}
-            >
-              {nav('urban')} {nav('projects').toLowerCase()}
-            </span>
+        <nav className="hidden md:flex items-center gap-1">
+          {/* Projects */}
+          <Link href="/projects" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300">
+            {nav('projects')}
           </Link>
 
-          <span className="text-[#999999] text-[14px] mx-1">|</span>
+          <span className="text-gray-300 mx-3">|</span>
 
+          {/* Studio */}
           <Link
-            href="/projects/architecture"
-            className="flex flex-col items-center gap-1 px-5"
+            href="/studio"
+            className={`text-sm font-sans transition-colors duration-300 ${
+              pathname === '/studio' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
+            }`}
           >
-            <span
-              className={`text-[14px] font-sans transition-colors ${
-                isArchitecture ? 'text-[#000000] font-medium' : 'text-[#666666] hover:text-[#333333]'
-              }`}
-            >
-              {nav('architecture')} {nav('projects').toLowerCase()}
-            </span>
+            {nav('studio')}
+          </Link>
+
+          <span className="text-gray-300 mx-3">|</span>
+
+          {/* Contact */}
+          <Link
+            href="/contact"
+            className={`text-sm font-sans transition-colors duration-300 ${
+              pathname === '/contact' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
+            }`}
+          >
+            {nav('contact')}
           </Link>
         </nav>
 
         {/* Language Switcher + Mobile Menu */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <LanguageSwitcher />
-
-          {/* Mobile hamburger */}
           <button
             className="md:hidden w-10 h-10 flex items-center justify-center"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
             <div className="w-5 h-3.5 flex flex-col justify-between">
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`block h-[1.5px] w-full bg-[#000000] transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
             </div>
           </button>
         </div>
@@ -88,28 +86,17 @@ export default function ContactLayout({ children }: ContactLayoutProps) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-b border-[#000000] overflow-hidden z-40"
+            className="md:hidden bg-white overflow-hidden sticky top-20 z-40 border-b border-gray-100"
           >
-            <div className="px-6 py-4 flex flex-col gap-3">
-              <Link
-                href="/projects/urban"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-[14px] font-sans text-[#666666]"
-              >
-                {nav('urban')} {nav('projects').toLowerCase()}
+            <div className="px-8 py-5 flex flex-col gap-3">
+              <Link href="/projects" onClick={() => setMobileMenuOpen(false)} className="text-sm font-sans text-gray-500">
+                {nav('projects')}
               </Link>
-              <Link
-                href="/projects/architecture"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-[14px] font-sans text-[#666666]"
-              >
-                {nav('architecture')} {nav('projects').toLowerCase()}
-              </Link>
-              <div className="h-px bg-[#E0E0E0]" />
-              <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#666666] font-sans text-left">
+              <div className="h-px bg-gray-100" />
+              <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-sans ${pathname === '/studio' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500'}`}>
                 {nav('studio')}
               </Link>
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-[14px] text-[#000000] font-medium font-sans">
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-sans ${pathname === '/contact' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500'}`}>
                 {nav('contact')}
               </Link>
             </div>
@@ -122,20 +109,11 @@ export default function ContactLayout({ children }: ContactLayoutProps) {
         {children}
       </div>
 
-      {/* Footer - Desktop only */}
-      <footer className="hidden md:flex h-[60px] items-center justify-end gap-20 px-10 md:px-[100px] bg-white">
-        <Link href="/studio" className="flex flex-col items-center gap-1">
-          <span className="block h-px bg-[#CCCCCC] w-20" />
-          <span className="text-[14px] text-[#333333] font-sans">
-            {nav('studio').toLowerCase()}
-          </span>
-        </Link>
-        <Link href="/contact" className="flex flex-col items-center gap-1">
-          <span className="block h-px bg-[#CCCCCC] w-20" />
-          <span className="text-[14px] text-[#333333] font-sans">
-            {nav('contact').toLowerCase()}
-          </span>
-        </Link>
+      {/* Footer */}
+      <footer className="text-center py-6">
+        <p className="text-[10px] text-gray-400">
+          &copy; 2026 URBAN SPACE. All rights reserved.
+        </p>
       </footer>
     </div>
   );

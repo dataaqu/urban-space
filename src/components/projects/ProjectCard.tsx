@@ -16,13 +16,11 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
   const t = useTranslations('projects');
 
   const title = locale === 'ka' ? project.titleKa : project.titleEn;
-  const description =
-    locale === 'ka' ? project.descriptionKa : project.descriptionEn;
   const categoryLabel = t(`categories.${project.category}`);
-  const statusLabel = t(`statuses.${project.status}`);
 
   const placeholderImage = `https://placehold.co/800x600/25211e/d4a027?text=${encodeURIComponent(title)}`;
-  const imageUrl = project.images[0] || placeholderImage;
+  const firstPageImage = (project as any).pages?.[0]?.image1;
+  const imageUrl = firstPageImage || placeholderImage;
 
   return (
     <motion.article
@@ -62,19 +60,6 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             {/* Gold Shimmer Overlay on Hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-primary-500/10 to-primary-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-            {/* Status Badge - Luxury */}
-            <div className="absolute top-4 right-4 z-10">
-              <span
-                className={`px-4 py-1.5 text-xs font-medium tracking-[0.15em] uppercase rounded-full backdrop-blur-md border ${
-                  project.status === 'ONGOING'
-                    ? 'bg-primary-500/90 text-white border-primary-400/50 shadow-gold-border'
-                    : 'bg-white/95 text-secondary-700 border-white/50'
-                }`}
-              >
-                {statusLabel}
-              </span>
-            </div>
-
             {/* Category Tag - Top Left - Luxury */}
             <div className="absolute top-4 left-4 z-10">
               <span className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-[0.1em] uppercase bg-dark-900/80 text-primary-400 border border-primary-500/30 rounded-full backdrop-blur-md">
@@ -89,33 +74,8 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
                 {title}
               </h3>
 
-              {/* Description - Slides up on hover */}
-              <p className="text-white/70 text-sm line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                {description}
-              </p>
-
               {/* Meta Info - Luxury */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-white/50 text-sm">
-                  {project.year && (
-                    <span className="flex items-center gap-1.5 group-hover:text-primary-400/80 transition-colors">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      {project.year}
-                    </span>
-                  )}
-                  {project.location && (
-                    <span className="flex items-center gap-1.5 group-hover:text-primary-400/80 transition-colors">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {project.location}
-                    </span>
-                  )}
-                </div>
-
+              <div className="flex items-center justify-end">
                 {/* Arrow Icon - Reveals on Hover - Luxury */}
                 <div className="opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-500">
                   <span className="flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-white shadow-gold-glow-intense">

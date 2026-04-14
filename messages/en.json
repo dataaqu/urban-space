@@ -2,6 +2,7 @@
   "navigation": {
     "home": "Home",
     "projects": "Projects",
+    "allProjects": "All",
     "architecture": "Architecture",
     "urban": "Urban",
     "studio": "Studio",
@@ -126,7 +127,8 @@
       "description": "Description",
       "gallery": "Project Gallery",
       "relatedProjects": "Related Projects",
-      "backToProjects": "Back to Projects"
+      "backToProjects": "Back to Projects",
+      "close": "close"
     }
   },
   "studio": {

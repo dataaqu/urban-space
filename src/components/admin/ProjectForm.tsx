@@ -5,26 +5,31 @@ import { useRouter } from 'next/navigation';
 import ImageUpload from './ImageUpload';
 
 interface ProjectFormProps {
-  project?: any;
+  project?: {
+    id: string;
+    titleKa: string;
+    titleEn: string;
+    category: string;
+    locationKa: string | null;
+    locationEn: string | null;
+    featuredImage: string | null;
+    featured: boolean;
+    featuredOrder: number | null;
+  };
 }
 
 export default function ProjectForm({ project }: ProjectFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [images, setImages] = useState<string[]>(project?.images || []);
   const [form, setForm] = useState({
     titleKa: project?.titleKa || '',
     titleEn: project?.titleEn || '',
-    descriptionKa: project?.descriptionKa || '',
-    descriptionEn: project?.descriptionEn || '',
     category: project?.category || 'ARCHITECTURE',
-    type: project?.type || 'RESIDENTIAL_MULTI',
-    status: project?.status || 'ONGOING',
-    year: project?.year || new Date().getFullYear(),
-    location: project?.location || '',
-    area: project?.area || '',
+    locationKa: project?.locationKa || '',
+    locationEn: project?.locationEn || '',
+    featuredImage: project?.featuredImage || '',
     featured: project?.featured || false,
-    featuredOrder: project?.featuredOrder || '',
+    featuredOrder: project?.featuredOrder ?? '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,9 +45,9 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       const body = {
         ...form,
         slug,
-        images,
-        year: Number(form.year),
-        area: form.area ? Number(form.area) : null,
+        locationKa: form.locationKa || null,
+        locationEn: form.locationEn || null,
+        featuredImage: form.featuredImage || null,
         featuredOrder: form.featuredOrder ? Number(form.featuredOrder) : null,
       };
 
@@ -57,8 +62,12 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       });
 
       if (res.ok) {
-        router.push('/admin/projects');
-        router.refresh();
+        const data = await res.json();
+        if (!project) {
+          router.push(`/admin/projects/${data.id}/edit`);
+        } else {
+          router.refresh();
+        }
       } else {
         alert('შეცდომა მოხდა');
       }
@@ -70,7 +79,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     setForm((prev) => ({
@@ -79,18 +88,12 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     }));
   };
 
-  const addImage = (url: string) => {
-    setImages((prev) => [...prev, url]);
-  };
-
-  const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
-        <h2 className="text-lg font-semibold text-secondary-900">ძირითადი ინფორმაცია</h2>
+        <h2 className="text-lg font-semibold text-secondary-900">
+          {project ? 'პროექტის რედაქტირება' : 'ახალი პროექტი'}
+        </h2>
 
         <div className="grid grid-cols-2 gap-6">
           <div>
@@ -119,75 +122,54 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              აღწერა (ქართ.)
-            </label>
-            <textarea
-              name="descriptionKa"
-              value={form.descriptionKa}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              აღწერა (ინგ.)
-            </label>
-            <textarea
-              name="descriptionEn"
-              value={form.descriptionEn}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
-            />
-          </div>
-        </div>
-
         <div className="grid grid-cols-3 gap-6">
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-1">კატეგორია</label>
-            <select name="category" value={form.category} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none">
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none"
+            >
               <option value="ARCHITECTURE">არქიტექტურა</option>
               <option value="URBAN">ურბანული</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">ტიპი</label>
-            <select name="type" value={form.type} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none">
-              <option value="RESIDENTIAL_MULTI">მრავალბინიანი საცხოვრებელი</option>
-              <option value="PUBLIC_MULTIFUNCTIONAL">საზოგადოებრივი მრავალფუნქციური</option>
-              <option value="INDIVIDUAL_HOUSE">ინდივიდუალური სახლი</option>
-              <option value="URBAN_PLANNING">ურბანული დაგეგმარება</option>
-              <option value="COMPETITION">კონკურსი</option>
-            </select>
+            <label className="block text-sm font-medium text-secondary-700 mb-1">ლოკაცია (ქართ.)</label>
+            <input
+              name="locationKa"
+              value={form.locationKa}
+              onChange={handleChange}
+              placeholder="თბილისი, საქართველო"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">სტატუსი</label>
-            <select name="status" value={form.status} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none">
-              <option value="ONGOING">მიმდინარე</option>
-              <option value="COMPLETED">დასრულებული</option>
-            </select>
+            <label className="block text-sm font-medium text-secondary-700 mb-1">ლოკაცია (ინგ.)</label>
+            <input
+              name="locationEn"
+              value={form.locationEn}
+              onChange={handleChange}
+              placeholder="Tbilisi, Georgia"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+            />
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">წელი</label>
-            <input name="year" type="number" value={form.year} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">ლოკაცია</label>
-            <input name="location" value={form.location} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">ფართი (მ2)</label>
-            <input name="area" type="number" value={form.area} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none" />
-          </div>
+        {/* Featured Image */}
+        <div>
+          <label className="block text-sm font-medium text-secondary-700 mb-1">Featured სურათი</label>
+          <p className="text-xs text-secondary-400 mb-2">ეს სურათი გამოჩნდება პროექტების სიაში და მთავარ გვერდზე</p>
+          <ImageUpload
+            value={form.featuredImage || undefined}
+            onChange={(url) => setForm((prev) => ({ ...prev, featuredImage: url }))}
+            onRemove={() => setForm((prev) => ({ ...prev, featuredImage: '' }))}
+            folder="urban-space/projects"
+          />
         </div>
 
+        {/* Featured toggle and order */}
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -197,11 +179,11 @@ export default function ProjectForm({ project }: ProjectFormProps) {
               onChange={handleChange}
               className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
             />
-            <span className="text-sm font-medium text-secondary-700">Featured პროექტი</span>
+            <span className="text-sm font-medium text-secondary-700">მთავარ გვერდზე ჩვენება</span>
           </label>
           {form.featured && (
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-secondary-700">რიგითობა (1-5):</label>
+              <label className="text-sm font-medium text-secondary-700">რიგითობა:</label>
               <select
                 name="featuredOrder"
                 value={form.featuredOrder}
@@ -209,37 +191,12 @@ export default function ProjectForm({ project }: ProjectFormProps) {
                 className="px-3 py-1.5 border border-gray-200 rounded-lg outline-none text-sm"
               >
                 <option value="">არჩევა</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
               </select>
             </div>
           )}
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-4">
-        <h2 className="text-lg font-semibold text-secondary-900">სურათები</h2>
-
-        <div className="grid grid-cols-3 gap-4">
-          {images.map((img, i) => (
-            <div key={i} className="relative group rounded-lg overflow-hidden border border-gray-200">
-              <img src={img} alt="" className="w-full h-32 object-cover" />
-              <button
-                type="button"
-                onClick={() => removeImage(i)}
-                className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                X
-              </button>
-            </div>
-          ))}
-          <ImageUpload
-            onChange={addImage}
-            folder="urban-space/projects"
-          />
         </div>
       </div>
 

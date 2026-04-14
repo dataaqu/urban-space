@@ -1,30 +1,29 @@
 import type {
   Project,
+  ProjectPage,
   TeamMember,
   Partner,
   Service,
   ContactSubmission,
   SiteSettings,
   ProjectCategory,
-  ProjectType,
-  ProjectStatus,
+  PageType,
 } from '@prisma/client';
 
 export type {
   Project,
+  ProjectPage,
   TeamMember,
   Partner,
   Service,
   ContactSubmission,
   SiteSettings,
   ProjectCategory,
-  ProjectType,
-  ProjectStatus,
+  PageType,
 };
 
-export interface LocalizedProject extends Omit<Project, 'titleKa' | 'titleEn' | 'descriptionKa' | 'descriptionEn'> {
+export interface LocalizedProject extends Omit<Project, 'titleKa' | 'titleEn'> {
   title: string;
-  description: string | null;
 }
 
 export interface LocalizedTeamMember extends Omit<TeamMember, 'nameKa' | 'nameEn' | 'positionKa' | 'positionEn'> {

@@ -2,6 +2,7 @@
   "navigation": {
     "home": "მთავარი",
     "projects": "პროექტები",
+    "allProjects": "ყველა",
     "architecture": "არქიტექტურა",
     "urban": "ურბანული",
     "studio": "სტუდია",
@@ -126,7 +127,8 @@
       "description": "აღწერა",
       "gallery": "პროექტის გალერეა",
       "relatedProjects": "მსგავსი პროექტები",
-      "backToProjects": "პროექტებზე დაბრუნება"
+      "backToProjects": "პროექტებზე დაბრუნება",
+      "close": "დახურვა"
     }
   },
   "studio": {

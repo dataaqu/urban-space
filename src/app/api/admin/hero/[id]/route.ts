@@ -4,14 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { deleteImage } from '@/lib/cloudinary';
-
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL || '';
-
-function getR2Key(url: string): string | null {
-  if (!url || !url.startsWith(R2_PUBLIC_URL)) return null;
-  return url.replace(R2_PUBLIC_URL + '/', '');
-}
+import { deleteImageByUrl } from '@/lib/cloudinary';
 
 export async function PUT(
   request: NextRequest,
@@ -24,13 +17,36 @@ export async function PUT(
 
   try {
     const data = await request.json();
+
+    // Clean up replaced images/videos from R2
+    const existing = await prisma.heroSlide.findUnique({
+      where: { id: params.id },
+      select: { image: true, videoUrl: true },
+    });
+
+    if (existing) {
+      if (existing.image && existing.image !== data.image) {
+        await deleteImageByUrl(existing.image);
+      }
+      if (existing.videoUrl && existing.videoUrl !== (data.videoUrl || null)) {
+        await deleteImageByUrl(existing.videoUrl);
+      }
+    }
+
     const slide = await prisma.heroSlide.update({
       where: { id: params.id },
-      data,
+      data: {
+        image: data.image,
+        videoUrl: data.videoUrl || null,
+        type: data.type || 'IMAGE',
+        titleKa: data.titleKa || null,
+        titleEn: data.titleEn || null,
+        active: data.active ?? true,
+      },
     });
     return NextResponse.json(slide);
   } catch (error) {
-    console.error('Update hero slide error:', error);
+    console.error('Update slide error:', error);
     return NextResponse.json({ error: 'Failed to update slide' }, { status: 500 });
   }
 }
@@ -45,26 +61,23 @@ export async function DELETE(
   }
 
   try {
-    const slide = await prisma.heroSlide.findUnique({ where: { id: params.id } });
+    // Clean up R2 files before deleting
+    const slide = await prisma.heroSlide.findUnique({
+      where: { id: params.id },
+      select: { image: true, videoUrl: true },
+    });
 
     if (slide) {
-      const imageKey = getR2Key(slide.image);
-      if (imageKey) {
-        try { await deleteImage(imageKey); } catch {}
-      }
-
-      if (slide.videoUrl) {
-        const videoKey = getR2Key(slide.videoUrl);
-        if (videoKey) {
-          try { await deleteImage(videoKey); } catch {}
-        }
-      }
+      const deletePromises: Promise<void>[] = [];
+      if (slide.image) deletePromises.push(deleteImageByUrl(slide.image));
+      if (slide.videoUrl) deletePromises.push(deleteImageByUrl(slide.videoUrl));
+      await Promise.allSettled(deletePromises);
     }
 
     await prisma.heroSlide.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Delete hero slide error:', error);
+    console.error('Delete slide error:', error);
     return NextResponse.json({ error: 'Failed to delete slide' }, { status: 500 });
   }
 }

@@ -6,9 +6,15 @@ import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const slides = await prisma.heroSlide.findMany({
     orderBy: { order: 'asc' },
   });
+
   return NextResponse.json(slides);
 }
 
@@ -20,13 +26,23 @@ export async function POST(request: NextRequest) {
 
   try {
     const data = await request.json();
-    const maxOrder = await prisma.heroSlide.findFirst({
-      orderBy: { order: 'desc' },
-      select: { order: true },
+
+    const maxOrder = await prisma.heroSlide.aggregate({
+      _max: { order: true },
     });
+
     const slide = await prisma.heroSlide.create({
-      data: { ...data, order: (maxOrder?.order ?? -1) + 1 },
+      data: {
+        image: data.image,
+        videoUrl: data.videoUrl || null,
+        type: data.type || 'IMAGE',
+        titleKa: data.titleKa || null,
+        titleEn: data.titleEn || null,
+        order: (maxOrder._max.order ?? -1) + 1,
+        active: data.active ?? true,
+      },
     });
+
     return NextResponse.json(slide);
   } catch (error) {
     console.error('Create hero slide error:', error);
@@ -42,18 +58,19 @@ export async function PUT(request: NextRequest) {
 
   try {
     const { slides } = await request.json();
-    // Batch update order
+
     await Promise.all(
-      slides.map((slide: { id: string; order: number }) =>
+      slides.map((s: { id: string; order: number }) =>
         prisma.heroSlide.update({
-          where: { id: slide.id },
-          data: { order: slide.order },
+          where: { id: s.id },
+          data: { order: s.order },
         })
       )
     );
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Reorder hero slides error:', error);
-    return NextResponse.json({ error: 'Failed to reorder slides' }, { status: 500 });
+    console.error('Reorder error:', error);
+    return NextResponse.json({ error: 'Failed to reorder' }, { status: 500 });
   }
 }

@@ -46,3 +46,22 @@ export async function deleteImage(publicId: string): Promise<void> {
     })
   );
 }
+
+export function getR2KeyFromUrl(url: string): string | null {
+  if (!url || !PUBLIC_URL) return null;
+  if (url.startsWith(PUBLIC_URL)) {
+    return url.slice(PUBLIC_URL.length + 1);
+  }
+  return null;
+}
+
+export async function deleteImageByUrl(url: string): Promise<void> {
+  const key = getR2KeyFromUrl(url);
+  if (key) {
+    try {
+      await deleteImage(key);
+    } catch (e) {
+      console.error('Failed to delete R2 image:', key, e);
+    }
+  }
+}

@@ -13,13 +13,7 @@ interface StudioPagesLayoutProps {
 export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) {
   const nav = useTranslations('navigation');
   const pathname = usePathname();
-  const [projectsOpen, setProjectsOpen] = useState(false);
-
-  const navItems = [
-    { href: '/projects/architecture', label: nav('projects') },
-    { href: '/studio', label: nav('studio') },
-    { href: '/contact', label: nav('contact') },
-  ];
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white flex flex-col -mt-16">
@@ -37,34 +31,10 @@ export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) 
 
         {/* Center Navigation */}
         <nav className="hidden md:flex items-center gap-1">
-          {/* Projects with dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setProjectsOpen(true)}
-            onMouseLeave={() => setProjectsOpen(false)}
-          >
-            <span className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300 cursor-pointer">
-              {nav('projects')}
-            </span>
-            <AnimatePresence>
-              {projectsOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                  className="absolute top-full left-0 mt-2 flex flex-col gap-1.5 bg-white border border-gray-200 rounded-lg px-5 py-3 whitespace-nowrap shadow-sm"
-                >
-                  <Link href="/projects/architecture" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-200">
-                    {nav('architecture')} {nav('projects').toLowerCase()}
-                  </Link>
-                  <Link href="/projects/urban" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-200">
-                    {nav('urban')} {nav('projects').toLowerCase()}
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Projects */}
+          <Link href="/projects" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300">
+            {nav('projects')}
+          </Link>
 
           <span className="text-gray-300 mx-3">|</span>
 
@@ -91,9 +61,48 @@ export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) 
           </Link>
         </nav>
 
-        {/* Language Switcher */}
-        <LanguageSwitcher />
+        {/* Language Switcher + Mobile Menu */}
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <button
+            className="md:hidden w-10 h-10 flex items-center justify-center"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <div className="w-5 h-3.5 flex flex-col justify-between">
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-[5px]' : ''}`} />
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-[1.5px] w-full bg-[#0A0A0A] transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+            </div>
+          </button>
+        </div>
       </header>
+
+      {/* Mobile Navigation */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden bg-white overflow-hidden sticky top-20 z-40 border-b border-gray-100"
+          >
+            <div className="px-8 py-5 flex flex-col gap-3">
+              <Link href="/projects" onClick={() => setMobileMenuOpen(false)} className="text-sm font-sans text-gray-500">
+                {nav('projects')}
+              </Link>
+              <div className="h-px bg-gray-100" />
+              <Link href="/studio" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-sans ${pathname === '/studio' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500'}`}>
+                {nav('studio')}
+              </Link>
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className={`text-sm font-sans ${pathname === '/contact' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500'}`}>
+                {nav('contact')}
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Content */}
       <div className="flex-1">

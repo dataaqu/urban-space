@@ -69,10 +69,10 @@ export default function HomeNav() {
                   transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
                   className={`absolute bottom-full left-0 mb-2 flex flex-col gap-1.5 rounded-lg px-5 py-3 whitespace-nowrap ${dropdownBg}`}
                 >
-                  <Link href="/projects/architecture" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
+                  <Link href="/projects?category=ARCHITECTURE" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
                     {nav('architecture')} {nav('projects').toLowerCase()}
                   </Link>
-                  <Link href="/projects/urban" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
+                  <Link href="/projects?category=URBAN" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
                     {nav('urban')} {nav('projects').toLowerCase()}
                   </Link>
                 </motion.div>
@@ -125,10 +125,10 @@ export default function HomeNav() {
               className={`overflow-hidden ${scrolled ? 'bg-white/90 border-b border-gray-200' : 'bg-black/40 backdrop-blur-md border-b border-white/10'}`}
             >
               <div className="flex flex-col gap-2 px-6 py-3">
-                <Link href="/projects/architecture" onClick={() => setMobileArchOpen(false)} className={`text-sm font-sans transition-colors duration-200 ${dropdownText}`}>
+                <Link href="/projects?category=ARCHITECTURE" onClick={() => setMobileArchOpen(false)} className={`text-sm font-sans transition-colors duration-200 ${dropdownText}`}>
                   {nav('architecture')} {nav('projects').toLowerCase()}
                 </Link>
-                <Link href="/projects/urban" onClick={() => setMobileArchOpen(false)} className={`text-sm font-sans transition-colors duration-200 ${dropdownText}`}>
+                <Link href="/projects?category=URBAN" onClick={() => setMobileArchOpen(false)} className={`text-sm font-sans transition-colors duration-200 ${dropdownText}`}>
                   {nav('urban')} {nav('projects').toLowerCase()}
                 </Link>
               </div>

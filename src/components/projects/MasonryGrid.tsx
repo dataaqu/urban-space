@@ -43,7 +43,8 @@ export function MasonryCard({ project, size = 'medium' }: MasonryCardProps) {
     large: 'aspect-[3/4]',
   };
 
-  const imageUrl = project.images[0] || `https://placehold.co/800x1000/25211e/d4a027?text=${encodeURIComponent(project.titleEn)}`;
+  const firstPageImage = (project as any).pages?.[0]?.image1;
+  const imageUrl = firstPageImage || `https://placehold.co/800x1000/25211e/d4a027?text=${encodeURIComponent(project.titleEn)}`;
 
   return (
     <motion.article
@@ -69,9 +70,6 @@ export function MasonryCard({ project, size = 'medium' }: MasonryCardProps) {
           <h3 className="font-display text-xl font-semibold text-white mb-2">
             {project.titleEn}
           </h3>
-          {project.year && (
-            <span className="text-white/60 text-sm">{project.year}</span>
-          )}
         </div>
 
         {/* Gold Border on Hover */}

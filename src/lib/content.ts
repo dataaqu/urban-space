@@ -9,9 +9,16 @@ export async function getHeroSlides() {
 
 export async function getFeaturedProjects() {
   return prisma.project.findMany({
-    where: { featured: true, featuredOrder: { not: null } },
+    where: { featured: true },
+    include: {
+      pages: {
+        orderBy: { order: 'asc' },
+        take: 1,
+        select: { image1: true },
+      },
+    },
     orderBy: { featuredOrder: 'asc' },
-    take: 5,
+    take: 8,
   });
 }
 
