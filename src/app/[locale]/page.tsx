@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';

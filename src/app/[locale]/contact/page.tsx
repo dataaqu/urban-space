@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import GoogleMap from '@/components/contact/GoogleMap';

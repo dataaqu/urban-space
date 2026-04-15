@@ -108,6 +108,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             key={page.id}
             ref={(el) => { sectionRefs.current[index] = el; }}
             style={{ height: sectionHeight }}
+            className="pt-[40px]"
           >
             {page.type === 'SINGLE_IMAGE' ? (
               <div className="w-full h-full flex flex-col overflow-hidden">
@@ -156,7 +157,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </div>
             ) : (
               /* Double image page */
-              <div className="w-full flex items-end h-full">
+              <div className="w-full flex items-end h-full lg:px-[120px]">
                 <div className="flex gap-[20px] w-full h-full">
                   <div className="flex-1 h-full overflow-hidden relative">
                     <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="40vw" />

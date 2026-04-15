@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import prisma from '@/lib/prisma';
