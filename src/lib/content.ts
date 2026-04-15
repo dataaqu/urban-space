@@ -22,14 +22,6 @@ export async function getFeaturedProjects() {
   });
 }
 
-export async function getSiteSettings() {
-  let settings = await prisma.siteSettings.findFirst();
-  if (!settings) {
-    settings = await prisma.siteSettings.create({ data: {} });
-  }
-  return settings;
-}
-
 export async function getSiteContent(section?: string) {
   const where = section ? { section } : {};
   return prisma.siteContent.findMany({
@@ -45,18 +37,6 @@ export async function getContentMap(section: string) {
     map[item.key] = { ka: item.valueKa, en: item.valueEn };
   }
   return map;
-}
-
-export async function getTeamMembers() {
-  return prisma.teamMember.findMany({
-    orderBy: { order: 'asc' },
-  });
-}
-
-export async function getPartners() {
-  return prisma.partner.findMany({
-    orderBy: { order: 'asc' },
-  });
 }
 
 export async function getServices() {

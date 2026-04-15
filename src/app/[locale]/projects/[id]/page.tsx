@@ -7,11 +7,25 @@ interface ProjectDetailPageProps {
   params: { id: string };
 }
 
+async function findProject(idOrSlug: string) {
+  // Try by slug first, then by id
+  return (
+    await prisma.project.findUnique({ where: { slug: idOrSlug } }) ||
+    await prisma.project.findUnique({ where: { id: idOrSlug } })
+  );
+}
+
+async function findProjectWithPages(idOrSlug: string) {
+  const include = { pages: { orderBy: { order: 'asc' as const } } };
+  return (
+    await prisma.project.findUnique({ where: { slug: idOrSlug }, include }) ||
+    await prisma.project.findUnique({ where: { id: idOrSlug }, include })
+  );
+}
+
 export async function generateMetadata({ params }: ProjectDetailPageProps) {
   const locale = await getLocale();
-  const project = await prisma.project.findUnique({
-    where: { id: params.id },
-  });
+  const project = await findProject(params.id);
 
   if (!project) return { title: 'Not Found' };
 
@@ -22,14 +36,7 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const locale = await getLocale();
 
-  const project = await prisma.project.findUnique({
-    where: { id: params.id },
-    include: {
-      pages: {
-        orderBy: { order: 'asc' },
-      },
-    },
-  });
+  const project = await findProjectWithPages(params.id);
 
   if (!project) {
     notFound();

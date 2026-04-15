@@ -13,10 +13,7 @@ async function main() {
   await prisma.heroSlide.deleteMany();
   await prisma.siteContent.deleteMany();
   await prisma.contactSubmission.deleteMany();
-  await prisma.teamMember.deleteMany();
-  await prisma.partner.deleteMany();
   await prisma.service.deleteMany();
-  await prisma.siteSettings.deleteMany();
 
   // Create Admin User
   const adminUser = await prisma.adminUser.create({
@@ -90,20 +87,6 @@ async function main() {
 
   console.log(`Created ${2} projects with pages`);
 
-  // Create Site Settings
-  await prisma.siteSettings.create({
-    data: {
-      address: 'Tbilisi, Georgia',
-      email: 'info@urbanspace.ge',
-      phone: '+995 XXX XXX XXX',
-      facebookUrl: 'https://facebook.com/urbanspace',
-      instagramUrl: 'https://instagram.com/urbanspace',
-      mapLat: 41.7151,
-      mapLng: 44.8271,
-    },
-  });
-
-  console.log('Created site settings');
   console.log('Database seeding completed successfully!');
 }
 

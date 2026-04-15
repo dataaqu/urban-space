@@ -8,14 +8,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const project = await prisma.project.findUnique({
-      where: { id: params.id },
-      include: {
-        pages: {
-          orderBy: { order: 'asc' },
-        },
-      },
-    });
+    const include = { pages: { orderBy: { order: 'asc' as const } } };
+    const project =
+      await prisma.project.findUnique({ where: { slug: params.id }, include }) ||
+      await prisma.project.findUnique({ where: { id: params.id }, include });
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });

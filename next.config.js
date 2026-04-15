@@ -8,19 +8,37 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'pub-9e523dc075074b60bedc067ecab29984.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
       },
     ],
+    minimumCacheTTL: 31536000,
+    formats: ['image/avif', 'image/webp'],
   },
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',
     },
   },
-  api: {
-    bodyParser: {
-      sizeLimit: '50mb',
-    },
+  async headers() {
+    return [
+      {
+        source: '/_next/image',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
 };
 

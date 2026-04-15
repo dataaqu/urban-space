@@ -3,6 +3,7 @@
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import type { Project } from '@/types';
 
 interface ProjectCardMinimalProps {
@@ -20,7 +21,7 @@ export default function ProjectCardMinimal({ project, height = 300, titleAlign =
   const imageUrl = featured || firstPageImage || placeholderImage;
 
   return (
-    <Link href={`/projects/${project.id}`}>
+    <Link href={`/projects/${project.slug}`}>
       <motion.article
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -28,13 +29,15 @@ export default function ProjectCardMinimal({ project, height = 300, titleAlign =
         className="group cursor-pointer"
       >
         <div
-          className="w-full overflow-hidden bg-[#F5F5F5]"
+          className="w-full overflow-hidden bg-[#F5F5F5] relative"
           style={{ height }}
         >
-          <img
+          <Image
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
         <p className={`mt-3 text-[13px] text-[#333333] font-sans leading-snug ${

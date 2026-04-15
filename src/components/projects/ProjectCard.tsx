@@ -31,7 +31,7 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       transition={{ delay: index * 0.1 }}
       className="group"
     >
-      <Link href={`/projects/${project.id}`}>
+      <Link href={`/projects/${project.slug}`}>
         <motion.div
           variants={cardHover}
           initial="rest"
@@ -51,6 +51,7 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
               variants={imageZoom}
               src={imageUrl}
               alt={title}
+              loading="lazy"
               className="w-full h-full object-cover"
             />
 

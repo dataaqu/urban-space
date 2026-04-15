@@ -67,6 +67,9 @@ model Project {
   pages         ProjectPage[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+
+  @@index([category])
+  @@index([featured])
 }
 
 model ProjectPage {
@@ -83,6 +86,8 @@ model ProjectPage {
   textRightEn  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([projectId])
 }
 
 enum PageType {
@@ -95,23 +100,6 @@ enum ProjectCategory {
   URBAN
 }
 
-model TeamMember {
-  id         String  @id @default(cuid())
-  nameKa     String
-  nameEn     String
-  positionKa String
-  positionEn String
-  image      String?
-  order      Int     @default(0)
-}
-
-model Partner {
-  id      String  @id @default(cuid())
-  name    String
-  logo    String?
-  website String?
-  order   Int     @default(0)
-}
 
 model Service {
   id            String  @id @default(cuid())
@@ -136,16 +124,3 @@ model ContactSubmission {
   read             Boolean  @default(false)
 }
 
-model SiteSettings {
-  id           String  @id @default(cuid())
-  logo         String?
-  favicon      String?
-  address      String?
-  email        String?
-  phone        String?
-  facebookUrl  String?
-  instagramUrl String?
-  linkedinUrl  String?
-  mapLat       Float?
-  mapLng       Float?
-}

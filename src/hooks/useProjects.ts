@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import type { Project } from '@/types';
 
 const cache = new Map<string, { data: Project[]; timestamp: number }>();
-const CACHE_TTL = 60_000; // 1 minute
+const CACHE_TTL = 10_000; // 10 seconds
+
+export function invalidateProjectsCache() {
+  cache.clear();
+}
 
 export function useProjects(params: Record<string, string>) {
   const key = new URLSearchParams(params).toString();

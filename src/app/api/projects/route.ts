@@ -24,11 +24,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(projects, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
-      },
-    });
+    return NextResponse.json(projects);
   } catch (error) {
     console.error('Error fetching projects:', error);
     return NextResponse.json(

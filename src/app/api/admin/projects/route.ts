@@ -14,9 +14,30 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
+    if (!data.titleKa || !data.titleEn || !data.category) {
+      return NextResponse.json({ error: 'titleKa, titleEn, category are required' }, { status: 400 });
+    }
+
+    if (!['ARCHITECTURE', 'URBAN'].includes(data.category)) {
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
+    }
+
+    // Generate slug from English title
+    const baseSlug = (data.titleEn || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // Ensure uniqueness by checking existing slugs
+    let slug = baseSlug || `project-${Date.now()}`;
+    const existing = await prisma.project.findUnique({ where: { slug } });
+    if (existing) {
+      slug = `${baseSlug}-${Date.now()}`;
+    }
+
     const project = await prisma.project.create({
       data: {
-        slug: data.slug,
+        slug,
         titleKa: data.titleKa,
         titleEn: data.titleEn,
         category: data.category,

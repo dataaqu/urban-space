@@ -78,11 +78,11 @@ export default function HomeNav() {
                 </motion.div>
               )}
             </AnimatePresence>
-            <button className="transition-transform duration-300 hover:scale-105 px-1 py-1">
+            <Link href="/projects" className="transition-transform duration-300 hover:scale-105 px-1 py-1">
               <span className={`text-2xl font-sans font-bold transition-colors duration-500 ${textColor}`}>
                 {nav('projects')}
               </span>
-            </button>
+            </Link>
           </div>
 
           <Link href="/studio" className="ml-16 lg:ml-24 transition-transform duration-300 hover:scale-105 px-1 py-1">
@@ -138,14 +138,11 @@ export default function HomeNav() {
         <div className={`flex items-center justify-around px-4 py-4 transition-colors duration-500 ${
           scrolled ? 'bg-white/90 backdrop-blur-md shadow-[0_-1px_3px_rgba(0,0,0,0.1)]' : 'bg-black/30 backdrop-blur-md'
         }`}>
-          <button
-            onClick={() => setMobileArchOpen(!mobileArchOpen)}
-            className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200"
-          >
+          <Link href="/projects" className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
             <span className={`text-[11px] font-sans font-bold text-center leading-tight transition-colors duration-500 ${textColor}`}>
               {nav('projects')}
             </span>
-          </button>
+          </Link>
           <Link href="/studio" className="flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg active:bg-white/10 transition-all duration-200">
             <span className={`text-[11px] font-sans font-bold text-center leading-tight transition-colors duration-500 ${textColor}`}>
               {nav('studio')}

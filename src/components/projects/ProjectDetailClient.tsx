@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import DOMPurify from 'isomorphic-dompurify';
 
 interface PageData {
@@ -31,7 +32,7 @@ function SafeHTML({ html, className }: { html: string; className?: string }) {
   return <div className={className} dangerouslySetInnerHTML={{ __html: sanitized }} />;
 }
 
-const textStyle = "text-[14px] text-[#333] font-sans leading-relaxed prose prose-sm max-w-none";
+const textStyle = "text-[18px] text-[#333] font-sans leading-relaxed prose prose-sm max-w-none";
 
 export default function ProjectDetailClient({ locale, project }: ProjectDetailClientProps) {
   const totalPages = project.pages.length;
@@ -110,17 +111,18 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           >
             {page.type === 'SINGLE_IMAGE' ? (
               <div className="w-full h-full flex flex-col overflow-hidden">
-                <div className="flex-1 flex min-h-0">
+                {/* Desktop layout */}
+                <div className="hidden lg:flex flex-1 min-h-0">
                   {/* Left text */}
-                  <div className="hidden lg:flex w-[220px] xl:w-[260px] flex-shrink-0 flex-col justify-end px-8 pb-16">
-                    {leftText && <SafeHTML html={leftText} className={textStyle} />}
+                  <div className="flex flex-1 flex-col justify-center items-end px-10">
+                    {leftText && <SafeHTML html={leftText} className={`${textStyle} max-w-[260px]`} />}
                   </div>
 
                   {/* Center image */}
-                  <div className="flex-1 flex items-stretch max-w-[45%] mx-auto min-w-0">
-                    <div className="w-full h-full overflow-hidden">
+                  <div className="w-[55%] flex-shrink-0">
+                    <div className="w-full h-full overflow-hidden relative">
                       {page.image1 ? (
-                        <img src={page.image1} alt={project.title} className="w-full h-full object-cover" />
+                        <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="55vw" />
                       ) : (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
                           სურათი არ არის
@@ -130,26 +132,38 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   </div>
 
                   {/* Right text */}
-                  <div className="hidden lg:flex w-[220px] xl:w-[260px] flex-shrink-0 flex-col justify-start px-8 pt-16">
-                    {rightText && <SafeHTML html={rightText} className={textStyle} />}
+                  <div className="flex flex-1 flex-col justify-start items-start px-10 pt-16">
+                    {rightText && <SafeHTML html={rightText} className={`${textStyle} max-w-[260px]`} />}
                   </div>
                 </div>
 
-                {/* Mobile */}
-                <div className="lg:hidden px-6 py-5">
-                  {leftText && <SafeHTML html={leftText} className={textStyle} />}
+                {/* Mobile layout */}
+                <div className="lg:hidden flex flex-col h-full overflow-auto">
+                  <div className="w-full flex-1 relative min-h-0">
+                    {page.image1 ? (
+                      <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="100vw" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                        სურათი არ არის
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-[20px] px-6 py-4">
+                    {rightText && <SafeHTML html={rightText} className={textStyle} />}
+                    {leftText && <SafeHTML html={leftText} className={textStyle} />}
+                  </div>
                 </div>
               </div>
             ) : (
               /* Double image page */
-              <div className="w-full flex items-end px-[120px] py-[40px] h-full">
-                <div className="flex gap-[120px] w-full h-full">
-                  <div className="flex-1 h-full overflow-hidden">
-                    <img src={page.image1} alt={project.title} className="w-full h-full object-cover" />
+              <div className="w-full flex items-end h-full">
+                <div className="flex gap-[20px] w-full h-full">
+                  <div className="flex-1 h-full overflow-hidden relative">
+                    <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="40vw" />
                   </div>
                   {page.image2 && (
-                    <div className="flex-1 h-full overflow-hidden">
-                      <img src={page.image2} alt={project.title} className="w-full h-full object-cover" />
+                    <div className="flex-1 h-full overflow-hidden relative">
+                      <Image src={page.image2} alt={project.title} fill className="object-cover" sizes="40vw" />
                     </div>
                   )}
                 </div>

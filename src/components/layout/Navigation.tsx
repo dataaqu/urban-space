@@ -28,8 +28,8 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
       href: '/projects',
       label: t('projects'),
       children: [
-        { href: '/projects/architecture', label: t('architecture') },
-        { href: '/projects/urban', label: t('urban') },
+        { href: '/projects?category=ARCHITECTURE', label: t('architecture') },
+        { href: '/projects?category=URBAN', label: t('urban') },
       ],
     },
     {
@@ -37,8 +37,6 @@ export default function Navigation({ isScrolled = false, isOverHero = false }: N
       label: t('studio'),
       children: [
         { href: '/studio', label: t('about') },
-        { href: '/studio/team', label: t('team') },
-        { href: '/studio/partners', label: t('partners') },
         { href: '/studio/principles', label: t('principles') },
       ],
     },

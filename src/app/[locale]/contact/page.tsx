@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import GoogleMap from '@/components/contact/GoogleMap';
-import { getSiteSettings, getContentMap } from '@/lib/content';
+import { getContentMap } from '@/lib/content';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'contact' });
@@ -14,7 +14,6 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 export default async function ContactPage() {
   const locale = await getLocale();
   const t = await getTranslations('contact');
-  const settings = await getSiteSettings();
   const content = await getContentMap('contact');
 
   const text = (key: string, fallback: string) => {
@@ -23,14 +22,14 @@ export default async function ContactPage() {
     return fallback;
   };
 
-  const email = text('info.email', settings.email || 'info@urbanspace.ge');
-  const phone = text('info.phone', settings.phone || '+995 32 2 22 22 22');
+  const email = text('info.email', 'info@urbanspace.ge');
+  const phone = text('info.phone', '+995 32 2 22 22 22');
   const address = text('info.address', 'Niko Nikoladze St. 5, Tbilisi');
   const infoLabel = text('info.label', 'Info');
   const followLabel = text('follow.label', 'Follow Us');
-  const facebookUrl = text('follow.facebook', settings.facebookUrl || '#');
-  const instagramUrl = text('follow.instagram', settings.instagramUrl || '#');
-  const linkedinUrl = text('follow.linkedin', settings.linkedinUrl || '#');
+  const facebookUrl = text('follow.facebook', '#');
+  const instagramUrl = text('follow.instagram', '#');
+  const linkedinUrl = text('follow.linkedin', '#');
   const officeLabel = text('office.label', 'Office Location');
   const officeAddress = text('office.address', address);
 
@@ -39,10 +38,10 @@ export default async function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="px-8 md:px-[60px] lg:px-[80px] py-16 lg:py-20">
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col-reverse lg:flex-row">
 
           {/* Left Column — Contact Info */}
-          <div className="w-full lg:w-[50%] flex-shrink-0">
+          <div className="w-full lg:w-[50%] flex-shrink-0 mt-12 lg:mt-0">
             <p className="text-[17px] text-[#555] leading-relaxed mb-12">
               {text('subtitle', t('subtitle'))}
             </p>
@@ -124,7 +123,7 @@ export default async function ContactPage() {
               <p className="text-[13px] text-[#666] mt-0.5">{officeAddress}</p>
             </div>
 
-            <div className="flex-1 min-h-[450px] lg:min-h-[350px]">
+            <div className="h-[300px] lg:flex-1 lg:min-h-[350px]">
               <GoogleMap />
             </div>
 

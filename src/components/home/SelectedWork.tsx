@@ -57,7 +57,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {firstThree.map((project) => (
-            <Link key={project.id} href={`/projects/${project.id}`} className="group">
+            <Link key={project.id} href={`/projects/${project.slug}`} className="group">
               <div className="overflow-hidden">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
@@ -93,7 +93,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
         <section className="px-8 md:px-[60px] -mt-16 pb-40 bg-white">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {lastTwo.map((project) => (
-              <Link key={project.id} href={`/projects/${project.id}`} className="group">
+              <Link key={project.id} href={`/projects/${project.slug}`} className="group">
                 <div className="overflow-hidden">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
