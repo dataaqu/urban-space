@@ -4,6 +4,10 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  poweredByHeader: false,
+  compress: true,
+  productionBrowserSourceMaps: false,
   images: {
     remotePatterns: [
       {
@@ -20,11 +24,11 @@ const nextConfig = {
       },
     ],
     minimumCacheTTL: 31536000,
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp'],
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '50mb',
+      bodySizeLimit: '10mb',
     },
   },
   async headers() {

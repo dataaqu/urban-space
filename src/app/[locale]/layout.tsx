@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { Noto_Sans, Playfair_Display } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
 import '@/app/globals.css';
@@ -12,13 +12,6 @@ const notoSans = Noto_Sans({
   variable: '--font-noto-sans',
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
-});
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
 });
 
 interface LocaleLayoutProps {
@@ -41,7 +34,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${notoSans.variable} ${playfair.variable}`}>
+    <html lang={locale} className={notoSans.variable}>
       <body className="min-h-screen flex flex-col font-sans bg-accent-50 text-secondary-900">
         <NextIntlClientProvider messages={messages}>
             <ConditionalHeader />

@@ -68,8 +68,8 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-noto-sans)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-noto-sans)', 'var(--font-playfair)', 'Georgia', 'serif'],
-        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
+        display: ['var(--font-noto-sans)', 'Georgia', 'serif'],
+        serif: ['Georgia', 'serif'],
       },
       letterSpacing: {
         tightest: '-0.075em',

@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = 3600;
 
 import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';

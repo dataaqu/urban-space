@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = 3600;
 
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';

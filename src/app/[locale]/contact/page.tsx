@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = 3600;
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import GoogleMap from '@/components/contact/GoogleMap';
