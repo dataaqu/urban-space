@@ -30,7 +30,7 @@ function SafeHTML({ html, className }: { html: string; className?: string }) {
   return <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-const textStyle = "text-[18px] text-[#333] font-sans leading-relaxed prose prose-sm max-w-none";
+const textStyle = "text-[18px] xl:text-[20px] 2xl:text-[22px] text-[#333] font-sans leading-relaxed prose prose-sm xl:prose-base 2xl:prose-lg max-w-none";
 
 export default function ProjectDetailClient({ locale, project }: ProjectDetailClientProps) {
   const totalPages = project.pages.length;
@@ -69,7 +69,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   if (project.pages.length === 0) {
     return (
       <div className="flex items-center justify-center" style={{ height: sectionHeight }}>
-        <p className="text-gray-400 text-sm">პროექტს გვერდები არ აქვს</p>
+        <p className="text-gray-400 text-sm xl:text-base 2xl:text-lg">პროექტს გვერდები არ აქვს</p>
       </div>
     );
   }
@@ -83,12 +83,12 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     >
       {/* Pagination dots */}
       {totalPages > 1 && (
-        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2.5">
+        <div className="fixed right-6 xl:right-8 2xl:right-10 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2.5 xl:gap-3 2xl:gap-4">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
               onClick={() => scrollToPage(i)}
-              className={`w-[6px] h-[6px] rounded-full transition-all duration-300 ${
+              className={`w-[6px] h-[6px] xl:w-[8px] xl:h-[8px] 2xl:w-[10px] 2xl:h-[10px] rounded-full transition-all duration-300 ${
                 activePage === i ? 'bg-[#1a1a1a]' : 'bg-[#ccc]'
               }`}
             />
@@ -113,8 +113,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 {/* Desktop layout */}
                 <div className="hidden lg:flex flex-1 min-h-0">
                   {/* Left text */}
-                  <div className="flex flex-1 flex-col justify-center items-end px-10">
-                    {leftText && <SafeHTML html={leftText} className={`${textStyle} max-w-[260px]`} />}
+                  <div className="flex flex-1 flex-col justify-center items-end px-10 xl:px-14 2xl:px-20">
+                    {leftText && <SafeHTML html={leftText} className={`${textStyle} max-w-[260px] xl:max-w-[340px] 2xl:max-w-[420px]`} />}
                   </div>
 
                   {/* Center image */}
@@ -123,7 +123,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                       {page.image1 ? (
                         <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="55vw" />
                       ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                        <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm xl:text-base 2xl:text-lg">
                           სურათი არ არის
                         </div>
                       )}
@@ -131,8 +131,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   </div>
 
                   {/* Right text */}
-                  <div className="flex flex-1 flex-col justify-start items-start px-10 pt-16">
-                    {rightText && <SafeHTML html={rightText} className={`${textStyle} max-w-[260px]`} />}
+                  <div className="flex flex-1 flex-col justify-start items-start px-10 xl:px-14 2xl:px-20 pt-16 xl:pt-20 2xl:pt-24">
+                    {rightText && <SafeHTML html={rightText} className={`${textStyle} max-w-[260px] xl:max-w-[340px] 2xl:max-w-[420px]`} />}
                   </div>
                 </div>
 
@@ -155,8 +155,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </div>
             ) : (
               /* Double image page */
-              <div className="w-full flex items-end h-full lg:px-[120px]">
-                <div className="flex gap-[20px] w-full h-full">
+              <div className="w-full flex items-end h-full lg:px-[120px] xl:px-[160px] 2xl:px-[220px]">
+                <div className="flex gap-[20px] xl:gap-[28px] 2xl:gap-[36px] w-full h-full">
                   <div className="flex-1 h-full overflow-hidden relative">
                     <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="40vw" />
                   </div>

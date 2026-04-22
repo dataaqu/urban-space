@@ -70,14 +70,14 @@ export default function Hero({ slides }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
               className="relative flex flex-col items-center"
             >
-              <span className="text-[#0A0A0A] text-3xl md:text-5xl font-bold tracking-[0.2em] font-sans">
+              <span className="text-[#0A0A0A] text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl font-bold tracking-[0.2em] font-sans">
                 URBAN SPACE
               </span>
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 1.2, ease: [0.19, 1, 0.22, 1] }}
-                className="mt-4 text-[#0A0A0A]/60 text-sm md:text-base tracking-[0.25em] uppercase font-light"
+                className="mt-4 xl:mt-6 2xl:mt-8 text-[#0A0A0A]/60 text-sm md:text-base xl:text-lg 2xl:text-xl tracking-[0.25em] uppercase font-light"
               >
                 Architecture & Urban Planning
               </motion.p>

@@ -29,8 +29,12 @@ export default function ProjectCardMinimal({ project, height = 300, titleAlign =
         className="group cursor-pointer"
       >
         <div
-          className="w-full overflow-hidden bg-[#F5F5F5] relative"
-          style={{ height }}
+          className="w-full overflow-hidden bg-[#F5F5F5] relative h-[var(--card-h)] xl:h-[var(--card-h-xl)] 2xl:h-[var(--card-h-2xl)]"
+          style={{
+            ['--card-h' as string]: `${height}px`,
+            ['--card-h-xl' as string]: `${Math.round(height * 1.25)}px`,
+            ['--card-h-2xl' as string]: `${Math.round(height * 1.5)}px`,
+          } as React.CSSProperties}
         >
           <Image
             src={imageUrl}
@@ -40,7 +44,7 @@ export default function ProjectCardMinimal({ project, height = 300, titleAlign =
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
-        <p className={`mt-3 text-[13px] text-[#333333] font-sans leading-snug ${
+        <p className={`mt-3 xl:mt-4 2xl:mt-5 text-[13px] xl:text-[15px] 2xl:text-[17px] text-[#333333] font-sans leading-snug ${
           titleAlign === 'right' ? 'text-right' : 'text-left'
         }`}>
           {title}

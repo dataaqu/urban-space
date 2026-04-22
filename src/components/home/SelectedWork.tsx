@@ -43,19 +43,19 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
   return (
     <>
       {/* Section 1: Title + 3 cards */}
-      <section className="min-h-screen flex flex-col justify-center px-8 md:px-[60px] py-20 bg-white">
-        <div className="flex justify-end mb-12">
+      <section className="min-h-screen flex flex-col justify-center px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] py-20 xl:py-28 2xl:py-36 bg-white">
+        <div className="flex justify-end mb-12 xl:mb-16 2xl:mb-20">
           <div className="text-right">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#0A0A0A]">
+            <h2 className="text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-[#0A0A0A]">
               {getText('featured.title', 'title')}
             </h2>
-            <p className="mt-2 text-lg text-[#0A0A0A]">
+            <p className="mt-2 xl:mt-3 2xl:mt-4 text-lg xl:text-xl 2xl:text-2xl text-[#0A0A0A]">
               {getText('featured.subtitle', 'subtitle')}
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12">
           {firstThree.map((project) => (
             <Link key={project.id} href={`/projects/${project.slug}`} className="group">
               <div className="overflow-hidden">
@@ -68,16 +68,16 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
                   />
                 </div>
               </div>
-              <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 py-5">
-                <h3 className="text-base font-semibold text-[#0A0A0A]">
+              <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 xl:px-6 2xl:px-8 py-5 xl:py-6 2xl:py-7">
+                <h3 className="text-base xl:text-lg 2xl:text-xl font-semibold text-[#0A0A0A]">
                   {locale === 'ka' ? project.titleKa : project.titleEn}
                 </h3>
                 {(project.locationKa || project.locationEn) && (
-                  <p className="text-sm text-[#666] mt-0.5">
+                  <p className="text-sm xl:text-base 2xl:text-lg text-[#666] mt-0.5">
                     {locale === 'ka' ? project.locationKa : project.locationEn}
                   </p>
                 )}
-                <span className="inline-block mt-2 px-3 py-1 text-xs border border-gray-300 rounded text-[#555]">
+                <span className="inline-block mt-2 xl:mt-3 px-3 xl:px-4 py-1 xl:py-1.5 text-xs xl:text-sm 2xl:text-base border border-gray-300 rounded text-[#555]">
                   {project.category === 'ARCHITECTURE'
                     ? (locale === 'ka' ? 'არქიტექტურა' : 'Architecture')
                     : (locale === 'ka' ? 'ურბანული' : 'Urban')}
@@ -90,8 +90,8 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
 
       {/* Section 2: 2 larger cards */}
       {lastTwo.length > 0 && (
-        <section className="px-8 md:px-[60px] -mt-16 pb-40 bg-white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] -mt-16 pb-40 xl:pb-48 2xl:pb-56 bg-white">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-10 2xl:gap-12">
             {lastTwo.map((project) => (
               <Link key={project.id} href={`/projects/${project.slug}`} className="group">
                 <div className="overflow-hidden">
@@ -104,16 +104,16 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
                     />
                   </div>
                 </div>
-                <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 py-5">
-                  <h3 className="text-base font-semibold text-[#0A0A0A]">
+                <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 xl:px-6 2xl:px-8 py-5 xl:py-6 2xl:py-7">
+                  <h3 className="text-base xl:text-lg 2xl:text-xl font-semibold text-[#0A0A0A]">
                     {locale === 'ka' ? project.titleKa : project.titleEn}
                   </h3>
                   {(project.locationKa || project.locationEn) && (
-                    <p className="text-sm text-[#666] mt-0.5">
+                    <p className="text-sm xl:text-base 2xl:text-lg text-[#666] mt-0.5">
                       {locale === 'ka' ? project.locationKa : project.locationEn}
                     </p>
                   )}
-                  <span className="inline-block mt-2 px-3 py-1 text-xs border border-gray-300 rounded text-[#555]">
+                  <span className="inline-block mt-2 xl:mt-3 px-3 xl:px-4 py-1 xl:py-1.5 text-xs xl:text-sm 2xl:text-base border border-gray-300 rounded text-[#555]">
                     {project.category === 'ARCHITECTURE'
                       ? (locale === 'ka' ? 'არქიტექტურა' : 'Architecture')
                       : (locale === 'ka' ? 'ურბანული' : 'Urban')}

@@ -32,15 +32,15 @@ export default function HomeNav() {
     <>
       {/* Top Bar - Logo & Language Switcher */}
       <div
-        className={`fixed top-0 left-0 right-0 h-20 flex items-center justify-between px-8 md:px-[60px] z-50 transition-colors duration-500 ${
+        className={`fixed top-0 left-0 right-0 h-20 xl:h-24 2xl:h-28 flex items-center justify-between px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] z-50 transition-colors duration-500 ${
           scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : ''
         }`}
       >
         <Link href="/" className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-          <span className={`text-[28px] font-bold tracking-[0.2em] font-sans transition-colors duration-500 ${textColor}`}>
+          <span className={`text-[28px] xl:text-[32px] 2xl:text-[38px] font-bold tracking-[0.2em] font-sans transition-colors duration-500 ${textColor}`}>
             URBAN SPACE
           </span>
-          <span className={`text-[8px] tracking-[0.25em] uppercase font-light transition-colors duration-500 ${subTextColor}`}>
+          <span className={`text-[8px] xl:text-[10px] 2xl:text-[12px] tracking-[0.25em] uppercase font-light transition-colors duration-500 ${subTextColor}`}>
             Architecture & Urban Planning
           </span>
         </Link>
@@ -50,9 +50,9 @@ export default function HomeNav() {
 
       {/* Bottom Navigation - Desktop */}
       <nav
-        className={`fixed bottom-0 left-0 right-0 hidden md:flex flex-col items-center px-8 md:px-[60px] z-50 transition-all duration-700 ease-out ${
-          scrolled ? 'bg-white/95 backdrop-blur-md shadow-[0_-1px_3px_rgba(0,0,0,0.08)] pt-3' : ''
-        } ${atBottom ? 'pb-3' : 'pb-6'}`}
+        className={`fixed bottom-0 left-0 right-0 hidden md:flex flex-col items-center px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] z-50 transition-all duration-700 ease-out ${
+          scrolled ? 'bg-white/95 backdrop-blur-md shadow-[0_-1px_3px_rgba(0,0,0,0.08)] pt-3 xl:pt-4 2xl:pt-5' : ''
+        } ${atBottom ? 'pb-3 xl:pb-4 2xl:pb-5' : 'pb-6 xl:pb-8 2xl:pb-10'}`}
       >
         <div className="flex items-end justify-center">
           <div
@@ -67,32 +67,32 @@ export default function HomeNav() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
                   transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-                  className={`absolute bottom-full left-0 mb-2 flex flex-col gap-1.5 rounded-lg px-5 py-3 whitespace-nowrap ${dropdownBg}`}
+                  className={`absolute bottom-full left-0 mb-2 flex flex-col gap-1.5 xl:gap-2 rounded-lg px-5 xl:px-6 2xl:px-7 py-3 xl:py-4 whitespace-nowrap ${dropdownBg}`}
                 >
-                  <Link href="/projects?category=ARCHITECTURE" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
+                  <Link href="/projects?category=ARCHITECTURE" className={`text-base xl:text-lg 2xl:text-xl font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
                     {nav('architecture')} {nav('projects').toLowerCase()}
                   </Link>
-                  <Link href="/projects?category=URBAN" className={`text-base font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
+                  <Link href="/projects?category=URBAN" className={`text-base xl:text-lg 2xl:text-xl font-sans font-medium transition-colors duration-200 ${dropdownText}`}>
                     {nav('urban')} {nav('projects').toLowerCase()}
                   </Link>
                 </motion.div>
               )}
             </AnimatePresence>
             <Link href="/projects" className="transition-transform duration-300 hover:scale-105 px-1 py-1">
-              <span className={`text-2xl font-sans font-bold transition-colors duration-500 ${textColor}`}>
+              <span className={`text-2xl xl:text-3xl 2xl:text-4xl font-sans font-bold transition-colors duration-500 ${textColor}`}>
                 {nav('projects')}
               </span>
             </Link>
           </div>
 
-          <Link href="/studio" className="ml-16 lg:ml-24 transition-transform duration-300 hover:scale-105 px-1 py-1">
-            <span className={`text-2xl font-sans font-semibold transition-colors duration-500 ${textColor}`}>
+          <Link href="/studio" className="ml-16 lg:ml-24 xl:ml-32 2xl:ml-40 transition-transform duration-300 hover:scale-105 px-1 py-1">
+            <span className={`text-2xl xl:text-3xl 2xl:text-4xl font-sans font-semibold transition-colors duration-500 ${textColor}`}>
               {nav('studio')}
             </span>
           </Link>
 
-          <Link href="/contact" className="ml-16 lg:ml-24 transition-transform duration-300 hover:scale-105 px-1 py-1">
-            <span className={`text-2xl font-sans font-semibold transition-colors duration-500 ${textColor}`}>
+          <Link href="/contact" className="ml-16 lg:ml-24 xl:ml-32 2xl:ml-40 transition-transform duration-300 hover:scale-105 px-1 py-1">
+            <span className={`text-2xl xl:text-3xl 2xl:text-4xl font-sans font-semibold transition-colors duration-500 ${textColor}`}>
               {nav('contact')}
             </span>
           </Link>
@@ -105,7 +105,7 @@ export default function HomeNav() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 5 }}
               transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-              className="text-[10px] text-gray-400 mt-2"
+              className="text-[10px] xl:text-[11px] 2xl:text-[12px] text-gray-400 mt-2"
             >
               &copy; 2026 URBAN SPACE. All rights reserved.
             </motion.p>

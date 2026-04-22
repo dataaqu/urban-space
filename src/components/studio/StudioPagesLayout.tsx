@@ -18,42 +18,42 @@ export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) 
   return (
     <div className="min-h-screen bg-white flex flex-col -mt-16">
       {/* Header */}
-      <header className="h-20 flex items-center justify-between px-8 md:px-[60px] bg-white sticky top-0 z-50">
+      <header className="h-20 xl:h-24 2xl:h-28 flex items-center justify-between px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] bg-white sticky top-0 z-50">
         {/* Logo */}
         <Link href="/" className="flex flex-col items-center transition-transform duration-300 hover:scale-105">
-          <span className="text-[#0A0A0A] text-[28px] font-bold tracking-[0.2em] font-sans">
+          <span className="text-[#0A0A0A] text-[28px] xl:text-[32px] 2xl:text-[38px] font-bold tracking-[0.2em] font-sans">
             URBAN SPACE
           </span>
-          <span className="text-[#0A0A0A]/50 text-[8px] tracking-[0.25em] uppercase font-light">
+          <span className="text-[#0A0A0A]/50 text-[8px] xl:text-[10px] 2xl:text-[12px] tracking-[0.25em] uppercase font-light">
             Architecture & Urban Planning
           </span>
         </Link>
 
         {/* Center Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1 xl:gap-2">
           {/* Projects */}
-          <Link href="/projects" className="text-sm font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300">
+          <Link href="/projects" className="text-sm xl:text-base 2xl:text-lg font-sans text-gray-500 hover:text-[#0A0A0A] transition-colors duration-300">
             {nav('projects')}
           </Link>
 
-          <span className="text-gray-300 mx-3">|</span>
+          <span className="text-gray-300 mx-3 xl:mx-4 2xl:mx-5">|</span>
 
           {/* Studio */}
           <Link
             href="/studio"
-            className={`text-sm font-sans transition-colors duration-300 ${
+            className={`text-sm xl:text-base 2xl:text-lg font-sans transition-colors duration-300 ${
               pathname === '/studio' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
             }`}
           >
             {nav('studio')}
           </Link>
 
-          <span className="text-gray-300 mx-3">|</span>
+          <span className="text-gray-300 mx-3 xl:mx-4 2xl:mx-5">|</span>
 
           {/* Contact */}
           <Link
             href="/contact"
-            className={`text-sm font-sans transition-colors duration-300 ${
+            className={`text-sm xl:text-base 2xl:text-lg font-sans transition-colors duration-300 ${
               pathname === '/contact' ? 'text-[#0A0A0A] font-semibold' : 'text-gray-500 hover:text-[#0A0A0A]'
             }`}
           >
@@ -110,8 +110,8 @@ export default function StudioPagesLayout({ children }: StudioPagesLayoutProps) 
       </div>
 
       {/* Footer */}
-      <footer className="text-center py-6">
-        <p className="text-[10px] text-gray-400">
+      <footer className="text-center py-6 xl:py-8 2xl:py-10">
+        <p className="text-[10px] xl:text-[11px] 2xl:text-[12px] text-gray-400">
           &copy; 2026 URBAN SPACE. All rights reserved.
         </p>
       </footer>
