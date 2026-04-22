@@ -1,33 +1,45 @@
 import prisma from '@/lib/prisma';
 
 export async function getHeroSlides() {
-  return prisma.heroSlide.findMany({
-    where: { active: true },
-    orderBy: { order: 'asc' },
-  });
+  try {
+    return await prisma.heroSlide.findMany({
+      where: { active: true },
+      orderBy: { order: 'asc' },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getFeaturedProjects() {
-  return prisma.project.findMany({
-    where: { featured: true },
-    include: {
-      pages: {
-        orderBy: { order: 'asc' },
-        take: 1,
-        select: { image1: true },
+  try {
+    return await prisma.project.findMany({
+      where: { featured: true },
+      include: {
+        pages: {
+          orderBy: { order: 'asc' },
+          take: 1,
+          select: { image1: true },
+        },
       },
-    },
-    orderBy: { featuredOrder: 'asc' },
-    take: 8,
-  });
+      orderBy: { featuredOrder: 'asc' },
+      take: 8,
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getSiteContent(section?: string) {
-  const where = section ? { section } : {};
-  return prisma.siteContent.findMany({
-    where,
-    orderBy: [{ section: 'asc' }, { order: 'asc' }],
-  });
+  try {
+    const where = section ? { section } : {};
+    return await prisma.siteContent.findMany({
+      where,
+      orderBy: [{ section: 'asc' }, { order: 'asc' }],
+    });
+  } catch {
+    return [];
+  }
 }
 
 export async function getContentMap(section: string) {
@@ -40,7 +52,11 @@ export async function getContentMap(section: string) {
 }
 
 export async function getServices() {
-  return prisma.service.findMany({
-    orderBy: { order: 'asc' },
-  });
+  try {
+    return await prisma.service.findMany({
+      orderBy: { order: 'asc' },
+    });
+  } catch {
+    return [];
+  }
 }

@@ -13,17 +13,22 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const t = await getTranslations('navigation');
   const category = searchParams.category === 'URBAN' ? 'URBAN' : 'ARCHITECTURE';
 
-  const projects = await prisma.project.findMany({
-    where: { category: category as ProjectCategory },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      pages: {
-        orderBy: { order: 'asc' },
-        take: 1,
-        select: { image1: true },
+  let projects: Awaited<ReturnType<typeof prisma.project.findMany>> = [];
+  try {
+    projects = await prisma.project.findMany({
+      where: { category: category as ProjectCategory },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        pages: {
+          orderBy: { order: 'asc' },
+          take: 1,
+          select: { image1: true },
+        },
       },
-    },
-  });
+    });
+  } catch {
+    projects = [];
+  }
 
   return (
     <ProjectsClient

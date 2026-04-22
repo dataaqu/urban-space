@@ -12,10 +12,14 @@ interface ProjectDetailPageProps {
 }
 
 export async function generateStaticParams() {
-  const projects = await prisma.project.findMany({ select: { slug: true } });
-  return routing.locales.flatMap((locale) =>
-    projects.map((p) => ({ locale, id: p.slug }))
-  );
+  try {
+    const projects = await prisma.project.findMany({ select: { slug: true } });
+    return routing.locales.flatMap((locale) =>
+      projects.map((p) => ({ locale, id: p.slug }))
+    );
+  } catch {
+    return [];
+  }
 }
 
 async function findProject(idOrSlug: string) {
