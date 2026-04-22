@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
 
 interface PageData {
   id: string;
@@ -28,8 +27,7 @@ interface ProjectDetailClientProps {
 }
 
 function SafeHTML({ html, className }: { html: string; className?: string }) {
-  const sanitized = DOMPurify.sanitize(html);
-  return <div className={className} dangerouslySetInnerHTML={{ __html: sanitized }} />;
+  return <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 const textStyle = "text-[18px] text-[#333] font-sans leading-relaxed prose prose-sm max-w-none";

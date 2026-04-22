@@ -15,7 +15,7 @@ export function useProjects(params: Record<string, string>) {
 
   const [projects, setProjects] = useState<Project[]>(isFresh ? cached.data : []);
   const [isLoading, setIsLoading] = useState(!isFresh);
-  const abortRef = useRef<AbortController>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const cached = cache.get(key);

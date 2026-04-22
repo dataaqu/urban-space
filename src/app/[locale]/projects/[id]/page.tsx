@@ -1,16 +1,24 @@
 export const revalidate = 3600;
+export const dynamicParams = true;
 
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import prisma from '@/lib/prisma';
+import { routing } from '@/i18n/routing';
 import ProjectDetailClient from '@/components/projects/ProjectDetailClient';
 
 interface ProjectDetailPageProps {
-  params: { id: string };
+  params: { id: string; locale: string };
+}
+
+export async function generateStaticParams() {
+  const projects = await prisma.project.findMany({ select: { slug: true } });
+  return routing.locales.flatMap((locale) =>
+    projects.map((p) => ({ locale, id: p.slug }))
+  );
 }
 
 async function findProject(idOrSlug: string) {
-  // Try by slug first, then by id
   return (
     await prisma.project.findUnique({ where: { slug: idOrSlug } }) ||
     await prisma.project.findUnique({ where: { id: idOrSlug } })

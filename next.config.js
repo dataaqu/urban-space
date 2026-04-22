@@ -9,6 +9,7 @@ const nextConfig = {
   compress: true,
   productionBrowserSourceMaps: false,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -23,8 +24,6 @@ const nextConfig = {
         hostname: 'placehold.co',
       },
     ],
-    minimumCacheTTL: 31536000,
-    formats: ['image/webp'],
   },
   experimental: {
     serverActions: {
