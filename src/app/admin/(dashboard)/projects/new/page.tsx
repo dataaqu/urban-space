@@ -1,13 +1,20 @@
 export const dynamic = 'force-dynamic';
 
 import ProjectForm from '@/components/admin/ProjectForm';
+import { PageHeader } from '@/components/admin/ui';
 
 export default function NewProjectPage() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-secondary-900 mb-8">
-        ახალი პროექტი
-      </h1>
+      <PageHeader
+        title="ახალი პროექტი"
+        description="შეავსე ძირითადი ინფო. გვერდების დამატება შესაძლებელი იქნება შექმნის შემდეგ."
+        breadcrumbs={[
+          { label: 'მთავარი', href: '/admin' },
+          { label: 'პროექტები', href: '/admin/projects' },
+          { label: 'ახალი' },
+        ]}
+      />
       <ProjectForm />
     </div>
   );

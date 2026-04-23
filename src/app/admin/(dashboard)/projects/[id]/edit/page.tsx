@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import ProjectForm from '@/components/admin/ProjectForm';
 import ProjectPageEditor from '@/components/admin/ProjectPageEditor';
+import { PageHeader } from '@/components/admin/ui';
 
 export default async function EditProjectPage({
   params,
@@ -22,34 +23,49 @@ export default async function EditProjectPage({
   if (!project) notFound();
 
   return (
-    <div className="space-y-10">
-      <ProjectForm
-        project={{
-          id: project.id,
-          titleKa: project.titleKa,
-          titleEn: project.titleEn,
-          category: project.category,
-          locationKa: project.locationKa,
-          locationEn: project.locationEn,
-          featuredImage: project.featuredImage,
-          featured: project.featured,
-          featuredOrder: project.featuredOrder,
-        }}
+    <div>
+      <PageHeader
+        title={project.titleKa}
+        description={project.titleEn}
+        breadcrumbs={[
+          { label: 'მთავარი', href: '/admin' },
+          { label: 'პროექტები', href: '/admin/projects' },
+          { label: 'რედაქტირება' },
+        ]}
       />
-      <ProjectPageEditor
-        projectId={project.id}
-        pages={project.pages.map((p) => ({
-          id: p.id,
-          type: p.type,
-          order: p.order,
-          image1: p.image1,
-          image2: p.image2,
-          textKa: p.textKa,
-          textEn: p.textEn,
-          textRightKa: p.textRightKa,
-          textRightEn: p.textRightEn,
-        }))}
-      />
+
+      <div className="space-y-10">
+        <ProjectForm
+          project={{
+            id: project.id,
+            titleKa: project.titleKa,
+            titleEn: project.titleEn,
+            category: project.category,
+            locationKa: project.locationKa,
+            locationEn: project.locationEn,
+            featuredImage: project.featuredImage,
+            featured: project.featured,
+            featuredOrder: project.featuredOrder,
+          }}
+        />
+
+        <div className="border-t border-neutral-200/70 pt-8">
+          <ProjectPageEditor
+            projectId={project.id}
+            pages={project.pages.map((p) => ({
+              id: p.id,
+              type: p.type,
+              order: p.order,
+              image1: p.image1,
+              image2: p.image2,
+              textKa: p.textKa,
+              textEn: p.textEn,
+              textRightKa: p.textRightKa,
+              textRightEn: p.textRightEn,
+            }))}
+          />
+        </div>
+      </div>
     </div>
   );
 }

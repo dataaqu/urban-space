@@ -2,7 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Save, ArrowLeft, Star } from 'lucide-react';
 import ImageUpload from './ImageUpload';
+import {
+  Button,
+  Card,
+  Input,
+  Select,
+  useToast,
+} from './ui';
 
 interface ProjectFormProps {
   project?: {
@@ -20,6 +28,7 @@ interface ProjectFormProps {
 
 export default function ProjectForm({ project }: ProjectFormProps) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     titleKa: project?.titleKa || '',
@@ -48,7 +57,9 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         locationKa: form.locationKa || null,
         locationEn: form.locationEn || null,
         featuredImage: form.featuredImage || null,
-        featuredOrder: form.featuredOrder ? Number(form.featuredOrder) : null,
+        featuredOrder: form.featuredOrder
+          ? Number(form.featuredOrder)
+          : null,
       };
 
       const url = project
@@ -63,158 +74,184 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 
       if (res.ok) {
         const data = await res.json();
+        toast.success(
+          project ? 'პროექტი განახლდა' : 'პროექტი შეიქმნა',
+        );
         if (!project) {
           router.push(`/admin/projects/${data.id}/edit`);
         } else {
           router.refresh();
         }
       } else {
-        alert('შეცდომა მოხდა');
+        toast.error('შეცდომა მოხდა');
       }
     } catch {
-      alert('შეცდომა მოხდა');
+      toast.error('შეცდომა მოხდა');
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value, type } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]:
+        type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : value,
     }));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
-        <h2 className="text-lg font-semibold text-secondary-900">
-          {project ? 'პროექტის რედაქტირება' : 'ახალი პროექტი'}
-        </h2>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              სახელი (ქართ.)
-            </label>
-            <input
-              name="titleKa"
-              value={form.titleKa}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">
-              სახელი (ინგ.)
-            </label>
-            <input
-              name="titleEn"
-              value={form.titleEn}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
+    <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+      <Card padded>
+        <div className="mb-6">
+          <h2 className="text-base font-semibold text-dark-900">
+            ძირითადი ინფორმაცია
+          </h2>
+          <p className="mt-0.5 text-sm text-neutral-500">
+            პროექტის სახელი, კატეგორია და მდებარეობა.
+          </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">კატეგორია</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg outline-none"
-            >
-              <option value="ARCHITECTURE">არქიტექტურა</option>
-              <option value="URBAN">ურბანული</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">ლოკაცია (ქართ.)</label>
-            <input
-              name="locationKa"
-              value={form.locationKa}
-              onChange={handleChange}
-              placeholder="თბილისი, საქართველო"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-1">ლოკაცია (ინგ.)</label>
-            <input
-              name="locationEn"
-              value={form.locationEn}
-              onChange={handleChange}
-              placeholder="Tbilisi, Georgia"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-        </div>
-
-        {/* Featured Image */}
-        <div>
-          <label className="block text-sm font-medium text-secondary-700 mb-1">Featured სურათი</label>
-          <p className="text-xs text-secondary-400 mb-2">ეს სურათი გამოჩნდება პროექტების სიაში და მთავარ გვერდზე</p>
-          <ImageUpload
-            value={form.featuredImage || undefined}
-            onChange={(url) => setForm((prev) => ({ ...prev, featuredImage: url }))}
-            onRemove={() => setForm((prev) => ({ ...prev, featuredImage: '' }))}
-            folder="urban-space/projects"
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <Input
+            label="სახელი (ქართ.)"
+            name="titleKa"
+            value={form.titleKa}
+            onChange={handleChange}
+            required
+          />
+          <Input
+            label="სახელი (ინგ.)"
+            name="titleEn"
+            value={form.titleEn}
+            onChange={handleChange}
+            required
+            hint="ეს გამოიყენება URL-ში"
           />
         </div>
 
-        {/* Featured toggle and order */}
-        <div className="flex items-center gap-6">
-          <label className="flex items-center gap-2 cursor-pointer">
+        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+          <Select
+            label="კატეგორია"
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+          >
+            <option value="ARCHITECTURE">არქიტექტურა</option>
+            <option value="URBAN">ურბანული</option>
+          </Select>
+          <Input
+            label="ლოკაცია (ქართ.)"
+            name="locationKa"
+            value={form.locationKa}
+            onChange={handleChange}
+            placeholder="თბილისი, საქართველო"
+          />
+          <Input
+            label="ლოკაცია (ინგ.)"
+            name="locationEn"
+            value={form.locationEn}
+            onChange={handleChange}
+            placeholder="Tbilisi, Georgia"
+          />
+        </div>
+      </Card>
+
+      <Card padded>
+        <div className="mb-4">
+          <h2 className="text-base font-semibold text-dark-900">
+            Featured სურათი
+          </h2>
+          <p className="mt-0.5 text-sm text-neutral-500">
+            ეს სურათი გამოჩნდება პროექტების სიაში და მთავარ გვერდზე.
+          </p>
+        </div>
+        <ImageUpload
+          value={form.featuredImage || undefined}
+          onChange={(url) =>
+            setForm((prev) => ({ ...prev, featuredImage: url }))
+          }
+          onRemove={() =>
+            setForm((prev) => ({ ...prev, featuredImage: '' }))
+          }
+          folder="urban-space/projects"
+        />
+      </Card>
+
+      <Card padded>
+        <div className="mb-4 flex items-start gap-3">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-700 ring-1 ring-primary-100">
+            <Star className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="text-base font-semibold text-dark-900">
+              Featured ვიზიტი
+            </h2>
+            <p className="mt-0.5 text-sm text-neutral-500">
+              გამოჩნდეს თუ არა მთავარ გვერდზე Selected Work სექციაში.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
             <input
               type="checkbox"
               name="featured"
               checked={form.featured}
               onChange={handleChange}
-              className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
             />
-            <span className="text-sm font-medium text-secondary-700">მთავარ გვერდზე ჩვენება</span>
+            <span className="text-sm font-medium text-dark-800">
+              მთავარ გვერდზე ჩვენება
+            </span>
           </label>
+
           {form.featured && (
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-secondary-700">რიგითობა:</label>
+              <span className="text-sm text-neutral-600">რიგითობა:</span>
               <select
                 name="featuredOrder"
                 value={form.featuredOrder}
                 onChange={handleChange}
-                className="px-3 py-1.5 border border-gray-200 rounded-lg outline-none text-sm"
+                className="h-9 rounded-lg border border-neutral-200 bg-white px-3 pr-8 text-sm hover:border-neutral-300 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
               >
                 <option value="">არჩევა</option>
                 {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>{n}</option>
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
                 ))}
               </select>
             </div>
           )}
         </div>
-      </div>
+      </Card>
 
-      <div className="flex gap-4">
-        <button
+      <div className="flex items-center gap-2 pt-2">
+        <Button
           type="submit"
-          disabled={loading}
-          className="px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+          loading={loading}
+          leftIcon={<Save className="h-4 w-4" />}
         >
-          {loading ? 'შენახვა...' : project ? 'განახლება' : 'შექმნა'}
-        </button>
-        <button
+          {project ? 'განახლება' : 'შექმნა'}
+        </Button>
+        <Button
           type="button"
+          variant="secondary"
+          leftIcon={<ArrowLeft className="h-4 w-4" />}
           onClick={() => router.back()}
-          className="px-6 py-2.5 border border-gray-200 text-secondary-700 rounded-lg hover:bg-gray-50 transition-colors"
+          disabled={loading}
         >
           გაუქმება
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -17,10 +17,8 @@ export const metadata = {
 export default function AdminRootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ka" className={inter.variable}>
-      <body className="min-h-screen bg-gray-50 font-sans">
-        <AdminSessionProvider>
-          {children}
-        </AdminSessionProvider>
+      <body className="min-h-screen bg-neutral-50 font-sans text-dark-900 antialiased">
+        <AdminSessionProvider>{children}</AdminSessionProvider>
       </body>
     </html>
   );

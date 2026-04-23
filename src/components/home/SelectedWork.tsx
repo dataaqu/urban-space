@@ -59,12 +59,12 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
           {firstThree.map((project) => (
             <Link key={project.id} href={`/projects/${project.slug}`} className="group">
               <div className="overflow-hidden">
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
                   <Image
                     src={project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp'}
                     alt={locale === 'ka' ? project.titleKa : project.titleEn}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
               </div>
@@ -95,12 +95,12 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
             {lastTwo.map((project) => (
               <Link key={project.id} href={`/projects/${project.slug}`} className="group">
                 <div className="overflow-hidden">
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
                     <Image
                       src={project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp'}
                       alt={locale === 'ka' ? project.titleKa : project.titleEn}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                 </div>
