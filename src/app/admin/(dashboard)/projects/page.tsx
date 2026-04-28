@@ -10,7 +10,10 @@ import ProjectsTable, {
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
-    orderBy: { createdAt: 'desc' },
+    orderBy: [
+      { featuredOrder: { sort: 'asc', nulls: 'last' } },
+      { createdAt: 'desc' },
+    ],
     include: {
       pages: {
         orderBy: { order: 'asc' },

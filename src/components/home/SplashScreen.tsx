@@ -21,6 +21,16 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
     return () => clearTimeout(timer);
   }, [onComplete]);
 
+  useEffect(() => {
+    if (!isVisible) return;
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    body.style.overflow = 'hidden';
+    return () => {
+      body.style.overflow = previousOverflow;
+    };
+  }, [isVisible]);
+
   const handleClick = () => {
     setIsVisible(false);
     setTimeout(() => onComplete?.(), 700);

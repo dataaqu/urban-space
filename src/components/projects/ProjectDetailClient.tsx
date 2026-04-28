@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { Link } from '@/i18n/routing';
 
 interface PageData {
   id: string;
@@ -36,35 +37,94 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const totalPages = project.pages.length;
   const [activePage, setActivePage] = useState(0);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const activePageRef = useRef(0);
+  const isAnimatingRef = useRef(false);
 
-  const sectionHeight = 'calc(100vh - 80px)';
+  const HEADER_OFFSET = 80;
+  const sectionHeight = `calc(100vh - ${HEADER_OFFSET}px)`;
 
   const getLeftText = (page: PageData) => locale === 'ka' ? page.textKa : page.textEn;
   const getRightText = (page: PageData) => locale === 'ka' ? page.textRightKa : page.textRightEn;
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = sectionRefs.current.indexOf(entry.target as HTMLDivElement);
-            if (index !== -1) setActivePage(index);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    sectionRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
-  }, [totalPages]);
+    activePageRef.current = activePage;
+  }, [activePage]);
 
   const scrollToPage = (index: number) => {
-    sectionRefs.current[index]?.scrollIntoView({ behavior: 'smooth' });
+    const target = sectionRefs.current[index];
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+    isAnimatingRef.current = true;
+    activePageRef.current = index;
+    setActivePage(index);
+    window.scrollTo({ top, behavior: 'smooth' });
+    window.setTimeout(() => {
+      isAnimatingRef.current = false;
+    }, 800);
   };
+
+  useEffect(() => {
+    if (totalPages <= 1) return;
+
+    let touchStartY = 0;
+
+    const goTo = (delta: number) => {
+      if (isAnimatingRef.current) return;
+      const next = activePageRef.current + delta;
+      if (next < 0 || next >= totalPages) return;
+      const target = sectionRefs.current[next];
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+      isAnimatingRef.current = true;
+      activePageRef.current = next;
+      setActivePage(next);
+      window.scrollTo({ top, behavior: 'smooth' });
+      window.setTimeout(() => {
+        isAnimatingRef.current = false;
+      }, 800);
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 5) return;
+      e.preventDefault();
+      goTo(e.deltaY > 0 ? 1 : -1);
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const currentY = e.touches[0]?.clientY ?? 0;
+      const diff = touchStartY - currentY;
+      if (Math.abs(diff) < 30) return;
+      e.preventDefault();
+      goTo(diff > 0 ? 1 : -1);
+      touchStartY = currentY;
+    };
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        goTo(1);
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        goTo(-1);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('keydown', handleKey);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [totalPages]);
 
   if (project.pages.length === 0) {
     return (
@@ -81,6 +141,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       transition={{ duration: 0.6 }}
       className="w-full bg-white relative"
     >
+      {/* Close button */}
+      <Link
+        href="/projects"
+        aria-label="Close"
+        className="fixed top-[120px] xl:top-[132px] right-6 xl:right-8 2xl:right-10 z-40 text-[12px] xl:text-[13px] font-medium tracking-[0.16em] text-[#1a1a1a] transition hover:text-black"
+      >
+        close
+      </Link>
+
       {/* Pagination dots */}
       {totalPages > 1 && (
         <div className="fixed right-6 xl:right-8 2xl:right-10 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2.5 xl:gap-3 2xl:gap-4">
@@ -102,11 +171,16 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         const rightText = getRightText(page);
 
         return (
-          <div
+          <motion.div
             key={page.id}
             ref={(el) => { sectionRefs.current[index] = el; }}
             style={{ height: sectionHeight }}
-            className="pt-[40px]"
+            className="pb-[20px]"
+            animate={{
+              opacity: index === activePage ? 1 : 0.25,
+              scale: index === activePage ? 1 : 0.97,
+            }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {page.type === 'SINGLE_IMAGE' ? (
               <div className="w-full h-full flex flex-col overflow-hidden">
@@ -121,7 +195,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   <div className="w-[55%] flex-shrink-0">
                     <div className="w-full h-full overflow-hidden relative">
                       {page.image1 ? (
-                        <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="55vw" />
+                        <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="55vw" />
                       ) : (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm xl:text-base 2xl:text-lg">
                           სურათი არ არის
@@ -140,7 +214,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 <div className="lg:hidden flex flex-col h-full overflow-auto">
                   <div className="w-full flex-1 relative min-h-0">
                     {page.image1 ? (
-                      <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="100vw" />
+                      <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="100vw" />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
                         სურათი არ არის
@@ -168,7 +242,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         );
       })}
     </motion.div>

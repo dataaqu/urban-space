@@ -403,7 +403,7 @@ export default function Hero({ slides }: HeroProps) {
                 className="w-full flex items-center text-left text-background/95 hover:text-background transition"
               >
                 <span className="text-[15px] md:text-[18px] font-light tracking-[0.22em]">
-                  ABOUT
+                  {language === 'ka' ? 'ჩვენ შესახებ' : 'ABOUT'}
                 </span>
               </Link>
 
