@@ -2,6 +2,7 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import { routing } from '@/i18n/routing';
 import ProjectDetailClient from '@/components/projects/ProjectDetailClient';
@@ -46,6 +47,7 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+  setRequestLocale(params.locale);
   const locale = params.locale;
 
   const project = await findProjectWithPages(params.id);

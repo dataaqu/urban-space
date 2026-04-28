@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Noto_Sans, Inter, Cormorant_Garamond, Noto_Sans_Georgian } from 'next/font/google';
 import { routing } from '@/i18n/routing';
@@ -52,7 +52,9 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  setRequestLocale(locale);
+
+  const messages = await getMessages({ locale });
 
   const fontVars = `${notoSans.variable} ${inter.variable} ${cormorant.variable} ${notoSansGeorgian.variable}`;
   const langClass = locale === 'ka' ? 'font-georgian' : 'font-inter';
