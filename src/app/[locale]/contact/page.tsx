@@ -37,11 +37,11 @@ export default async function ContactPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="px-8 md:px-[60px] lg:px-[80px] xl:px-[100px] 2xl:px-[140px] py-16 lg:py-20 xl:py-24 2xl:py-28">
-        <div className="flex flex-col-reverse lg:flex-row">
+      <div className="mx-auto max-w-[1500px] px-8 md:px-[60px] lg:px-[80px] xl:px-[100px] 2xl:px-[140px] py-16 lg:py-20 xl:py-24 2xl:py-28">
+        <div className="flex flex-col-reverse lg:flex-row gap-12 lg:gap-16 xl:gap-20">
 
           {/* Left Column — Contact Info */}
-          <div className="w-full lg:w-[50%] flex-shrink-0 mt-12 lg:mt-0">
+          <div className="w-full lg:flex-1 mt-12 lg:mt-0">
             <p className="text-[17px] xl:text-[19px] 2xl:text-[21px] text-[#555] leading-relaxed mb-12 xl:mb-14 2xl:mb-16">
               {text('subtitle', t('subtitle'))}
             </p>
@@ -113,11 +113,8 @@ export default async function ContactPage() {
             </div>
           </div>
 
-          {/* Gap */}
-          <div className="hidden lg:block lg:w-[10%]" />
-
           {/* Right Column — Map */}
-          <div className="w-full lg:w-[40%] flex flex-col">
+          <div className="w-full lg:flex-1 flex flex-col">
             <div className="mb-4 xl:mb-5">
               <p className="text-[15px] xl:text-[17px] 2xl:text-[19px] font-semibold text-[#0A0A0A]">URBAN SPACE</p>
               <p className="text-[13px] xl:text-[14px] 2xl:text-[15px] text-[#666] mt-0.5">{officeAddress}</p>

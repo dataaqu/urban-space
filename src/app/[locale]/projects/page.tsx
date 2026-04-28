@@ -11,12 +11,17 @@ interface ProjectsPageProps {
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const t = await getTranslations('navigation');
-  const category = searchParams.category === 'URBAN' ? 'URBAN' : 'ARCHITECTURE';
+  const raw = searchParams.category;
+  const category: 'ALL' | 'ARCHITECTURE' | 'URBAN' =
+    raw === 'URBAN' ? 'URBAN' : raw === 'ARCHITECTURE' ? 'ARCHITECTURE' : 'ALL';
+
+  const where =
+    category === 'ALL' ? {} : { category: category as ProjectCategory };
 
   let projects: Awaited<ReturnType<typeof prisma.project.findMany>> = [];
   try {
     projects = await prisma.project.findMany({
-      where: { category: category as ProjectCategory },
+      where,
       orderBy: { createdAt: 'desc' },
       include: {
         pages: {

@@ -2,8 +2,9 @@ export const revalidate = 3600;
 
 import { getTranslations } from 'next-intl/server';
 import Hero from '@/components/home/Hero';
-import HomeNav from '@/components/home/HomeNav';
 import SelectedWork from '@/components/home/SelectedWork';
+import HomeFooter from '@/components/home/HomeFooter';
+import SplashScreen from '@/components/home/SplashScreen';
 import { getHeroSlides, getFeaturedProjects, getContentMap } from '@/lib/content';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -23,9 +24,10 @@ export default async function HomePage() {
   ]);
   return (
     <>
-      <HomeNav />
+      <SplashScreen />
       <Hero slides={slides} />
       <SelectedWork projects={featuredProjects} content={homeContent} />
+      <HomeFooter />
     </>
   );
 }

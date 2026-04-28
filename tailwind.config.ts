@@ -9,6 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // full-project clone tokens
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        border: 'hsl(var(--border))',
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
         // Premium warm gold palette
         primary: {
           50: '#fefdf8',
@@ -25,6 +33,8 @@ const config: Config = {
         },
         // Sophisticated dark neutrals
         secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
           50: '#f7f6f5',
           100: '#edebe9',
           200: '#d9d5d1',
@@ -67,9 +77,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-noto-sans)', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'var(--font-noto-sans)', 'system-ui', 'sans-serif'],
         display: ['var(--font-noto-sans)', 'Georgia', 'serif'],
-        serif: ['Georgia', 'serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        inter: ['Inter', 'system-ui', 'sans-serif'],
+        georgian: ['"Noto Sans Georgian"', 'Inter', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.075em',
@@ -106,6 +118,9 @@ const config: Config = {
         'gold-border': '0 0 0 2px rgba(212, 160, 39, 0.3), 0 0 20px rgba(212, 160, 39, 0.15)',
         'inset-luxury': 'inset 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(212, 160, 39, 0.1)',
         'dramatic': '0 35px 60px -15px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        // full-project clone shadows
+        'elegant': 'var(--shadow-elegant)',
+        'soft': 'var(--shadow-soft)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
@@ -197,6 +212,7 @@ const config: Config = {
         '600': '600ms',
         '800': '800ms',
         '900': '900ms',
+        '2000': '2000ms',
       },
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.19, 1, 0.22, 1)',

@@ -40,91 +40,73 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
   const firstThree = projects.slice(0, 3);
   const lastTwo = projects.slice(3, 5);
 
+  const titleSizing =
+    locale === 'ka'
+      ? 'text-[22px] md:text-[34px]'
+      : 'text-[28px] md:text-[44px]';
+
+  const renderCard = (project: Project, heightClasses: string) => {
+    const title = locale === 'ka' ? project.titleKa : project.titleEn;
+    const location = locale === 'ka' ? project.locationKa : project.locationEn;
+    const imageSrc =
+      project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp';
+
+    return (
+      <Link key={project.id} href={`/projects/${project.slug}`} className="group block">
+        <div className={`overflow-hidden bg-black/5 relative ${heightClasses}`}>
+          <Image
+            src={imageSrc}
+            alt={title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover object-center transition duration-700 group-hover:scale-[1.02]"
+          />
+        </div>
+        <div className="mt-5">
+          <h3 className="text-[20px] md:text-[26px] font-light text-[#222222]">
+            {title}
+          </h3>
+          {location && (
+            <p className="mt-1 text-[#777777]">{location}</p>
+          )}
+        </div>
+      </Link>
+    );
+  };
+
   return (
-    <>
-      {/* Section 1: Title + 3 cards */}
-      <section className="min-h-screen flex flex-col justify-center px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] py-20 xl:py-28 2xl:py-36 bg-white">
-        <div className="flex justify-end mb-12 xl:mb-16 2xl:mb-20">
-          <div className="text-right">
-            <h2 className="text-3xl md:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-[#0A0A0A]">
-              {getText('featured.title', 'title')}
-            </h2>
-            <p className="mt-2 xl:mt-3 2xl:mt-4 text-lg xl:text-xl 2xl:text-2xl text-[#0A0A0A]">
-              {getText('featured.subtitle', 'subtitle')}
-            </p>
-          </div>
+    <section
+      id="selected-work"
+      className="bg-[#F2F2F2] px-3 py-24 md:px-4 md:py-32"
+    >
+      <div className="mx-auto max-w-[1920px]">
+        <div className="mb-20">
+          <p className="text-[18px] md:text-[26px] uppercase tracking-[0.2em] text-[#777777] font-light">
+            {getText('featured.badge', 'badge')}
+          </p>
+          <h2
+            className={`mt-4 font-light tracking-[0.06em] text-[#222222] ${titleSizing}`}
+          >
+            {getText('featured.title', 'title')}
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 xl:gap-10 2xl:gap-12">
-          {firstThree.map((project) => (
-            <Link key={project.id} href={`/projects/${project.slug}`} className="group">
-              <div className="overflow-hidden">
-                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                  <Image
-                    src={project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp'}
-                    alt={locale === 'ka' ? project.titleKa : project.titleEn}
-                    fill
-                    className="object-contain transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-              <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 xl:px-6 2xl:px-8 py-5 xl:py-6 2xl:py-7">
-                <h3 className="text-base xl:text-lg 2xl:text-xl font-semibold text-[#0A0A0A]">
-                  {locale === 'ka' ? project.titleKa : project.titleEn}
-                </h3>
-                {(project.locationKa || project.locationEn) && (
-                  <p className="text-sm xl:text-base 2xl:text-lg text-[#666] mt-0.5">
-                    {locale === 'ka' ? project.locationKa : project.locationEn}
-                  </p>
-                )}
-                <span className="inline-block mt-2 xl:mt-3 px-3 xl:px-4 py-1 xl:py-1.5 text-xs xl:text-sm 2xl:text-base border border-gray-300 rounded text-[#555]">
-                  {project.category === 'ARCHITECTURE'
-                    ? (locale === 'ka' ? 'არქიტექტურა' : 'Architecture')
-                    : (locale === 'ka' ? 'ურბანული' : 'Urban')}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Section 2: 2 larger cards */}
-      {lastTwo.length > 0 && (
-        <section className="px-8 md:px-[60px] xl:px-[80px] 2xl:px-[120px] -mt-16 pb-40 xl:pb-48 2xl:pb-56 bg-white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-10 2xl:gap-12">
-            {lastTwo.map((project) => (
-              <Link key={project.id} href={`/projects/${project.slug}`} className="group">
-                <div className="overflow-hidden">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
-                    <Image
-                      src={project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp'}
-                      alt={locale === 'ka' ? project.titleKa : project.titleEn}
-                      fill
-                      className="object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </div>
-                <div className="border-t border-gray-200 mt-0 bg-gray-100 px-5 xl:px-6 2xl:px-8 py-5 xl:py-6 2xl:py-7">
-                  <h3 className="text-base xl:text-lg 2xl:text-xl font-semibold text-[#0A0A0A]">
-                    {locale === 'ka' ? project.titleKa : project.titleEn}
-                  </h3>
-                  {(project.locationKa || project.locationEn) && (
-                    <p className="text-sm xl:text-base 2xl:text-lg text-[#666] mt-0.5">
-                      {locale === 'ka' ? project.locationKa : project.locationEn}
-                    </p>
-                  )}
-                  <span className="inline-block mt-2 xl:mt-3 px-3 xl:px-4 py-1 xl:py-1.5 text-xs xl:text-sm 2xl:text-base border border-gray-300 rounded text-[#555]">
-                    {project.category === 'ARCHITECTURE'
-                      ? (locale === 'ka' ? 'არქიტექტურა' : 'Architecture')
-                      : (locale === 'ka' ? 'ურბანული' : 'Urban')}
-                  </span>
-                </div>
-              </Link>
-            ))}
+        <div className="flex flex-col gap-16 md:gap-24">
+          <div className="grid gap-8 md:grid-cols-3 md:gap-8">
+            {firstThree.map((project) =>
+              renderCard(project, 'h-[368px] md:h-[495px]')
+            )}
           </div>
-        </section>
-      )}
 
-    </>
+          {lastTwo.length > 0 && (
+            <div className="grid gap-8 md:grid-cols-2 md:gap-12 md:px-4">
+              {lastTwo.map((project) =>
+                renderCard(project, 'h-[391px] md:h-[598px]')
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }

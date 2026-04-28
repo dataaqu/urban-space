@@ -148,18 +148,18 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             <option value="URBAN">ურბანული</option>
           </Select>
           <Input
-            label="ლოკაცია (ქართ.)"
+            label="აღწერა (ქართ.)"
             name="locationKa"
             value={form.locationKa}
             onChange={handleChange}
-            placeholder="თბილისი, საქართველო"
+            placeholder="მოკლე აღწერა"
           />
           <Input
-            label="ლოკაცია (ინგ.)"
+            label="აღწერა (ინგ.)"
             name="locationEn"
             value={form.locationEn}
             onChange={handleChange}
-            placeholder="Tbilisi, Georgia"
+            placeholder="Short description"
           />
         </div>
       </Card>

@@ -1,13 +1,19 @@
 'use client';
 
+import { Suspense } from 'react';
 import { usePathname } from '@/i18n/routing';
-import Header from './Header';
+import SiteHeader from './SiteHeader';
 import Footer from './Footer';
 
 export function ConditionalHeader() {
   const pathname = usePathname();
-  if (pathname === '/' || pathname.startsWith('/projects') || pathname === '/contact' || pathname.startsWith('/studio')) return null;
-  return <Header />;
+  // Home has its own Hero-embedded navigation
+  if (pathname === '/') return null;
+  return (
+    <Suspense fallback={null}>
+      <SiteHeader />
+    </Suspense>
+  );
 }
 
 export function ConditionalFooter() {

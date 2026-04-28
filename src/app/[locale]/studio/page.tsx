@@ -28,7 +28,7 @@ export default async function StudioPage() {
     <div className="bg-white">
       {/* About Section */}
       <section className="px-8 md:px-[80px] xl:px-[100px] 2xl:px-[140px] pt-12 xl:pt-16 2xl:pt-20 pb-16 xl:pb-20 2xl:pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 xl:gap-16 2xl:gap-20 items-start">
+        <div className="mx-auto max-w-[1500px] grid grid-cols-1 md:grid-cols-2 gap-12 xl:gap-16 2xl:gap-20 items-start">
           <div>
             <h2 className="text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl font-medium text-[#0A0A0A] mb-8 xl:mb-10 2xl:mb-12">
               {text('about.title', 'About Us')}
@@ -55,7 +55,7 @@ export default async function StudioPage() {
 
       {/* Expertise / Principles / Team */}
       <section className="px-8 md:px-[80px] xl:px-[100px] 2xl:px-[140px] pt-6 xl:pt-8 2xl:pt-10 pb-16 xl:pb-20 2xl:pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 xl:gap-16 2xl:gap-20">
+        <div className="mx-auto max-w-[1500px] grid grid-cols-1 md:grid-cols-3 gap-12 xl:gap-16 2xl:gap-20">
           {/* Expertise */}
           <div>
             <h3 className="text-xl md:text-2xl xl:text-3xl 2xl:text-4xl font-medium text-[#0A0A0A] mb-6 xl:mb-8 2xl:mb-10">

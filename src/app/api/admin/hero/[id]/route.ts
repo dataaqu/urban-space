@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -44,6 +45,7 @@ export async function PUT(
         active: data.active ?? true,
       },
     });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json(slide);
   } catch (error) {
     console.error('Update slide error:', error);
@@ -75,6 +77,7 @@ export async function DELETE(
     }
 
     await prisma.heroSlide.delete({ where: { id: params.id } });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete slide error:', error);

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -41,6 +42,10 @@ export async function PUT(request: NextRequest) {
         })
       )
     );
+
+    // Invalidate cached pages so changes appear immediately on the frontend
+    revalidatePath('/', 'layout');
+    revalidatePath('/[locale]', 'layout');
 
     return NextResponse.json({ success: true });
   } catch (error) {

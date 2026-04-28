@@ -24,8 +24,8 @@ const SECTIONS = [
     label: 'მთავარი გვერდი',
     icon: Home,
     fields: [
+      { key: 'featured.badge', label: 'Selected Work - ეპიგრაფი (badge)', defaultKa: 'შერჩეული ნამუშევრები', defaultEn: 'Featured Work' },
       { key: 'featured.title', label: 'Selected Work - სათაური', defaultKa: 'არჩეული ნამუშევრები', defaultEn: 'Selected work' },
-      { key: 'featured.subtitle', label: 'Selected Work - ქვესათაური', defaultKa: 'პროექტები, რომლებიც განსაზღვრავს ჩვენს პრაქტიკას', defaultEn: 'Projects defining our practice' },
     ],
   },
   {
@@ -160,10 +160,7 @@ export default function ContentManagerPage() {
       <PageHeader
         title="კონტენტის მართვა"
         description="ტექსტური ბლოკების რედაქტირება ქართულ და ინგლისურ ენაზე."
-        breadcrumbs={[
-          { label: 'მთავარი', href: '/admin' },
-          { label: 'კონტენტი' },
-        ]}
+        breadcrumbs={[{ label: 'კონტენტი' }]}
         actions={
           !loading ? (
             <Button

@@ -13,11 +13,33 @@
   --dark-primary: 15, 14, 13;
   --dark-secondary: 37, 33, 30;
   --cream: 253, 249, 243;
+
+  /* full-project clone tokens (HSL components for hsl(var(--x))) */
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 10%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 45%;
+  --border: 0 0% 89%;
+  --shadow-elegant: 0 20px 60px -15px hsl(0 0% 0% / 0.3);
+  --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.08);
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
+}
+
+/* full-project font swap via locale class on <html> */
+html.font-inter,
+html.font-inter body {
+  font-family: 'Inter', var(--font-noto-sans), system-ui, sans-serif;
+}
+
+html.font-georgian,
+html.font-georgian body {
+  font-family: 'Noto Sans Georgian', 'Inter', var(--font-noto-sans), system-ui, sans-serif;
 }
 
 @layer base {

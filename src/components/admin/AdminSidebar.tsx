@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import {
-  LayoutDashboard,
   FolderKanban,
   Images,
   FileText,
@@ -14,7 +13,6 @@ import {
 import clsx from 'clsx';
 
 const navItems = [
-  { href: '/admin', label: 'მთავარი', icon: LayoutDashboard, exact: true },
   { href: '/admin/projects', label: 'პროექტები', icon: FolderKanban },
   { href: '/admin/hero', label: 'Hero სლაიდერი', icon: Images },
   { href: '/admin/content', label: 'კონტენტი', icon: FileText },
@@ -29,8 +27,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  const isActive = (href: string, exact?: boolean) =>
-    exact ? pathname === href : pathname.startsWith(href);
+  const isActive = (href: string) => pathname.startsWith(href);
 
   const initial = (session?.user?.email ?? session?.user?.name ?? 'A')
     .charAt(0)
@@ -58,7 +55,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       >
         {/* Brand */}
         <div className="flex items-center justify-between px-5 h-16 border-b border-white/5">
-          <Link href="/admin" className="flex items-center gap-2 group">
+          <Link href="/admin/projects" className="flex items-center gap-2 group">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600/15 text-primary-400 ring-1 ring-primary-500/20">
               <span className="text-sm font-bold tracking-tight">U</span>
             </span>
@@ -85,7 +82,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </p>
           <ul className="space-y-0.5">
             {navItems.map((item) => {
-              const active = isActive(item.href, item.exact);
+              const active = isActive(item.href);
               const Icon = item.icon;
               return (
                 <li key={item.href}>

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -38,6 +39,7 @@ export async function PUT(
         featuredOrder: data.featuredOrder || null,
       },
     });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json(project);
   } catch (error) {
     console.error('Update project error:', error);
@@ -75,6 +77,7 @@ export async function DELETE(
     }
 
     await prisma.project.delete({ where: { id: params.id } });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete project error:', error);
