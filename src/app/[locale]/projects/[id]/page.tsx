@@ -2,7 +2,6 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 import { notFound } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import { routing } from '@/i18n/routing';
 import ProjectDetailClient from '@/components/projects/ProjectDetailClient';
@@ -38,17 +37,16 @@ async function findProjectWithPages(idOrSlug: string) {
 }
 
 export async function generateMetadata({ params }: ProjectDetailPageProps) {
-  const locale = await getLocale();
   const project = await findProject(params.id);
 
   if (!project) return { title: 'Not Found' };
 
-  const title = locale === 'ka' ? project.titleKa : project.titleEn;
+  const title = params.locale === 'ka' ? project.titleKa : project.titleEn;
   return { title: `${title} - URBAN SPACE` };
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-  const locale = await getLocale();
+  const locale = params.locale;
 
   const project = await findProjectWithPages(params.id);
 
