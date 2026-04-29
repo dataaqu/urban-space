@@ -10,8 +10,8 @@ import {
   Trash2,
   X,
   ImageOff,
-  FileImage,
   Rows2,
+  Image as ImageIcon,
 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import RichTextEditor from './RichTextEditor';
@@ -24,9 +24,11 @@ import {
   useToast,
 } from './ui';
 
+type PageType = 'SINGLE_IMAGE' | 'DOUBLE_IMAGE' | 'IMAGE_ONLY';
+
 interface ProjectPageData {
   id: string;
-  type: 'SINGLE_IMAGE' | 'DOUBLE_IMAGE';
+  type: PageType;
   order: number;
   image1: string;
   image2: string | null;
@@ -35,6 +37,12 @@ interface ProjectPageData {
   textRightKa: string | null;
   textRightEn: string | null;
 }
+
+const typeLabel = (t: PageType) => {
+  if (t === 'SINGLE_IMAGE') return 'სურათი + ტექსტი';
+  if (t === 'IMAGE_ONLY') return '1 სურათი';
+  return '2 სურათი';
+};
 
 interface ProjectPageEditorProps {
   projectId: string;
@@ -51,9 +59,7 @@ export default function ProjectPageEditor({
   const [editingPage, setEditingPage] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<ProjectPageData>>({});
   const [saving, setSaving] = useState(false);
-  const [addingType, setAddingType] = useState<
-    'SINGLE_IMAGE' | 'DOUBLE_IMAGE' | null
-  >(null);
+  const [addingType, setAddingType] = useState<PageType | null>(null);
   const [newPage, setNewPage] = useState<Partial<ProjectPageData>>({
     image1: '',
     image2: '',
@@ -223,11 +229,7 @@ export default function ProjectPageEditor({
                       <h3 className="text-sm font-semibold text-dark-900">
                         გვერდი {index + 1}
                       </h3>
-                      <Badge>
-                        {page.type === 'SINGLE_IMAGE'
-                          ? 'სურათი + ტექსტი'
-                          : '2 სურათი'}
-                      </Badge>
+                      <Badge>{typeLabel(page.type)}</Badge>
                     </div>
                     <IconButton
                       icon={<X />}
@@ -311,6 +313,22 @@ export default function ProjectPageEditor({
                           />
                         </div>
                       </div>
+                    </div>
+                  ) : editForm.type === 'IMAGE_ONLY' ? (
+                    <div className="max-w-md">
+                      <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                        სურათი
+                      </label>
+                      <ImageUpload
+                        value={editForm.image1}
+                        onChange={(url) =>
+                          setEditForm((prev) => ({ ...prev, image1: url }))
+                        }
+                        onRemove={() =>
+                          setEditForm((prev) => ({ ...prev, image1: '' }))
+                        }
+                        folder="urban-space/projects"
+                      />
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -405,11 +423,7 @@ export default function ProjectPageEditor({
                       <p className="text-sm font-medium text-dark-900">
                         გვერდი {index + 1}
                       </p>
-                      <Badge>
-                        {page.type === 'SINGLE_IMAGE'
-                          ? 'სურათი + ტექსტი'
-                          : '2 სურათი'}
-                      </Badge>
+                      <Badge>{typeLabel(page.type)}</Badge>
                     </div>
                     <p className="mt-0.5 text-xs text-neutral-500">
                       რიგი #{index + 1}
@@ -452,11 +466,7 @@ export default function ProjectPageEditor({
                 <h3 className="text-sm font-semibold text-dark-900">
                   ახალი გვერდი
                 </h3>
-                <Badge>
-                  {addingType === 'SINGLE_IMAGE'
-                    ? 'სურათი + ტექსტი'
-                    : '2 სურათი'}
-                </Badge>
+                <Badge>{typeLabel(addingType)}</Badge>
               </div>
               <IconButton
                 icon={<X />}
@@ -468,75 +478,21 @@ export default function ProjectPageEditor({
               />
             </div>
 
-            {addingType === 'SINGLE_IMAGE' ? (
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                      მარცხენა (ქართ.)
-                    </label>
-                    <RichTextEditor
-                      content={newPage.textKa || ''}
-                      onChange={(html) =>
-                        setNewPage((prev) => ({ ...prev, textKa: html }))
-                      }
-                      placeholder="ქართული ტექსტი..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                      მარცხენა (ინგ.)
-                    </label>
-                    <RichTextEditor
-                      content={newPage.textEn || ''}
-                      onChange={(html) =>
-                        setNewPage((prev) => ({ ...prev, textEn: html }))
-                      }
-                      placeholder="English text..."
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                    სურათი
-                  </label>
-                  <ImageUpload
-                    value={newPage.image1 || undefined}
-                    onChange={(url) =>
-                      setNewPage((prev) => ({ ...prev, image1: url }))
-                    }
-                    onRemove={() =>
-                      setNewPage((prev) => ({ ...prev, image1: '' }))
-                    }
-                    folder="urban-space/projects"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                      მარჯვენა (ქართ.)
-                    </label>
-                    <RichTextEditor
-                      content={newPage.textRightKa || ''}
-                      onChange={(html) =>
-                        setNewPage((prev) => ({ ...prev, textRightKa: html }))
-                      }
-                      placeholder="ქართული ტექსტი..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                      მარჯვენა (ინგ.)
-                    </label>
-                    <RichTextEditor
-                      content={newPage.textRightEn || ''}
-                      onChange={(html) =>
-                        setNewPage((prev) => ({ ...prev, textRightEn: html }))
-                      }
-                      placeholder="English text..."
-                    />
-                  </div>
-                </div>
+            {addingType === 'IMAGE_ONLY' ? (
+              <div className="max-w-md">
+                <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                  სურათი
+                </label>
+                <ImageUpload
+                  value={newPage.image1 || undefined}
+                  onChange={(url) =>
+                    setNewPage((prev) => ({ ...prev, image1: url }))
+                  }
+                  onRemove={() =>
+                    setNewPage((prev) => ({ ...prev, image1: '' }))
+                  }
+                  folder="urban-space/projects"
+                />
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -597,18 +553,18 @@ export default function ProjectPageEditor({
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
-            onClick={() => setAddingType('SINGLE_IMAGE')}
+            onClick={() => setAddingType('IMAGE_ONLY')}
             className="group flex items-center gap-3 rounded-xl border-2 border-dashed border-neutral-300 bg-white px-5 py-4 text-left transition-all hover:border-primary-400 hover:bg-primary-50/30"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-neutral-500 group-hover:bg-primary-100 group-hover:text-primary-700 transition-colors">
-              <FileImage className="h-5 w-5" />
+              <ImageIcon className="h-5 w-5" />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-dark-900">
-                სურათი + ტექსტი
+                1 სურათი
               </p>
               <p className="text-xs text-neutral-500">
-                ერთი სურათი, ტექსტი ორივე მხარეს
+                მხოლოდ ერთი სურათი, ტექსტის გარეშე
               </p>
             </div>
             <Plus className="h-4 w-4 text-neutral-400 group-hover:text-primary-600" />
@@ -625,7 +581,7 @@ export default function ProjectPageEditor({
                 2 სურათი
               </p>
               <p className="text-xs text-neutral-500">
-                ორი სურათი გვერდიგვერდ
+                ორი სურათი გვერდიგვერდ, ტექსტის გარეშე
               </p>
             </div>
             <Plus className="h-4 w-4 text-neutral-400 group-hover:text-primary-600" />

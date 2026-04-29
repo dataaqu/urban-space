@@ -65,12 +65,14 @@ model Project {
   featuredImage String?
   featured      Boolean         @default(false)
   featuredOrder Int?
+  displayOrder  Int             @default(0)
   pages         ProjectPage[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
   @@index([category])
   @@index([featured])
+  @@index([displayOrder])
 }
 
 model ProjectPage {
@@ -94,6 +96,7 @@ model ProjectPage {
 enum PageType {
   SINGLE_IMAGE
   DOUBLE_IMAGE
+  IMAGE_ONLY
 }
 
 enum ProjectCategory {

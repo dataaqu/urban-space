@@ -22,7 +22,10 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   try {
     projects = await prisma.project.findMany({
       where,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { displayOrder: 'asc' },
+        { createdAt: 'desc' },
+      ],
       include: {
         pages: {
           orderBy: { order: 'asc' },

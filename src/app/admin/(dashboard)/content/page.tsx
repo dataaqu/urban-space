@@ -24,6 +24,7 @@ const SECTIONS = [
     label: 'მთავარი გვერდი',
     icon: Home,
     fields: [
+      { key: 'hero.cta', label: 'Hero - ღილაკის ტექსტი', defaultKa: 'იხილე პროექტები', defaultEn: 'EXPLORE PROJECTS' },
       { key: 'featured.badge', label: 'Selected Work - ეპიგრაფი (badge)', defaultKa: 'შერჩეული ნამუშევრები', defaultEn: 'Featured Work' },
       { key: 'featured.title', label: 'Selected Work - სათაური', defaultKa: 'არჩეული ნამუშევრები', defaultEn: 'Selected work' },
     ],

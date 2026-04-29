@@ -25,7 +25,7 @@ export default async function HomePage() {
   return (
     <>
       <SplashScreen />
-      <Hero slides={slides} />
+      <Hero slides={slides} content={homeContent} />
       <SelectedWork projects={featuredProjects} content={homeContent} />
       <HomeFooter />
     </>

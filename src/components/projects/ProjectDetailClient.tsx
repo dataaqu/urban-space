@@ -7,7 +7,7 @@ import { Link } from '@/i18n/routing';
 
 interface PageData {
   id: string;
-  type: 'SINGLE_IMAGE' | 'DOUBLE_IMAGE';
+  type: 'SINGLE_IMAGE' | 'DOUBLE_IMAGE' | 'IMAGE_ONLY';
   order: number;
   image1: string;
   image2: string | null;
@@ -182,7 +182,26 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            {page.type === 'SINGLE_IMAGE' ? (
+            {page.type === 'IMAGE_ONLY' ? (
+              <div className="w-full h-full px-2 sm:px-4 md:px-6 lg:px-8">
+                <div className="relative w-full h-full">
+                  {page.image1 ? (
+                    <Image
+                      src={page.image1}
+                      alt={project.title}
+                      fill
+                      className="object-contain"
+                      sizes="100vw"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm xl:text-base 2xl:text-lg">
+                      სურათი არ არის
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : page.type === 'SINGLE_IMAGE' ? (
               <div className="w-full h-full flex flex-col overflow-hidden">
                 {/* Desktop layout */}
                 <div className="hidden lg:flex flex-1 min-h-0">
@@ -229,14 +248,14 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </div>
             ) : (
               /* Double image page */
-              <div className="w-full flex items-end h-full lg:px-[120px] xl:px-[160px] 2xl:px-[220px]">
-                <div className="flex gap-[20px] xl:gap-[28px] 2xl:gap-[36px] w-full h-full">
-                  <div className="flex-1 h-full overflow-hidden relative">
-                    <Image src={page.image1} alt={project.title} fill className="object-cover" sizes="40vw" />
+              <div className="w-full h-full flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-[60px] xl:px-[100px] 2xl:px-[140px]">
+                <div className="flex flex-col md:flex-row gap-[16px] md:gap-[20px] xl:gap-[28px] 2xl:gap-[36px] w-full h-full">
+                  <div className="flex-1 min-h-0 relative">
+                    <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 45vw" />
                   </div>
                   {page.image2 && (
-                    <div className="flex-1 h-full overflow-hidden relative">
-                      <Image src={page.image2} alt={project.title} fill className="object-cover" sizes="40vw" />
+                    <div className="flex-1 min-h-0 relative">
+                      <Image src={page.image2} alt={project.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 45vw" />
                     </div>
                   )}
                 </div>

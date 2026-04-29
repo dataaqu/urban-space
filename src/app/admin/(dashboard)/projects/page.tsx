@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import prisma from '@/lib/prisma';
 import { Button, PageHeader } from '@/components/admin/ui';
-import ProjectsTable, {
-  ProjectRow,
-} from '@/components/admin/ProjectsTable';
+import ProjectsPageTabs from '@/components/admin/ProjectsPageTabs';
+import { ProjectRow } from '@/components/admin/ProjectsTable';
+import { OrderRow } from '@/components/admin/ProjectsOrderClient';
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
     orderBy: [
+      { displayOrder: 'asc' },
       { featuredOrder: { sort: 'asc', nulls: 'last' } },
       { createdAt: 'desc' },
     ],
@@ -23,7 +24,7 @@ export default async function AdminProjectsPage() {
     },
   });
 
-  const rows: ProjectRow[] = projects.map((p) => ({
+  const tableRows: ProjectRow[] = projects.map((p) => ({
     id: p.id,
     titleKa: p.titleKa,
     titleEn: p.titleEn,
@@ -34,11 +35,22 @@ export default async function AdminProjectsPage() {
     featuredOrder: p.featuredOrder,
   }));
 
+  const orderRows: OrderRow[] = projects.map((p) => ({
+    id: p.id,
+    titleKa: p.titleKa,
+    titleEn: p.titleEn,
+    category: p.category,
+    thumbnail: p.featuredImage || p.pages[0]?.image1 || null,
+    featured: p.featured,
+    featuredOrder: p.featuredOrder,
+    displayOrder: p.displayOrder,
+  }));
+
   return (
     <div>
       <PageHeader
         title="პროექტები"
-        description="დაამატე, რედაქტირე ან წაშალე პროექტები."
+        description="დაამატე, რედაქტირე ან წაშალე პროექტები. განლაგება tab-ში — დაალაგე და აირჩიე მთავარი 5."
         breadcrumbs={[
           { label: 'მთავარი', href: '/admin' },
           { label: 'პროექტები' },
@@ -51,7 +63,7 @@ export default async function AdminProjectsPage() {
           </Link>
         }
       />
-      <ProjectsTable projects={rows} />
+      <ProjectsPageTabs projects={tableRows} orderRows={orderRows} />
     </div>
   );
 }

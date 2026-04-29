@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   Filter,
@@ -17,6 +18,7 @@ import {
   Card,
   EmptyState,
   Input,
+  useToast,
 } from '@/components/admin/ui';
 import { DeleteButton } from './DeleteButton';
 
@@ -33,9 +35,47 @@ export interface ProjectRow {
 
 type CategoryFilter = 'ALL' | 'ARCHITECTURE' | 'URBAN';
 
+const MAX_FEATURED = 5;
+
 export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) {
+  const router = useRouter();
+  const toast = useToast();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<CategoryFilter>('ALL');
+  const [pendingId, setPendingId] = useState<string | null>(null);
+
+  const featuredCount = useMemo(
+    () => projects.filter((p) => p.featured).length,
+    [projects],
+  );
+
+  const toggleFeatured = async (id: string, current: boolean) => {
+    if (!current && featuredCount >= MAX_FEATURED) {
+      toast.error(`მაქსიმუმ ${MAX_FEATURED} პროექტი შეიძლება მთავარ გვერდზე`);
+      return;
+    }
+    setPendingId(id);
+    try {
+      const res = await fetch(`/api/admin/projects/${id}/featured`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featured: !current }),
+      });
+      if (res.ok) {
+        toast.success(
+          !current ? 'დაემატა მთავარ გვერდზე' : 'მოიხსნა მთავარი გვერდიდან',
+        );
+        router.refresh();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        toast.error(data.error || 'შეცდომა');
+      }
+    } catch {
+      toast.error('შეცდომა');
+    } finally {
+      setPendingId(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -118,22 +158,22 @@ export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) 
             <table className="w-full">
               <thead className="bg-neutral-50/60 border-b border-neutral-200/70">
                 <tr>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     სურათი
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     სახელი
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     კატეგორია
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     გვერდები
                   </th>
-                  <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-left px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     მთავარი
                   </th>
-                  <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                  <th className="text-right px-5 py-3.5 text-[12px] font-semibold uppercase tracking-wider text-neutral-500">
                     მოქმედება
                   </th>
                 </tr>
@@ -161,10 +201,10 @@ export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) 
                       </div>
                     </td>
                     <td className="px-5 py-3">
-                      <p className="font-medium text-dark-900">
+                      <p className="text-[15px] font-medium text-dark-900">
                         {project.titleKa}
                       </p>
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-[13px] text-neutral-500">
                         {project.titleEn}
                       </p>
                     </td>
@@ -175,21 +215,47 @@ export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) 
                           : 'ურბანული'}
                       </Badge>
                     </td>
-                    <td className="px-5 py-3 text-sm text-neutral-600 tabular-nums">
+                    <td className="px-5 py-3 text-[15px] text-neutral-600 tabular-nums">
                       {project.pageCount}
                     </td>
                     <td className="px-5 py-3">
                       {project.featured ? (
-                        <Badge variant="gold">
-                          <Star className="h-3 w-3" />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            toggleFeatured(project.id, project.featured)
+                          }
+                          disabled={pendingId === project.id}
+                          title="დააჭირე მოსახსნელად"
+                          className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[13px] font-medium text-amber-800 hover:bg-amber-100 disabled:opacity-50"
+                        >
+                          <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
                           <span>
                             {project.featuredOrder
                               ? `#${project.featuredOrder}`
                               : 'Featured'}
                           </span>
-                        </Badge>
+                        </button>
                       ) : (
-                        <span className="text-sm text-neutral-400">—</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            toggleFeatured(project.id, project.featured)
+                          }
+                          disabled={
+                            pendingId === project.id ||
+                            featuredCount >= MAX_FEATURED
+                          }
+                          title={
+                            featuredCount >= MAX_FEATURED
+                              ? `მაქსიმუმ ${MAX_FEATURED} პროექტი`
+                              : 'მთავარზე დამატება'
+                          }
+                          className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-2.5 py-1 text-[13px] font-medium text-neutral-500 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-neutral-200 disabled:hover:bg-white disabled:hover:text-neutral-500"
+                        >
+                          <Star className="h-3 w-3" />
+                          <span>დამატება</span>
+                        </button>
                       )}
                     </td>
                     <td className="px-5 py-3">

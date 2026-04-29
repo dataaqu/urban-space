@@ -18,6 +18,7 @@ interface HeroSlide {
 
 interface HeroProps {
   slides?: HeroSlide[];
+  content?: Record<string, { ka: string; en: string }>;
 }
 
 const fallbackBackgrounds = [
@@ -28,7 +29,7 @@ const fallbackBackgrounds = [
   '/full-project/project3.jpg',
 ];
 
-export default function Hero({ slides }: HeroProps) {
+export default function Hero({ slides, content }: HeroProps) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -48,7 +49,9 @@ export default function Hero({ slides }: HeroProps) {
     language === 'ka'
       ? 'არქიტექტურა და ურბანული დაგეგმარება'
       : 'Architecture & urban planning';
-  const exploreLabel = language === 'ka' ? 'იხილე პროექტები' : 'EXPLORE PROJECTS';
+  const exploreLabel =
+    content?.['hero.cta']?.[language] ||
+    (language === 'ka' ? 'იხილე პროექტები' : 'EXPLORE PROJECTS');
 
   const logoRef = useRef<HTMLAnchorElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
