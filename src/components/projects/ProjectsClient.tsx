@@ -65,7 +65,7 @@ export default function ProjectsClient({
             return (
               <article key={project.id}>
                 <Link href={`/projects/${project.slug}`} className="group block">
-                  <div className="overflow-hidden bg-black/5 aspect-[4/3] relative">
+                  <div className="overflow-hidden bg-background aspect-[4/3] relative">
                     <Image
                       src={imageSrc}
                       alt={projectTitle}

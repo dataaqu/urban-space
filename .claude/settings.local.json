@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(cmdkey *)"
+      "PowerShell(cmdkey *)",
+      "mcp__planflow__planflow_use",
+      "mcp__planflow__planflow_create",
+      "mcp__planflow__planflow_login",
+      "mcp__planflow__planflow_index",
+      "mcp__planflow__planflow_index_status",
+      "mcp__planflow__planflow_search",
+      "mcp__planflow__planflow_explore"
     ]
   }
 }

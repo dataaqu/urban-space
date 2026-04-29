@@ -1,40 +1,70 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 
 interface SplashScreenProps {
   onComplete?: () => void;
 }
 
+const STORAGE_KEY = 'urban-space:splash-shown';
+
 export default function SplashScreen({ onComplete }: SplashScreenProps) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [phase, setPhase] = useState<'idle' | 'visible' | 'fading'>('idle');
+  const initialized = useRef(false);
+  const onCompleteRef = useRef(onComplete);
   const locale = useLocale();
   const language = locale as 'en' | 'ka';
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(() => onComplete?.(), 700);
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    onCompleteRef.current = onComplete;
   }, [onComplete]);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (initialized.current) return;
+    initialized.current = true;
+
+    if (sessionStorage.getItem(STORAGE_KEY)) {
+      onCompleteRef.current?.();
+      return;
+    }
+    sessionStorage.setItem(STORAGE_KEY, '1');
+    setPhase('visible');
+  }, []);
+
+  useEffect(() => {
+    if (phase !== 'visible') return;
+    const timer = setTimeout(() => {
+      setPhase('fading');
+      setTimeout(() => {
+        onCompleteRef.current?.();
+        setPhase('idle');
+      }, 700);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === 'idle') return;
     const { body } = document;
     const previousOverflow = body.style.overflow;
     body.style.overflow = 'hidden';
     return () => {
       body.style.overflow = previousOverflow;
     };
-  }, [isVisible]);
+  }, [phase]);
+
+  if (phase === 'idle') return null;
 
   const handleClick = () => {
-    setIsVisible(false);
-    setTimeout(() => onComplete?.(), 700);
+    setPhase('fading');
+    setTimeout(() => {
+      onCompleteRef.current?.();
+      setPhase('idle');
+    }, 700);
   };
+
+  const isVisible = phase === 'visible';
 
   return (
     <div
