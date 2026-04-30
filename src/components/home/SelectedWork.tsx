@@ -45,7 +45,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
       ? 'text-[22px] md:text-[34px]'
       : 'text-[28px] md:text-[44px]';
 
-  const renderCard = (project: Project, heightClasses: string) => {
+  const renderCard = (project: Project) => {
     const title = locale === 'ka' ? project.titleKa : project.titleEn;
     const location = locale === 'ka' ? project.locationKa : project.locationEn;
     const imageSrc =
@@ -53,13 +53,14 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
 
     return (
       <Link key={project.id} href={`/projects/${project.slug}`} className="group block">
-        <div className={`overflow-hidden bg-black/5 relative ${heightClasses}`}>
+        <div className="overflow-hidden relative">
           <Image
             src={imageSrc}
             alt={title}
-            fill
+            width={1600}
+            height={1200}
             sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover object-center transition duration-700 group-hover:scale-[1.02]"
+            className="w-full h-auto transition duration-700 group-hover:scale-[1.02]"
           />
         </div>
         <div className="mt-5">
@@ -92,17 +93,13 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
         </div>
 
         <div className="flex flex-col gap-16 md:gap-24">
-          <div className="grid gap-8 md:grid-cols-3 md:gap-8">
-            {firstThree.map((project) =>
-              renderCard(project, 'h-[368px] md:h-[495px]')
-            )}
+          <div className="grid gap-8 md:grid-cols-3 md:gap-8 items-start">
+            {firstThree.map((project) => renderCard(project))}
           </div>
 
           {lastTwo.length > 0 && (
-            <div className="grid gap-8 md:grid-cols-2 md:gap-12 md:px-4">
-              {lastTwo.map((project) =>
-                renderCard(project, 'h-[391px] md:h-[598px]')
-              )}
+            <div className="grid gap-8 md:grid-cols-2 md:gap-12 md:px-4 items-start">
+              {lastTwo.map((project) => renderCard(project))}
             </div>
           )}
         </div>

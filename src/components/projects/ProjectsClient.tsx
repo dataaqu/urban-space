@@ -51,7 +51,7 @@ export default function ProjectsClient({
   return (
     <section className="px-6 pb-20 pt-8 md:px-10 md:pb-24 md:pt-10">
       <div className="mx-auto max-w-[1680px]">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-16 md:grid-cols-2 md:gap-y-24 xl:gap-x-8 xl:gap-y-28">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-16 md:grid-cols-2 md:gap-y-24 xl:gap-x-8 xl:gap-y-28 items-start">
           {visibleProjects.map((project) => {
             const projectTitle =
               locale === 'ka' ? project.titleKa : project.titleEn;
@@ -65,13 +65,14 @@ export default function ProjectsClient({
             return (
               <article key={project.id}>
                 <Link href={`/projects/${project.slug}`} className="group block">
-                  <div className="overflow-hidden bg-background aspect-[4/3] relative">
+                  <div className="overflow-hidden relative">
                     <Image
                       src={imageSrc}
                       alt={projectTitle}
-                      fill
+                      width={1600}
+                      height={1200}
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-contain transition duration-700 group-hover:scale-[1.015]"
+                      className="w-full h-auto transition duration-700 group-hover:scale-[1.015]"
                     />
                   </div>
 
