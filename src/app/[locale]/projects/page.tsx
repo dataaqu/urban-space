@@ -30,7 +30,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
         pages: {
           orderBy: { order: 'asc' },
           take: 1,
-          select: { image1: true },
+          select: { image1: true, mobileImage1: true },
         },
       },
     });

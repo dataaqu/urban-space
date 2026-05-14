@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -29,13 +30,14 @@ export async function POST(
         order: (maxOrder._max.order ?? -1) + 1,
         image1: data.image1,
         image2: data.image2 || null,
-        textKa: data.textKa || null,
-        textEn: data.textEn || null,
+        mobileImage1: data.mobileImage1 || null,
+        mobileImage2: data.mobileImage2 || null,
         textRightKa: data.textRightKa || null,
         textRightEn: data.textRightEn || null,
       },
     });
 
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json(page);
   } catch (error) {
     console.error('Create page error:', error);

@@ -1,18 +1,14 @@
 'use client';
 
-import { forwardRef, ReactNode } from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
-type IconAnimation = 'none' | 'slide' | 'bounce';
-
-interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'ref' | 'children'> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'outline-animated' | 'ghost' | 'gold';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
-  iconAnimation?: IconAnimation;
   children?: ReactNode;
 }
 
@@ -27,7 +23,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       leftIcon,
       rightIcon,
-      iconAnimation = 'slide',
       ...props
     },
     ref
@@ -36,7 +31,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center font-medium rounded-md transition-all duration-300',
       'focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2',
       'disabled:opacity-50 disabled:pointer-events-none',
-      'relative overflow-hidden'
+      'relative overflow-hidden hover:scale-[1.02] active:scale-[0.98]'
     );
 
     const variants = {
@@ -79,21 +74,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'px-8 py-3.5 text-base gap-2.5',
     };
 
-    const iconAnimations = {
-      none: {},
-      slide: {
-        initial: { x: 0 },
-        animate: { x: 0 },
-        whileHover: { x: 4 },
-      },
-      bounce: {
-        initial: { y: 0 },
-        animate: { y: 0 },
-        whileHover: { y: [0, -3, 0] },
-        transition: { duration: 0.5, repeat: Infinity },
-      },
-    };
-
     const LoadingSpinner = () => (
       <svg
         className="animate-spin h-4 w-4"
@@ -117,39 +97,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       </svg>
     );
 
-    const renderIcon = (icon: ReactNode, position: 'left' | 'right') => {
-      if (!icon) return null;
-
-      const animation = iconAnimation !== 'none' ? iconAnimations[iconAnimation] : {};
-
-      return (
-        <motion.span
-          className={cn(
-            'inline-flex items-center justify-center',
-            position === 'right' && 'transition-transform duration-300 group-hover:translate-x-1'
-          )}
-          {...(position === 'right' ? animation : {})}
-        >
-          {icon}
-        </motion.span>
-      );
-    };
-
     return (
-      <motion.button
+      <button
         ref={ref}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         disabled={disabled || isLoading}
         {...props}
       >
-        {/* Sweep Effect Background for outline-animated variant */}
         {variant === 'outline-animated' && (
           <span className="absolute inset-0 w-0 bg-primary-500/10 transition-all duration-500 ease-out-expo group-hover:w-full" />
         )}
 
-        {/* Content */}
         <span className="relative z-10 inline-flex items-center gap-2">
           {isLoading ? (
             <>
@@ -158,13 +116,17 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             </>
           ) : (
             <>
-              {renderIcon(leftIcon, 'left')}
+              {leftIcon && <span className="inline-flex items-center justify-center">{leftIcon}</span>}
               <span>{children}</span>
-              {renderIcon(rightIcon, 'right')}
+              {rightIcon && (
+                <span className="inline-flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                  {rightIcon}
+                </span>
+              )}
             </>
           )}
         </span>
-      </motion.button>
+      </button>
     );
   }
 );

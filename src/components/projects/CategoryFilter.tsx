@@ -1,103 +1,78 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 interface CategoryFilterProps {
-  activeCategory: string | null;
-  activeType: string | null;
-  onCategoryChange: (category: string | null) => void;
-  onTypeChange: (type: string | null) => void;
+  activeCategory: 'ALL' | 'ARCHITECTURE' | 'URBAN';
 }
 
-const categories = ['ARCHITECTURE', 'URBAN'];
-const types = [
-  'RESIDENTIAL_MULTI',
-  'PUBLIC_MULTIFUNCTIONAL',
-  'INDIVIDUAL_HOUSE',
-  'URBAN_PLANNING',
-  'COMPETITION',
-];
+export default function CategoryFilter({ activeCategory }: CategoryFilterProps) {
+  const locale = useLocale();
+  const language = locale as 'en' | 'ka';
+  const [hidden, setHidden] = useState(false);
 
-export default function CategoryFilter({
-  activeCategory,
-  activeType,
-  onCategoryChange,
-  onTypeChange,
-}: CategoryFilterProps) {
-  const t = useTranslations('projects');
+  useEffect(() => {
+    const onScroll = () => {
+      setHidden(window.scrollY > 10);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const isArch = activeCategory === 'ARCHITECTURE';
+  const isUrban = activeCategory === 'URBAN';
+
+  const renderLink = (href: string, label: string, active: boolean) => (
+    <Link
+      href={active ? '/projects' : href}
+      className="group flex flex-col items-start text-foreground/70 hover:text-foreground transition"
+    >
+      <span className="text-[10px] md:text-[12px] lg:text-[11px] font-light tracking-[0.18em] uppercase">
+        {label}
+      </span>
+      <span
+        className={`mt-2 h-px bg-foreground/60 transition-all duration-300 ${
+          active ? 'w-1/2 opacity-100' : 'w-0 opacity-0'
+        }`}
+      />
+    </Link>
+  );
 
   return (
-    <div className="space-y-6">
-      {/* Category Filter */}
-      <div>
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">
-          {t('filter.category')}
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onCategoryChange(null)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeCategory === null
-                ? 'bg-primary-600 text-white'
-                : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-            }`}
+    <div
+      className={`sticky top-[56px] z-30 bg-background/85 backdrop-blur-md md:top-[100px] ${
+        hidden ? 'pointer-events-none' : ''
+      }`}
+      style={{
+        opacity: hidden ? 0 : 1,
+        visibility: hidden ? 'hidden' : 'visible',
+        transform: 'translate3d(0, 0, 0)',
+        transition: hidden ? 'none' : 'opacity 700ms ease-in-out, visibility 0s',
+      }}
+    >
+      <div className="px-6 py-3 md:px-10 md:py-4">
+        <div className="mx-auto flex max-w-[1680px] flex-col items-center md:flex-row md:justify-center">
+          <Link
+            href="/projects"
+            className="mb-3 text-[11px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition md:hidden"
           >
-            {t('all')}
-          </motion.button>
-          {categories.map((category) => (
-            <motion.button
-              key={category}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onCategoryChange(category)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === category
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-              }`}
-            >
-              {t(`categories.${category}`)}
-            </motion.button>
-          ))}
-        </div>
-      </div>
-
-      {/* Type Filter */}
-      <div>
-        <h3 className="text-sm font-medium text-secondary-700 mb-3">
-          {t('filter.type')}
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onTypeChange(null)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              activeType === null
-                ? 'bg-primary-600 text-white'
-                : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-            }`}
-          >
-            {t('all')}
-          </motion.button>
-          {types.map((type) => (
-            <motion.button
-              key={type}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onTypeChange(type)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeType === type
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'
-              }`}
-            >
-              {t(`types.${type}`)}
-            </motion.button>
-          ))}
+            {language === 'ka' ? 'პროექტები' : 'Projects'}
+          </Link>
+          <div className="flex items-center justify-center gap-10 md:gap-16">
+            {renderLink(
+              '/projects?category=ARCHITECTURE',
+              language === 'ka' ? 'არქიტექტურა' : 'Architecture',
+              isArch
+            )}
+            {renderLink(
+              '/projects?category=URBAN',
+              language === 'ka' ? 'ურბანული დაგეგმარება' : 'Urban Planning',
+              isUrban
+            )}
+          </div>
         </div>
       </div>
     </div>

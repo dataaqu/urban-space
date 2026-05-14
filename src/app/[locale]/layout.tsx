@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Noto_Sans, Inter, Cormorant_Garamond, Noto_Sans_Georgian } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
+import prisma from '@/lib/prisma';
 import '@/app/globals.css';
 
 const notoSans = Noto_Sans({
@@ -54,7 +55,17 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const messages = await getMessages({ locale });
+  const [messages, dbInfo] = await Promise.all([
+    getMessages({ locale }),
+    prisma.contactInfo
+      .findUnique({ where: { id: 'singleton' } })
+      .catch(() => null),
+  ]);
+
+  const social = {
+    facebook: dbInfo?.facebook?.trim() || '',
+    instagram: dbInfo?.instagram?.trim() || '',
+  };
 
   const fontVars = `${notoSans.variable} ${inter.variable} ${cormorant.variable} ${notoSansGeorgian.variable}`;
   const langClass = locale === 'ka' ? 'font-georgian' : 'font-inter';
@@ -63,7 +74,7 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${fontVars} ${langClass}`}>
       <body className="min-h-screen flex flex-col font-sans bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
-            <ConditionalHeader />
+            <ConditionalHeader social={social} />
             <main className="flex-1">{children}</main>
             <ConditionalFooter />
         </NextIntlClientProvider>

@@ -63,6 +63,7 @@ model Project {
   locationKa    String?
   locationEn    String?
   featuredImage String?
+  mobileImage   String?
   featured      Boolean         @default(false)
   featuredOrder Int?
   displayOrder  Int             @default(0)
@@ -81,14 +82,29 @@ model ProjectPage {
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   type      PageType
   order     Int      @default(0)
-  image1    String
-  image2    String?
-  textKa       String?
-  textEn       String?
+  image1       String
+  image2       String?
+  mobileImage1 String?
+  mobileImage2 String?
   textRightKa  String?
   textRightEn  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  architectsKa    String?
+  architectsEn    String?
+  metaLocationKa  String?
+  metaLocationEn  String?
+  typeKa          String?
+  typeEn          String?
+  statusKa        String?
+  statusEn        String?
+  areaKa          String?
+  areaEn          String?
+  clientKa        String?
+  clientEn        String?
+  year            String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([projectId])
 }
@@ -113,6 +129,19 @@ model Service {
   descriptionEn String?
   icon          String?
   order         Int     @default(0)
+}
+
+model ContactInfo {
+  id         String   @id @default("singleton")
+  phone      String?
+  email      String?
+  addressKa  String?
+  addressEn  String?
+  facebook   String?
+  instagram  String?
+  mapLat     Float?
+  mapLng     Float?
+  updatedAt  DateTime @updatedAt
 }
 
 model ContactSubmission {

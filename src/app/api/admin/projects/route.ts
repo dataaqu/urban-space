@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
         locationKa: data.locationKa || null,
         locationEn: data.locationEn || null,
         featuredImage: data.featuredImage || null,
+        mobileImage: data.mobileImage || null,
         featured: data.featured || false,
         featuredOrder: data.featuredOrder || null,
         pages: {
@@ -52,8 +53,6 @@ export async function POST(request: NextRequest) {
             type: 'SINGLE_IMAGE',
             order: 0,
             image1: '',
-            textKa: '',
-            textEn: '',
           },
         },
       },

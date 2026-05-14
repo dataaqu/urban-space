@@ -45,8 +45,6 @@ async function main() {
             type: 'SINGLE_IMAGE',
             order: 0,
             image1: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200',
-            textKa: '<p>თანამედროვე საცხოვრებელი კომპლექსი ვაკის რაიონში</p>',
-            textEn: '<p>Modern residential complex in Vake district</p>',
           },
           {
             type: 'DOUBLE_IMAGE',
@@ -71,8 +69,6 @@ async function main() {
             type: 'SINGLE_IMAGE',
             order: 0,
             image1: 'https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1200',
-            textKa: '<p>ისტორიული უბნის რევიტალიზაციის პროექტი</p>',
-            textEn: '<p>Historic district revitalization project</p>',
           },
           {
             type: 'DOUBLE_IMAGE',

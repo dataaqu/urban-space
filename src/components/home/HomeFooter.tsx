@@ -14,10 +14,10 @@ export default function HomeFooter() {
     >
       <div className="mx-auto max-w-[1400px] px-6 lg:px-10 py-20 lg:py-28">
         <div className="text-center">
-          <div className="text-3xl md:text-4xl font-light tracking-[0.16em]">
+          <div className="text-lg md:text-xl font-light tracking-[0.16em]">
             Urban Space
           </div>
-          <p className="mt-3 text-[10px] md:text-xs font-light tracking-[0.2em] opacity-60">
+          <p className="mt-2 text-[9px] md:text-[10px] font-light tracking-[0.2em] opacity-60">
             {language === 'ka'
               ? 'არქიტექტურა და ურბანული დაგეგმარება'
               : 'Architecture & Urban Planning'}

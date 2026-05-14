@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Save, FileText, Home, Building2, Phone } from 'lucide-react';
+import { Save, Home, Building2 } from 'lucide-react';
 import {
   Button,
   Card,
@@ -31,7 +31,7 @@ const SECTIONS = [
   },
   {
     id: 'studio',
-    label: 'სტუდია',
+    label: 'ჩვენ შესახებ',
     icon: Building2,
     fields: [
       { key: 'about.title', label: 'სათაური', defaultKa: 'ჩვენს შესახებ', defaultEn: 'About Us' },
@@ -51,25 +51,6 @@ const SECTIONS = [
       { key: 'team.description', label: 'გუნდი - აღწერა', defaultKa: 'სტუდიას ხელმძღვანელობენ გამოცდილი არქიტექტორები მარიამ ეფრემიძე და ლუკა კიკიანი. ჩვენი გუნდი მოიცავს სხვადასხვა დისციპლინის სპეციალისტებს, რომლებიც ინტეგრალურად მუშაობენ პროექტის ყველა ეტაპზე.', defaultEn: 'The studio is led by experienced architects Mariam Ephremidze and Luka Kikiani. Our team includes specialists from various disciplines, working integrally through all stages of the project.' },
       { key: 'team.leads', label: 'ლიდერები', defaultKa: 'მარიამ ეფრემიძე    ლუკა კიკიანი', defaultEn: 'Mariam Ephremidze    Luka Kikiani' },
       { key: 'team.leadsRole', label: 'ლიდერების პოზიცია', defaultKa: 'მთავარი არქიტექტორები', defaultEn: 'Principal Architects' },
-    ],
-  },
-  {
-    id: 'contact',
-    label: 'კონტაქტი',
-    icon: Phone,
-    fields: [
-      { key: 'title', label: 'სათაური', defaultKa: 'კონტაქტი', defaultEn: 'Contact' },
-      { key: 'subtitle', label: 'ქვესათაური', defaultKa: 'ჩვენ ღია ვართ თანამშრომლობისა და ახალი პროექტებისთვის.', defaultEn: 'We are open for collaboration and new projects.' },
-      { key: 'info.address', label: 'მისამართი', defaultKa: 'ნიკო ნიკოლაძის ქ. 5, თბილისი', defaultEn: 'Niko Nikoladze St. 5, Tbilisi' },
-      { key: 'info.email', label: 'ელ. ფოსტა', defaultKa: 'info@urbanspace.ge', defaultEn: 'info@urbanspace.ge' },
-      { key: 'info.phone', label: 'ტელეფონი', defaultKa: '+995 32 2 22 22 22', defaultEn: '+995 32 2 22 22 22' },
-      { key: 'info.label', label: 'ინფო სექციის სათაური', defaultKa: 'ინფო', defaultEn: 'Info' },
-      { key: 'follow.label', label: 'Follow Us სათაური', defaultKa: 'გამოგვყევით', defaultEn: 'Follow Us' },
-      { key: 'follow.facebook', label: 'Facebook URL', defaultKa: 'https://facebook.com/urbanspace', defaultEn: 'https://facebook.com/urbanspace' },
-      { key: 'follow.instagram', label: 'Instagram URL', defaultKa: 'https://instagram.com/urbanspace', defaultEn: 'https://instagram.com/urbanspace' },
-      { key: 'follow.linkedin', label: 'LinkedIn URL', defaultKa: 'https://linkedin.com/company/urbanspace', defaultEn: 'https://linkedin.com/company/urbanspace' },
-      { key: 'office.label', label: 'Office Location სათაური', defaultKa: 'ოფისის მდებარეობა', defaultEn: 'Office Location' },
-      { key: 'office.address', label: 'ოფისის მისამართი', defaultKa: 'ნიკო ნიკოლაძის ქ. 5, თბილისი', defaultEn: 'Niko Nikoladze St. 5, Tbilisi' },
     ],
   },
 ];
@@ -222,64 +203,78 @@ export default function ContentManagerPage() {
       ) : (
         currentSection && (
           <div className="space-y-4">
-            {currentSection.fields.map((field) => (
-              <Card key={field.key} padded>
-                <div className="mb-4 flex items-start justify-between gap-4">
-                  <label className="text-sm font-semibold text-dark-900">
-                    {field.label}
-                  </label>
-                  <span className="text-[10px] font-mono text-neutral-400 px-2 py-0.5 rounded bg-neutral-100">
-                    {field.key}
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div>
-                    <div className="mb-1.5 flex items-center gap-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                        ქართული
-                      </span>
-                      <span className="inline-flex h-4 w-4 items-center justify-center rounded-[3px] bg-primary-100 text-[9px] font-bold text-primary-800">
-                        KA
-                      </span>
-                    </div>
+            {currentSection.fields.map((field) => {
+              const single = (field as { singleValue?: boolean }).singleValue;
+              return (
+                <Card key={field.key} padded>
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <label className="text-sm font-semibold text-dark-900">
+                      {field.label}
+                    </label>
+                    <span className="text-[10px] font-mono text-neutral-400 px-2 py-0.5 rounded bg-neutral-100">
+                      {field.key}
+                    </span>
+                  </div>
+                  {single ? (
                     <Textarea
                       value={getValue(currentSection.id, field.key, 'ka')}
-                      onChange={(e) =>
-                        setValue(
-                          currentSection.id,
-                          field.key,
-                          'ka',
-                          e.target.value,
-                        )
-                      }
-                      rows={3}
+                      onChange={(e) => {
+                        setValue(currentSection.id, field.key, 'ka', e.target.value);
+                        setValue(currentSection.id, field.key, 'en', e.target.value);
+                      }}
+                      rows={1}
                     />
-                  </div>
-                  <div>
-                    <div className="mb-1.5 flex items-center gap-2">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                        English
-                      </span>
-                      <span className="inline-flex h-4 w-4 items-center justify-center rounded-[3px] bg-neutral-200 text-[9px] font-bold text-dark-800">
-                        EN
-                      </span>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div>
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                            ქართული
+                          </span>
+                          <span className="inline-flex h-4 w-4 items-center justify-center rounded-[3px] bg-primary-100 text-[9px] font-bold text-primary-800">
+                            KA
+                          </span>
+                        </div>
+                        <Textarea
+                          value={getValue(currentSection.id, field.key, 'ka')}
+                          onChange={(e) =>
+                            setValue(
+                              currentSection.id,
+                              field.key,
+                              'ka',
+                              e.target.value,
+                            )
+                          }
+                          rows={3}
+                        />
+                      </div>
+                      <div>
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+                            English
+                          </span>
+                          <span className="inline-flex h-4 w-4 items-center justify-center rounded-[3px] bg-neutral-200 text-[9px] font-bold text-dark-800">
+                            EN
+                          </span>
+                        </div>
+                        <Textarea
+                          value={getValue(currentSection.id, field.key, 'en')}
+                          onChange={(e) =>
+                            setValue(
+                              currentSection.id,
+                              field.key,
+                              'en',
+                              e.target.value,
+                            )
+                          }
+                          rows={3}
+                        />
+                      </div>
                     </div>
-                    <Textarea
-                      value={getValue(currentSection.id, field.key, 'en')}
-                      onChange={(e) =>
-                        setValue(
-                          currentSection.id,
-                          field.key,
-                          'en',
-                          e.target.value,
-                        )
-                      }
-                      rows={3}
-                    />
-                  </div>
-                </div>
-              </Card>
-            ))}
+                  )}
+                </Card>
+              );
+            })}
             <div className="flex justify-end pt-2">
               <Button
                 leftIcon={<Save className="h-4 w-4" />}

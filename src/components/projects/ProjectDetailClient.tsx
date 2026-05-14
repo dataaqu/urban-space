@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import DOMPurify from 'isomorphic-dompurify';
+import { X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import ResponsiveProjectImage from './ResponsiveProjectImage';
 
 interface PageData {
   id: string;
@@ -11,10 +12,62 @@ interface PageData {
   order: number;
   image1: string;
   image2: string | null;
-  textKa: string | null;
-  textEn: string | null;
+  mobileImage1: string | null;
+  mobileImage2: string | null;
   textRightKa: string | null;
   textRightEn: string | null;
+  architectsKa: string | null;
+  architectsEn: string | null;
+  metaLocationKa: string | null;
+  metaLocationEn: string | null;
+  typeKa: string | null;
+  typeEn: string | null;
+  statusKa: string | null;
+  statusEn: string | null;
+  areaKa: string | null;
+  areaEn: string | null;
+  clientKa: string | null;
+  clientEn: string | null;
+  year: string | null;
+}
+
+const META_LABELS = {
+  ka: {
+    architects: 'არქიტექტორები',
+    metaLocation: 'მდებარეობა',
+    type: 'ტიპი',
+    status: 'სტატუსი',
+    area: 'შენობის ფართობი',
+    client: 'დამკვეთი',
+    year: 'წელი',
+  },
+  en: {
+    architects: 'Architects',
+    metaLocation: 'Location',
+    type: 'Type',
+    status: 'Status',
+    area: 'Building Area',
+    client: 'Client',
+    year: 'Year',
+  },
+} as const;
+
+function getMetadataItems(page: PageData, locale: string) {
+  const isKa = locale === 'ka';
+  const labels = isKa ? META_LABELS.ka : META_LABELS.en;
+  const suffix = isKa ? 'Ka' : 'En';
+
+  const items: { label: string; value: string }[] = [];
+
+  (['architects', 'metaLocation', 'type', 'status', 'area', 'client'] as const).forEach((key) => {
+    const fieldKey = `${key}${suffix}` as keyof PageData;
+    const value = page[fieldKey] as string | null;
+    if (value) items.push({ label: labels[key], value });
+  });
+
+  if (page.year) items.push({ label: labels.year, value: page.year });
+
+  return items;
 }
 
 interface ProjectDetailClientProps {
@@ -22,248 +75,325 @@ interface ProjectDetailClientProps {
   project: {
     id: string;
     title: string;
+    description: string | null;
     category: string;
     pages: PageData[];
   };
 }
 
-function SafeHTML({ html, className }: { html: string; className?: string }) {
-  return <div className={className} dangerouslySetInnerHTML={{ __html: html }} />;
-}
-
-const textStyle = "text-[18px] xl:text-[20px] 2xl:text-[22px] text-[#333] font-sans leading-relaxed prose prose-sm xl:prose-base 2xl:prose-lg max-w-none";
-
 export default function ProjectDetailClient({ locale, project }: ProjectDetailClientProps) {
   const totalPages = project.pages.length;
-  const [activePage, setActivePage] = useState(0);
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const activePageRef = useRef(0);
-  const isAnimatingRef = useRef(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [infoOpen, setInfoOpen] = useState(false);
 
-  const HEADER_OFFSET = 80;
-  const sectionHeight = `calc(100vh - ${HEADER_OFFSET}px)`;
+  const activeIndexRef = useRef(0);
+  const lockRef = useRef(false);
+  const infoOpenRef = useRef(false);
 
-  const getLeftText = (page: PageData) => locale === 'ka' ? page.textKa : page.textEn;
-  const getRightText = (page: PageData) => locale === 'ka' ? page.textRightKa : page.textRightEn;
+  const isKa = locale === 'ka';
+  const closeLabel = isKa ? 'დახურვა' : 'Close';
+  const infoLabel = isKa ? 'პროექტის ინფორმაცია' : 'Project Information';
 
   useEffect(() => {
-    activePageRef.current = activePage;
-  }, [activePage]);
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
 
-  const scrollToPage = (index: number) => {
-    const target = sectionRefs.current[index];
-    if (!target) return;
-    const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-    isAnimatingRef.current = true;
-    activePageRef.current = index;
-    setActivePage(index);
-    window.scrollTo({ top, behavior: 'smooth' });
-    window.setTimeout(() => {
-      isAnimatingRef.current = false;
-    }, 800);
-  };
+  useEffect(() => {
+    infoOpenRef.current = infoOpen;
+  }, [infoOpen]);
 
+  // Body scroll lock + ESC close when drawer is open
+  useEffect(() => {
+    if (!infoOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setInfoOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [infoOpen]);
+
+  // Slide navigation — wheel, touch, keyboard
   useEffect(() => {
     if (totalPages <= 1) return;
 
+    const change = (dir: 1 | -1) => {
+      if (lockRef.current) return;
+      if (infoOpenRef.current) return;
+      const next = activeIndexRef.current + dir;
+      if (next < 0 || next >= totalPages) return;
+      lockRef.current = true;
+      activeIndexRef.current = next;
+      setActiveIndex(next);
+      window.setTimeout(() => {
+        lockRef.current = false;
+      }, 450);
+    };
+
     let touchStartY = 0;
 
-    const goTo = (delta: number) => {
-      if (isAnimatingRef.current) return;
-      const next = activePageRef.current + delta;
-      if (next < 0 || next >= totalPages) return;
-      const target = sectionRefs.current[next];
-      if (!target) return;
-      const top = target.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-      isAnimatingRef.current = true;
-      activePageRef.current = next;
-      setActivePage(next);
-      window.scrollTo({ top, behavior: 'smooth' });
-      window.setTimeout(() => {
-        isAnimatingRef.current = false;
-      }, 800);
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < 5) return;
+    const onWheel = (e: WheelEvent) => {
+      if (infoOpenRef.current) return;
       e.preventDefault();
-      goTo(e.deltaY > 0 ? 1 : -1);
+      if (Math.abs(e.deltaY) < 10) return;
+      change(e.deltaY > 0 ? 1 : -1);
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
+    const onTouchStart = (e: TouchEvent) => {
       touchStartY = e.touches[0]?.clientY ?? 0;
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
-      const currentY = e.touches[0]?.clientY ?? 0;
-      const diff = touchStartY - currentY;
-      if (Math.abs(diff) < 30) return;
+    const onTouchMove = (e: TouchEvent) => {
+      if (infoOpenRef.current) return;
       e.preventDefault();
-      goTo(diff > 0 ? 1 : -1);
-      touchStartY = currentY;
     };
 
-    const handleKey = (e: KeyboardEvent) => {
+    const onTouchEnd = (e: TouchEvent) => {
+      if (infoOpenRef.current) return;
+      const endY = e.changedTouches[0]?.clientY ?? 0;
+      const diff = touchStartY - endY;
+      if (Math.abs(diff) < 40) return;
+      change(diff > 0 ? 1 : -1);
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (infoOpenRef.current) return;
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
-        goTo(1);
+        change(1);
       } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
         e.preventDefault();
-        goTo(-1);
+        change(-1);
       }
     };
 
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('keydown', handleKey);
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd);
+    window.addEventListener('keydown', onKey);
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
+      window.removeEventListener('keydown', onKey);
     };
   }, [totalPages]);
 
-  if (project.pages.length === 0) {
+  if (totalPages === 0) {
     return (
-      <div className="flex items-center justify-center" style={{ height: sectionHeight }}>
-        <p className="text-gray-400 text-sm xl:text-base 2xl:text-lg">პროექტს გვერდები არ აქვს</p>
-      </div>
+      <main className="h-screen overflow-hidden bg-background text-foreground flex items-center justify-center">
+        <p className="text-foreground/45 text-sm">
+          {isKa ? 'პროექტს გვერდები არ აქვს' : 'No pages'}
+        </p>
+      </main>
     );
   }
 
+  const page = project.pages[activeIndex];
+  const metaPage =
+    project.pages.find((p) => getMetadataItems(p, locale).length > 0) ?? page;
+  const metaItems = getMetadataItems(metaPage, locale);
+  const hasInfo = metaItems.length > 0;
+  const hasTwoImages = page.type === 'DOUBLE_IMAGE' && !!page.image2;
+  const rawPageText = (isKa ? page.textRightKa : page.textRightEn)?.trim() || '';
+  const pageTextHtml = useMemo(() => DOMPurify.sanitize(rawPageText), [rawPageText]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="w-full bg-white relative"
-    >
-      {/* Close button */}
+    <main className="h-[calc(100vh-80px)] overflow-hidden bg-background text-foreground">
+      {/* Close link */}
       <Link
         href="/projects"
-        aria-label="Close"
-        className="fixed top-[120px] xl:top-[132px] right-6 xl:right-8 2xl:right-10 z-40 text-[12px] xl:text-[13px] font-medium tracking-[0.16em] text-[#1a1a1a] transition hover:text-black"
+        aria-label={closeLabel}
+        className="fixed right-4 top-[92px] md:right-8 md:top-[100px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
-        close
+        {closeLabel}
       </Link>
 
       {/* Pagination dots */}
       {totalPages > 1 && (
-        <div className="fixed right-6 xl:right-8 2xl:right-10 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2.5 xl:gap-3 2xl:gap-4">
+        <div className="fixed right-4 md:right-6 top-[42%] -translate-y-1/2 -mt-10 z-30 flex flex-col gap-3">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
-              onClick={() => scrollToPage(i)}
-              className={`w-[6px] h-[6px] xl:w-[8px] xl:h-[8px] 2xl:w-[10px] 2xl:h-[10px] rounded-full transition-all duration-300 ${
-                activePage === i ? 'bg-[#1a1a1a]' : 'bg-[#ccc]'
+              type="button"
+              onClick={() => {
+                if (lockRef.current) return;
+                lockRef.current = true;
+                activeIndexRef.current = i;
+                setActiveIndex(i);
+                window.setTimeout(() => {
+                  lockRef.current = false;
+                }, 450);
+              }}
+              aria-label={`Slide ${i + 1}`}
+              className={`h-1 w-1 rounded-full transition-all duration-300 ${
+                activeIndex === i
+                  ? 'bg-foreground scale-125'
+                  : 'bg-foreground/30 hover:bg-foreground/60'
               }`}
             />
           ))}
         </div>
       )}
 
-      {/* Render each page */}
-      {project.pages.map((page, index) => {
-        const leftText = getLeftText(page);
-        const rightText = getRightText(page);
-
-        return (
-          <motion.div
-            key={page.id}
-            ref={(el) => { sectionRefs.current[index] = el; }}
-            style={{ height: sectionHeight }}
-            className="pb-[20px]"
-            animate={{
-              opacity: index === activePage ? 1 : 0.25,
-              scale: index === activePage ? 1 : 0.97,
-            }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {page.type === 'IMAGE_ONLY' ? (
-              <div className="w-full h-full px-2 sm:px-4 md:px-6 lg:px-8">
-                <div className="relative w-full h-full">
-                  {page.image1 ? (
-                    <Image
-                      src={page.image1}
-                      alt={project.title}
-                      fill
-                      className="object-contain"
-                      sizes="100vw"
-                      priority
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm xl:text-base 2xl:text-lg">
-                      სურათი არ არის
-                    </div>
-                  )}
-                </div>
+      {/* Center stack */}
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-14 md:pb-4">
+        {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
+        <div className="relative flex w-full items-center justify-center h-[42vh] md:h-auto md:flex-1 md:min-h-0">
+          {hasTwoImages ? (
+            <div key={activeIndex} className="flex flex-col md:flex-row h-full w-full items-center justify-center gap-3 md:gap-6">
+              <div className="relative h-[48%] w-full md:h-full md:w-[48%]">
+                <ResponsiveProjectImage
+                  src={page.image1}
+                  mobileSrc={page.mobileImage1}
+                  alt={project.title}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  priority={activeIndex === 0}
+                />
               </div>
-            ) : page.type === 'SINGLE_IMAGE' ? (
-              <div className="w-full h-full flex flex-col overflow-hidden">
-                {/* Desktop layout */}
-                <div className="hidden lg:flex flex-1 min-h-0">
-                  {/* Left text */}
-                  <div className="flex flex-1 flex-col justify-center items-end px-10 xl:px-14 2xl:px-20">
-                    {leftText && <SafeHTML html={leftText} className={`${textStyle} max-w-[260px] xl:max-w-[340px] 2xl:max-w-[420px]`} />}
-                  </div>
-
-                  {/* Center image */}
-                  <div className="w-[55%] flex-shrink-0">
-                    <div className="w-full h-full overflow-hidden relative">
-                      {page.image1 ? (
-                        <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="55vw" />
-                      ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm xl:text-base 2xl:text-lg">
-                          სურათი არ არის
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right text */}
-                  <div className="flex flex-1 flex-col justify-start items-start px-10 xl:px-14 2xl:px-20 pt-16 xl:pt-20 2xl:pt-24">
-                    {rightText && <SafeHTML html={rightText} className={`${textStyle} max-w-[260px] xl:max-w-[340px] 2xl:max-w-[420px]`} />}
-                  </div>
-                </div>
-
-                {/* Mobile layout */}
-                <div className="lg:hidden flex flex-col h-full overflow-auto">
-                  <div className="w-full flex-1 relative min-h-0">
-                    {page.image1 ? (
-                      <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="100vw" />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
-                        სურათი არ არის
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-[20px] px-6 py-4">
-                    {rightText && <SafeHTML html={rightText} className={textStyle} />}
-                    {leftText && <SafeHTML html={leftText} className={textStyle} />}
-                  </div>
-                </div>
+              <div className="relative h-[48%] w-full md:h-full md:w-[48%]">
+                <ResponsiveProjectImage
+                  src={page.image2 as string}
+                  mobileSrc={page.mobileImage2}
+                  alt={project.title}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                />
               </div>
-            ) : (
-              /* Double image page */
-              <div className="w-full h-full flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-[60px] xl:px-[100px] 2xl:px-[140px]">
-                <div className="flex flex-col md:flex-row gap-[16px] md:gap-[20px] xl:gap-[28px] 2xl:gap-[36px] w-full h-full">
-                  <div className="flex-1 min-h-0 relative">
-                    <Image src={page.image1} alt={project.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 45vw" />
-                  </div>
-                  {page.image2 && (
-                    <div className="flex-1 min-h-0 relative">
-                      <Image src={page.image2} alt={project.title} fill className="object-contain" sizes="(max-width: 768px) 100vw, 45vw" />
-                    </div>
-                  )}
-                </div>
+            </div>
+          ) : page.image1 ? (
+            <div key={activeIndex} className="relative h-full w-full">
+              <ResponsiveProjectImage
+                src={page.image1}
+                mobileSrc={page.mobileImage1}
+                alt={project.title}
+                fill
+                className="object-contain"
+                sizes="100vw"
+                priority={activeIndex === 0}
+              />
+            </div>
+          ) : (
+            <div className="h-full w-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
+              {isKa ? 'სურათი არ არის' : 'No image'}
+            </div>
+          )}
+
+          {pageTextHtml && (
+            <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 w-[22%] max-w-[320px] pr-4 lg:pr-8 items-center pointer-events-none">
+              <div
+                className={`pointer-events-auto break-words text-foreground/75 leading-relaxed font-light prose prose-sm md:prose-base max-w-none ${
+                  isKa ? 'text-[13px] md:text-[15px]' : 'text-[14px] md:text-[16px]'
+                }`}
+                dangerouslySetInnerHTML={{ __html: pageTextHtml }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Text block — fixed min-height so info button doesn't shift */}
+        <div className="mt-6 md:mt-4 text-center shrink-0 min-h-[80px] md:min-h-[64px] flex flex-col items-center justify-start">
+          {activeIndex === 0 && (
+            <>
+              <h2
+                className={`font-light tracking-[0.04em] text-foreground/90 ${
+                  isKa ? 'text-[18px] md:text-[26px]' : 'text-[22px] md:text-[32px]'
+                }`}
+              >
+                {project.title}
+              </h2>
+              {project.description && (
+                <p
+                  className={`mt-3 mb-[15px] text-foreground/60 leading-relaxed max-w-[640px] ${
+                    isKa ? 'text-[12px] md:text-[14px]' : 'text-[14px] md:text-[16px]'
+                  }`}
+                >
+                  {project.description}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Info button */}
+        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px]">
+          {hasInfo && (
+            <button
+              type="button"
+              onClick={() => setInfoOpen(true)}
+              className="group inline-flex flex-col items-center text-foreground/70 hover:text-foreground transition"
+            >
+              <span className="text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase">
+                {infoLabel}
+              </span>
+              <span className="mt-2 h-px w-10 bg-foreground/60 transition-all duration-300 group-hover:w-16" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Drawer backdrop */}
+      <div
+        onClick={() => setInfoOpen(false)}
+        className={`fixed inset-x-0 bottom-0 top-auto h-[50vh] z-40 transition-opacity duration-500 ${
+          infoOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        style={{ background: 'rgba(0,0,0,0.15)' }}
+      />
+
+      {/* Drawer */}
+      <aside
+        aria-hidden={!infoOpen}
+        className={`fixed inset-x-0 bottom-0 z-50 h-[50vh] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
+          infoOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="relative flex h-full flex-col">
+          <div className="flex justify-center pt-3">
+            <span className="h-1 w-10 rounded-full bg-foreground/20" />
+          </div>
+
+          <div className="flex items-center justify-end px-6 md:px-10 pt-3">
+            <button
+              type="button"
+              onClick={() => setInfoOpen(false)}
+              aria-label="Close"
+              className="text-foreground/70 hover:text-foreground transition"
+            >
+              <X className="h-5 w-5" strokeWidth={1} />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+            <div
+              className={`max-w-[720px] mx-auto text-foreground/75 leading-relaxed font-light ${
+                isKa ? 'text-[13px] md:text-[15px]' : 'text-[14px] md:text-[16px]'
+              }`}
+            >
+              <div className="space-y-2">
+                {metaItems.map((item, i) => (
+                  <p key={i}>
+                    <span className="text-foreground/50">{item.label}:</span>{' '}
+                    {item.value}
+                  </p>
+                ))}
               </div>
-            )}
-          </motion.div>
-        );
-      })}
-    </motion.div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
   );
 }

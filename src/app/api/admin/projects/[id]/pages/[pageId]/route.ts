@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -21,7 +22,7 @@ export async function PUT(
     // Clean up replaced images from R2
     const existing = await prisma.projectPage.findUnique({
       where: { id: params.pageId },
-      select: { image1: true, image2: true },
+      select: { image1: true, image2: true, mobileImage1: true, mobileImage2: true },
     });
 
     if (existing) {
@@ -31,6 +32,12 @@ export async function PUT(
       if (existing.image2 && existing.image2 !== (data.image2 || null)) {
         await deleteImageByUrl(existing.image2);
       }
+      if (existing.mobileImage1 && existing.mobileImage1 !== (data.mobileImage1 || null)) {
+        await deleteImageByUrl(existing.mobileImage1);
+      }
+      if (existing.mobileImage2 && existing.mobileImage2 !== (data.mobileImage2 || null)) {
+        await deleteImageByUrl(existing.mobileImage2);
+      }
     }
 
     const page = await prisma.projectPage.update({
@@ -38,12 +45,26 @@ export async function PUT(
       data: {
         image1: data.image1,
         image2: data.image2 || null,
-        textKa: data.textKa || null,
-        textEn: data.textEn || null,
+        mobileImage1: data.mobileImage1 || null,
+        mobileImage2: data.mobileImage2 || null,
         textRightKa: data.textRightKa || null,
         textRightEn: data.textRightEn || null,
+        architectsKa: data.architectsKa || null,
+        architectsEn: data.architectsEn || null,
+        metaLocationKa: data.metaLocationKa || null,
+        metaLocationEn: data.metaLocationEn || null,
+        typeKa: data.typeKa || null,
+        typeEn: data.typeEn || null,
+        statusKa: data.statusKa || null,
+        statusEn: data.statusEn || null,
+        areaKa: data.areaKa || null,
+        areaEn: data.areaEn || null,
+        clientKa: data.clientKa || null,
+        clientEn: data.clientEn || null,
+        year: data.year || null,
       },
     });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json(page);
   } catch (error) {
     console.error('Update page error:', error);
@@ -64,17 +85,20 @@ export async function DELETE(
     // Clean up R2 images before deleting
     const page = await prisma.projectPage.findUnique({
       where: { id: params.pageId },
-      select: { image1: true, image2: true },
+      select: { image1: true, image2: true, mobileImage1: true, mobileImage2: true },
     });
 
     if (page) {
       const deletePromises: Promise<void>[] = [];
       if (page.image1) deletePromises.push(deleteImageByUrl(page.image1));
       if (page.image2) deletePromises.push(deleteImageByUrl(page.image2));
+      if (page.mobileImage1) deletePromises.push(deleteImageByUrl(page.mobileImage1));
+      if (page.mobileImage2) deletePromises.push(deleteImageByUrl(page.mobileImage2));
       await Promise.allSettled(deletePromises);
     }
 
     await prisma.projectPage.delete({ where: { id: params.pageId } });
+    revalidatePath('/[locale]', 'layout');
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete page error:', error);

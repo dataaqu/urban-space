@@ -19,7 +19,7 @@ export async function getFeaturedProjects() {
         pages: {
           orderBy: { order: 'asc' },
           take: 1,
-          select: { image1: true },
+          select: { image1: true, mobileImage1: true },
         },
       },
       orderBy: { featuredOrder: 'asc' },
@@ -50,6 +50,8 @@ export async function getContentMap(section: string) {
   }
   return map;
 }
+
+export { parseMapCoords } from './map-coords';
 
 export async function getServices() {
   try {

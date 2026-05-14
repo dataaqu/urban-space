@@ -7,6 +7,7 @@ import {
   FolderKanban,
   Images,
   FileText,
+  Mail,
   LogOut,
   X,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ const navItems = [
   { href: '/admin/hero', label: 'Hero სლაიდერი', icon: Images },
   { href: '/admin/projects', label: 'პროექტები', icon: FolderKanban },
   { href: '/admin/content', label: 'კონტენტი', icon: FileText },
+  { href: '/admin/contact', label: 'კონტაქტი', icon: Mail },
 ];
 
 interface AdminSidebarProps {

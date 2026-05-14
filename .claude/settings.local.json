@@ -8,7 +8,16 @@
       "mcp__planflow__planflow_index",
       "mcp__planflow__planflow_index_status",
       "mcp__planflow__planflow_search",
-      "mcp__planflow__planflow_explore"
+      "mcp__planflow__planflow_explore",
+      "mcp__planflow__planflow_whoami",
+      "mcp__planflow__planflow_projects",
+      "mcp__planflow__planflow_task_list",
+      "mcp__planflow__planflow_activity",
+      "mcp__planflow__planflow_sync",
+      "mcp__planflow__planflow_task_start",
+      "mcp__planflow__planflow_task_done",
+      "mcp__planflow__planflow_task_update",
+      "mcp__planflow__planflow_task_next"
     ]
   }
 }

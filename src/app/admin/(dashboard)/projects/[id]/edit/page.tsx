@@ -44,6 +44,7 @@ export default async function EditProjectPage({
             locationKa: project.locationKa,
             locationEn: project.locationEn,
             featuredImage: project.featuredImage,
+            mobileImage: project.mobileImage,
             featured: project.featured,
             featuredOrder: project.featuredOrder,
           }}
@@ -58,10 +59,23 @@ export default async function EditProjectPage({
               order: p.order,
               image1: p.image1,
               image2: p.image2,
-              textKa: p.textKa,
-              textEn: p.textEn,
+              mobileImage1: p.mobileImage1,
+              mobileImage2: p.mobileImage2,
               textRightKa: p.textRightKa,
               textRightEn: p.textRightEn,
+              architectsKa: p.architectsKa,
+              architectsEn: p.architectsEn,
+              metaLocationKa: p.metaLocationKa,
+              metaLocationEn: p.metaLocationEn,
+              typeKa: p.typeKa,
+              typeEn: p.typeEn,
+              statusKa: p.statusKa,
+              statusEn: p.statusEn,
+              areaKa: p.areaKa,
+              areaEn: p.areaEn,
+              clientKa: p.clientKa,
+              clientEn: p.clientEn,
+              year: p.year,
             }))}
           />
         </div>

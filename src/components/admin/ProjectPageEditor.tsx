@@ -32,10 +32,108 @@ interface ProjectPageData {
   order: number;
   image1: string;
   image2: string | null;
-  textKa: string | null;
-  textEn: string | null;
+  mobileImage1: string | null;
+  mobileImage2: string | null;
   textRightKa: string | null;
   textRightEn: string | null;
+  architectsKa: string | null;
+  architectsEn: string | null;
+  metaLocationKa: string | null;
+  metaLocationEn: string | null;
+  typeKa: string | null;
+  typeEn: string | null;
+  statusKa: string | null;
+  statusEn: string | null;
+  areaKa: string | null;
+  areaEn: string | null;
+  clientKa: string | null;
+  clientEn: string | null;
+  year: string | null;
+}
+
+const META_FIELDS = [
+  { key: 'architects', labelKa: 'არქიტექტორები', labelEn: 'Architects' },
+  { key: 'metaLocation', labelKa: 'მდებარეობა', labelEn: 'Location' },
+  { key: 'type', labelKa: 'ტიპი', labelEn: 'Type' },
+  { key: 'status', labelKa: 'სტატუსი', labelEn: 'Status' },
+  { key: 'area', labelKa: 'შენობის ფართობი', labelEn: 'Area' },
+  { key: 'client', labelKa: 'დამკვეთი', labelEn: 'Client' },
+] as const;
+
+function MetadataInputs({
+  editForm,
+  setEditForm,
+}: {
+  editForm: Partial<ProjectPageData>;
+  setEditForm: React.Dispatch<React.SetStateAction<Partial<ProjectPageData>>>;
+}) {
+  const [lang, setLang] = useState<'ka' | 'en'>('ka');
+  const suffix = lang === 'ka' ? 'Ka' : 'En';
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-1 rounded-lg bg-neutral-100 p-1 w-fit">
+        <button
+          type="button"
+          onClick={() => setLang('ka')}
+          className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+            lang === 'ka'
+              ? 'bg-white text-dark-900 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-700'
+          }`}
+        >
+          ქართული
+        </button>
+        <button
+          type="button"
+          onClick={() => setLang('en')}
+          className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+            lang === 'en'
+              ? 'bg-white text-dark-900 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-700'
+          }`}
+        >
+          English
+        </button>
+      </div>
+
+      {META_FIELDS.map((f) => {
+        const fieldKey = `${f.key}${suffix}` as keyof ProjectPageData;
+        const label = lang === 'ka' ? f.labelKa : f.labelEn;
+        return (
+          <div key={f.key}>
+            <label className="block text-xs font-medium text-dark-700 mb-1">
+              {label}
+            </label>
+            <input
+              type="text"
+              value={(editForm[fieldKey] as string) || ''}
+              onChange={(e) =>
+                setEditForm((prev) => ({ ...prev, [fieldKey]: e.target.value }))
+              }
+              className="w-full h-9 rounded-lg border border-neutral-200 bg-white px-3 text-sm hover:border-neutral-300 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
+              placeholder={lang === 'ka' ? '...' : '...'}
+            />
+          </div>
+        );
+      })}
+
+      <div>
+        <label className="block text-xs font-medium text-dark-700 mb-1">
+          წელი / Year
+        </label>
+        <input
+          type="text"
+          value={editForm.year || ''}
+          onChange={(e) =>
+            setEditForm((prev) => ({ ...prev, year: e.target.value }))
+          }
+          className="w-full h-9 rounded-lg border border-neutral-200 bg-white px-3 text-sm hover:border-neutral-300 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
+          placeholder="2024"
+        />
+      </div>
+    </div>
+  );
 }
 
 const typeLabel = (t: PageType) => {
@@ -63,8 +161,8 @@ export default function ProjectPageEditor({
   const [newPage, setNewPage] = useState<Partial<ProjectPageData>>({
     image1: '',
     image2: '',
-    textKa: '',
-    textEn: '',
+    mobileImage1: '',
+    mobileImage2: '',
     textRightKa: '',
     textRightEn: '',
   });
@@ -75,8 +173,8 @@ export default function ProjectPageEditor({
     setNewPage({
       image1: '',
       image2: '',
-      textKa: '',
-      textEn: '',
+      mobileImage1: '',
+      mobileImage2: '',
       textRightKa: '',
       textRightEn: '',
     });
@@ -92,8 +190,8 @@ export default function ProjectPageEditor({
           type: addingType,
           image1: newPage.image1,
           image2: addingType === 'DOUBLE_IMAGE' ? newPage.image2 : null,
-          textKa: newPage.textKa || null,
-          textEn: newPage.textEn || null,
+          mobileImage1: newPage.mobileImage1 || null,
+          mobileImage2: addingType === 'DOUBLE_IMAGE' ? newPage.mobileImage2 || null : null,
           textRightKa: newPage.textRightKa || null,
           textRightEn: newPage.textRightEn || null,
         }),
@@ -240,46 +338,41 @@ export default function ProjectPageEditor({
 
                   {editForm.type === 'SINGLE_IMAGE' ? (
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                      <MetadataInputs
+                        editForm={editForm}
+                        setEditForm={setEditForm}
+                      />
                       <div className="space-y-3">
                         <div>
                           <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                            მარცხენა (ქართ.)
+                            სურათი — Desktop
                           </label>
-                          <RichTextEditor
-                            content={editForm.textKa || ''}
-                            onChange={(html) =>
-                              setEditForm((prev) => ({ ...prev, textKa: html }))
+                          <ImageUpload
+                            value={editForm.image1}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, image1: url }))
                             }
-                            placeholder="ქართული ტექსტი..."
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, image1: '' }))
+                            }
+                            folder="urban-space/projects"
                           />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                            მარცხენა (ინგ.)
+                            სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
                           </label>
-                          <RichTextEditor
-                            content={editForm.textEn || ''}
-                            onChange={(html) =>
-                              setEditForm((prev) => ({ ...prev, textEn: html }))
+                          <ImageUpload
+                            value={editForm.mobileImage1 || undefined}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: url }))
                             }
-                            placeholder="English text..."
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
+                            }
+                            folder="urban-space/projects"
                           />
                         </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                          სურათი
-                        </label>
-                        <ImageUpload
-                          value={editForm.image1}
-                          onChange={(url) =>
-                            setEditForm((prev) => ({ ...prev, image1: url }))
-                          }
-                          onRemove={() =>
-                            setEditForm((prev) => ({ ...prev, image1: '' }))
-                          }
-                          folder="urban-space/projects"
-                        />
                       </div>
                       <div className="space-y-3">
                         <div>
@@ -315,26 +408,10 @@ export default function ProjectPageEditor({
                       </div>
                     </div>
                   ) : editForm.type === 'IMAGE_ONLY' ? (
-                    <div className="max-w-md">
-                      <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                        სურათი
-                      </label>
-                      <ImageUpload
-                        value={editForm.image1}
-                        onChange={(url) =>
-                          setEditForm((prev) => ({ ...prev, image1: url }))
-                        }
-                        onRemove={() =>
-                          setEditForm((prev) => ({ ...prev, image1: '' }))
-                        }
-                        folder="urban-space/projects"
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-3xl">
                       <div>
                         <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                          სურათი 1
+                          სურათი — Desktop
                         </label>
                         <ImageUpload
                           value={editForm.image1}
@@ -349,18 +426,85 @@ export default function ProjectPageEditor({
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                          სურათი 2
+                          სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
                         </label>
                         <ImageUpload
-                          value={editForm.image2 || undefined}
+                          value={editForm.mobileImage1 || undefined}
                           onChange={(url) =>
-                            setEditForm((prev) => ({ ...prev, image2: url }))
+                            setEditForm((prev) => ({ ...prev, mobileImage1: url }))
                           }
                           onRemove={() =>
-                            setEditForm((prev) => ({ ...prev, image2: '' }))
+                            setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
                           }
                           folder="urban-space/projects"
                         />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            სურათი 1 — Desktop
+                          </label>
+                          <ImageUpload
+                            value={editForm.image1}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, image1: url }))
+                            }
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, image1: '' }))
+                            }
+                            folder="urban-space/projects"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            სურათი 1 — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                          </label>
+                          <ImageUpload
+                            value={editForm.mobileImage1 || undefined}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: url }))
+                            }
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
+                            }
+                            folder="urban-space/projects"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            სურათი 2 — Desktop
+                          </label>
+                          <ImageUpload
+                            value={editForm.image2 || undefined}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, image2: url }))
+                            }
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, image2: '' }))
+                            }
+                            folder="urban-space/projects"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            სურათი 2 — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                          </label>
+                          <ImageUpload
+                            value={editForm.mobileImage2 || undefined}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, mobileImage2: url }))
+                            }
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, mobileImage2: '' }))
+                            }
+                            folder="urban-space/projects"
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
@@ -479,26 +623,10 @@ export default function ProjectPageEditor({
             </div>
 
             {addingType === 'IMAGE_ONLY' ? (
-              <div className="max-w-md">
-                <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                  სურათი
-                </label>
-                <ImageUpload
-                  value={newPage.image1 || undefined}
-                  onChange={(url) =>
-                    setNewPage((prev) => ({ ...prev, image1: url }))
-                  }
-                  onRemove={() =>
-                    setNewPage((prev) => ({ ...prev, image1: '' }))
-                  }
-                  folder="urban-space/projects"
-                />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-3xl">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                    სურათი 1
+                    სურათი — Desktop
                   </label>
                   <ImageUpload
                     value={newPage.image1 || undefined}
@@ -513,18 +641,85 @@ export default function ProjectPageEditor({
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                    სურათი 2
+                    სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
                   </label>
                   <ImageUpload
-                    value={newPage.image2 || undefined}
+                    value={newPage.mobileImage1 || undefined}
                     onChange={(url) =>
-                      setNewPage((prev) => ({ ...prev, image2: url }))
+                      setNewPage((prev) => ({ ...prev, mobileImage1: url }))
                     }
                     onRemove={() =>
-                      setNewPage((prev) => ({ ...prev, image2: '' }))
+                      setNewPage((prev) => ({ ...prev, mobileImage1: '' }))
                     }
                     folder="urban-space/projects"
                   />
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                      სურათი 1 — Desktop
+                    </label>
+                    <ImageUpload
+                      value={newPage.image1 || undefined}
+                      onChange={(url) =>
+                        setNewPage((prev) => ({ ...prev, image1: url }))
+                      }
+                      onRemove={() =>
+                        setNewPage((prev) => ({ ...prev, image1: '' }))
+                      }
+                      folder="urban-space/projects"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                      სურათი 1 — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                    </label>
+                    <ImageUpload
+                      value={newPage.mobileImage1 || undefined}
+                      onChange={(url) =>
+                        setNewPage((prev) => ({ ...prev, mobileImage1: url }))
+                      }
+                      onRemove={() =>
+                        setNewPage((prev) => ({ ...prev, mobileImage1: '' }))
+                      }
+                      folder="urban-space/projects"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                      სურათი 2 — Desktop
+                    </label>
+                    <ImageUpload
+                      value={newPage.image2 || undefined}
+                      onChange={(url) =>
+                        setNewPage((prev) => ({ ...prev, image2: url }))
+                      }
+                      onRemove={() =>
+                        setNewPage((prev) => ({ ...prev, image2: '' }))
+                      }
+                      folder="urban-space/projects"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                      სურათი 2 — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                    </label>
+                    <ImageUpload
+                      value={newPage.mobileImage2 || undefined}
+                      onChange={(url) =>
+                        setNewPage((prev) => ({ ...prev, mobileImage2: url }))
+                      }
+                      onRemove={() =>
+                        setNewPage((prev) => ({ ...prev, mobileImage2: '' }))
+                      }
+                      folder="urban-space/projects"
+                    />
+                  </div>
                 </div>
               </div>
             )}

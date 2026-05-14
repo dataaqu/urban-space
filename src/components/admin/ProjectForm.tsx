@@ -21,6 +21,7 @@ interface ProjectFormProps {
     locationKa: string | null;
     locationEn: string | null;
     featuredImage: string | null;
+    mobileImage: string | null;
     featured: boolean;
     featuredOrder: number | null;
   };
@@ -37,6 +38,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     locationKa: project?.locationKa || '',
     locationEn: project?.locationEn || '',
     featuredImage: project?.featuredImage || '',
+    mobileImage: project?.mobileImage || '',
     featured: project?.featured || false,
     featuredOrder: project?.featuredOrder ?? '',
   });
@@ -57,6 +59,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         locationKa: form.locationKa || null,
         locationEn: form.locationEn || null,
         featuredImage: form.featuredImage || null,
+        mobileImage: form.mobileImage || null,
         featuredOrder: form.featuredOrder
           ? Number(form.featuredOrder)
           : null,
@@ -173,16 +176,41 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             ეს სურათი გამოჩნდება პროექტების სიაში და მთავარ გვერდზე.
           </p>
         </div>
-        <ImageUpload
-          value={form.featuredImage || undefined}
-          onChange={(url) =>
-            setForm((prev) => ({ ...prev, featuredImage: url }))
-          }
-          onRemove={() =>
-            setForm((prev) => ({ ...prev, featuredImage: '' }))
-          }
-          folder="urban-space/projects"
-        />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-dark-700 mb-1.5">
+              Desktop ვერსია
+            </label>
+            <ImageUpload
+              value={form.featuredImage || undefined}
+              onChange={(url) =>
+                setForm((prev) => ({ ...prev, featuredImage: url }))
+              }
+              onRemove={() =>
+                setForm((prev) => ({ ...prev, featuredImage: '' }))
+              }
+              folder="urban-space/projects"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-dark-700 mb-1.5">
+              Mobile ვერსია <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+            </label>
+            <p className="mb-2 text-xs text-neutral-500">
+              თუ ცარიელია, მობილურზე გამოჩნდება Desktop სურათი.
+            </p>
+            <ImageUpload
+              value={form.mobileImage || undefined}
+              onChange={(url) =>
+                setForm((prev) => ({ ...prev, mobileImage: url }))
+              }
+              onRemove={() =>
+                setForm((prev) => ({ ...prev, mobileImage: '' }))
+              }
+              folder="urban-space/projects"
+            />
+          </div>
+        </div>
       </Card>
 
       <Card padded>

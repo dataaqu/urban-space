@@ -1,0 +1,29 @@
+[
+  {
+    "id": "cmnyq8rv90001nbhuloawlss2",
+    "textKa": "<p>მარცხენა ტექსტი </p>",
+    "textEn": "<p>left text</p>",
+    "project": {
+      "slug": "public-school",
+      "titleKa": "საჯარო სკოლა"
+    }
+  },
+  {
+    "id": "cmnzs9crd00012cm774b2m2h6",
+    "textKa": "<p></p>",
+    "textEn": null,
+    "project": {
+      "slug": "public-school",
+      "titleKa": "საჯარო სკოლა"
+    }
+  },
+  {
+    "id": "cmnyqfj5w0005nbhur8q2xt1y",
+    "textKa": "<p>ტექსტი არის აქ</p>",
+    "textEn": null,
+    "project": {
+      "slug": "high-rise-towers",
+      "titleKa": "მაღლივი თაუერსი"
+    }
+  }
+]

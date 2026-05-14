@@ -19,6 +19,10 @@ interface HeroSlide {
 interface HeroProps {
   slides?: HeroSlide[];
   content?: Record<string, { ka: string; en: string }>;
+  social?: {
+    facebook: string;
+    instagram: string;
+  };
 }
 
 const fallbackBackgrounds = [
@@ -29,8 +33,9 @@ const fallbackBackgrounds = [
   '/full-project/project3.jpg',
 ];
 
-export default function Hero({ slides, content }: HeroProps) {
+export default function Hero({ slides, content, social }: HeroProps) {
   const locale = useLocale();
+  const socialLinks = social ?? { facebook: '', instagram: '' };
   const router = useRouter();
   const pathname = usePathname();
   const language = locale as 'en' | 'ka';
@@ -56,6 +61,8 @@ export default function Hero({ slides, content }: HeroProps) {
   const logoRef = useRef<HTMLAnchorElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLSpanElement>(null);
+  const arrowWrapRef = useRef<HTMLButtonElement>(null);
+  const langRef = useRef<HTMLButtonElement>(null);
   const overlayDarkRef = useRef<HTMLDivElement>(null);
   const overlayWhiteRef = useRef<HTMLDivElement>(null);
   const topbarRef = useRef<HTMLDivElement>(null);
@@ -80,6 +87,12 @@ export default function Hero({ slides, content }: HeroProps) {
 
     const apply = () => {
       const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      const isLandscapePhone = vh < 500 && vw > vh;
+      const isMobile = vw < 768 && !isLandscapePhone;
+      const isTablet = vw >= 768 && vw < 1024 && !isLandscapePhone;
+      const isMobileLayout = isMobile || isTablet || isLandscapePhone;
+
       const start = vh * 0.15;
       const end = vh * 0.85;
       const y = window.scrollY;
@@ -87,16 +100,60 @@ export default function Hero({ slides, content }: HeroProps) {
       const p = Math.min(1, Math.max(0, raw));
 
       if (logoRef.current) {
-        const scale = 1 - p * 0.45;
-        const topOffset = p * -4;
-        const leftOffset = p * 8;
-        logoRef.current.style.transform = `translate3d(${leftOffset}px, ${topOffset}px, 0) scale(${scale})`;
+        if (isMobile || isLandscapePhone) {
+          // Mobile: centered initially, scrolls to top-left dock
+          const scale = isLandscapePhone ? 1 - p * 0.55 : 1 - p * 0.505;
+          const h1El = logoRef.current.querySelector('h1') as HTMLElement | null;
+          const h1Width = h1El?.offsetWidth ?? logoRef.current.offsetWidth;
+          const initialX = vw / 2 - 32 - h1Width / 2;
+          const verticalAnchor = isLandscapePhone ? 0.22 : 0.35;
+          const initialY = vh * verticalAnchor - 32;
+          const tx = initialX * (1 - p);
+          const ty = initialY * (1 - p);
+          logoRef.current.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+        } else {
+          const scale = 1 - p * 0.45;
+          const topOffset = p * -4;
+          const leftOffset = p * 8;
+          logoRef.current.style.transform = `translate3d(${leftOffset}px, ${topOffset}px, 0) scale(${scale})`;
+        }
       }
 
       if (ctaRef.current) {
-        const scale = 1 - p * 0.4;
-        const translateY = (1 - p) * window.innerHeight * 0.78;
-        ctaRef.current.style.transform = `translate3d(-50%, ${translateY}px, 0) scale(${scale})`;
+        if (isMobileLayout) {
+          // Mobile: anchor near 67% of vh
+          const ctaAnchor = isLandscapePhone ? 0.78 : isTablet ? 0.72 : 0.67;
+          const ctaExtraOffset = isTablet ? 24 : 0;
+          const ty = vh * ctaAnchor - 36 + ctaExtraOffset;
+          ctaRef.current.style.transform = `translate3d(-50%, ${ty}px, 0) scale(${isLandscapePhone ? 0.85 : 1})`;
+          ctaRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
+        } else {
+          const scale = 1 - p * 0.4;
+          const translateY = (1 - p) * vh * 0.78;
+          ctaRef.current.style.transform = `translate3d(-50%, ${translateY}px, 0) scale(${scale})`;
+          ctaRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
+        }
+        ctaRef.current.style.pointerEvents = p > 0.33 ? 'none' : 'auto';
+      }
+
+      // Arrow position — near the bottom on mobile, ~78% on desktop
+      if (arrowWrapRef.current) {
+        if (isMobileLayout) {
+          arrowWrapRef.current.style.top = `${vh - 56}px`;
+        } else {
+          arrowWrapRef.current.style.top = `${vh * 0.78}px`;
+        }
+      }
+
+      // Language switcher — on mobile fades out as you scroll
+      if (langRef.current) {
+        if (isMobile || isLandscapePhone) {
+          langRef.current.style.opacity = String(1 - p);
+          langRef.current.style.pointerEvents = p > 0.8 ? 'none' : 'auto';
+        } else {
+          langRef.current.style.opacity = '1';
+          langRef.current.style.pointerEvents = 'auto';
+        }
       }
 
       if (arrowRef.current) {
@@ -197,21 +254,24 @@ export default function Hero({ slides, content }: HeroProps) {
           style={{ opacity: 0 }}
         />
 
+        {/* Language switcher — left on mobile, right (grouped with menu) on desktop */}
+        <button
+          ref={langRef}
+          type="button"
+          onClick={toggleLanguage}
+          aria-label="Toggle language"
+          className={`absolute top-8 left-8 md:left-auto md:right-[5.5rem] md:top-10 pt-1 text-sm md:text-[18px] font-light tracking-[0.08em] opacity-90 hover:opacity-70 transition pointer-events-auto ${textOnDark}`}
+          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.45)' }}
+        >
+          <span className={language === 'ka' ? 'opacity-100' : 'opacity-60'}>ქარ</span>
+          <span className="opacity-60"> / </span>
+          <span className={language === 'en' ? 'opacity-100' : 'opacity-60'}>EN</span>
+        </button>
+
+        {/* Hamburger — always top-right */}
         <div
           className={`absolute top-8 md:top-10 right-8 md:right-10 flex items-start gap-8 md:gap-10 pointer-events-auto transition-colors duration-300 ${textOnDark}`}
         >
-          <button
-            type="button"
-            onClick={toggleLanguage}
-            aria-label="Toggle language"
-            className="pt-1 text-sm md:text-[18px] font-light tracking-[0.08em] opacity-100 hover:opacity-80 transition"
-            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.45)' }}
-          >
-            <span className={language === 'ka' ? 'opacity-100' : 'opacity-75'}>ქარ</span>
-            <span className="opacity-75"> / </span>
-            <span className={language === 'en' ? 'opacity-100' : 'opacity-75'}>EN</span>
-          </button>
-
           <button
             type="button"
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -239,7 +299,7 @@ export default function Hero({ slides, content }: HeroProps) {
         <Link
           ref={logoRef}
           href="/"
-          className={`absolute top-8 left-8 pointer-events-auto ${textOnDark} ${
+          className={`absolute top-8 left-8 pointer-events-auto text-center md:text-left ${textOnDark} ${
             menuOpen ? 'blur-sm opacity-70' : 'blur-0 opacity-100'
           }`}
           style={{
@@ -258,7 +318,7 @@ export default function Hero({ slides, content }: HeroProps) {
             URBAN SPACE
           </h1>
           <span
-            className={`mt-3 block h-px w-20 md:w-24 lg:w-28 xl:w-32 transition-colors ${subtleBorderColor}`}
+            className={`mt-2 md:mt-3 block h-[2px] md:h-px w-24 md:w-32 mx-auto md:mx-0 transition-colors ${subtleBorderColor}`}
           />
           <p
             className="mt-3 text-[12px] md:text-[13px] lg:text-[15px] xl:text-[16px] 2xl:text-[18px] font-light tracking-[0.12em] opacity-95"
@@ -281,26 +341,34 @@ export default function Hero({ slides, content }: HeroProps) {
         >
           <Link
             href="/projects"
-            className="block text-center text-[16px] md:text-[18px] lg:text-[20px] xl:text-[24px] 2xl:text-[26px] font-light tracking-[0.2em] hover:opacity-70 transition-opacity whitespace-nowrap"
+            className={`block text-center font-light tracking-[0.2em] hover:opacity-70 transition-opacity whitespace-nowrap ${
+              language === 'ka'
+                ? 'text-[16px] md:text-[22px]'
+                : 'text-[18px] md:text-[26px]'
+            }`}
           >
             {exploreLabel}
           </Link>
-          <button
-            type="button"
-            onClick={() =>
-              window.scrollTo({
-                top: window.scrollY + window.innerHeight,
-                behavior: 'smooth',
-              })
-            }
-            aria-label="Scroll down"
-            className="mx-auto block text-center text-[18px] md:text-[22px] lg:text-[24px] xl:text-[26px] 2xl:text-[28px] font-light leading-none mt-12 md:mt-16 xl:mt-20 animate-[bounce_2.6s_ease-in-out_infinite] hover:opacity-70 transition-opacity"
-          >
-            <span ref={arrowRef} aria-hidden>
-              ↓
-            </span>
-          </button>
         </div>
+
+        {/* Down arrow — separate, positioned via JS (mobile bottom of vh, desktop near CTA) */}
+        <button
+          ref={arrowWrapRef}
+          type="button"
+          onClick={() =>
+            window.scrollTo({
+              top: window.scrollY + window.innerHeight,
+              behavior: 'smooth',
+            })
+          }
+          aria-label="Scroll down"
+          className={`absolute left-1/2 -translate-x-1/2 pointer-events-auto text-center text-[22px] md:text-[20px] lg:text-[28px] font-light leading-none opacity-70 md:opacity-60 lg:opacity-40 animate-[bounce_2.6s_ease-in-out_infinite] hover:opacity-90 transition-opacity ${textOnDark}`}
+          style={{ top: 'auto' }}
+        >
+          <span ref={arrowRef} aria-hidden>
+            ↓
+          </span>
+        </button>
       </div>
 
       {/* Side menu backdrop */}
@@ -406,7 +474,7 @@ export default function Hero({ slides, content }: HeroProps) {
                 className="w-full flex items-center text-left text-background/95 hover:text-background transition"
               >
                 <span className="text-[15px] md:text-[18px] font-light tracking-[0.22em]">
-                  {language === 'ka' ? 'ჩვენ შესახებ' : 'ABOUT'}
+                  {language === 'ka' ? 'ჩვენ შესახებ' : 'ABOUT US'}
                 </span>
               </Link>
 
@@ -423,13 +491,27 @@ export default function Hero({ slides, content }: HeroProps) {
           </nav>
 
           <div className="px-8 pb-8 md:px-10 md:pb-10">
-            <div className="flex items-center gap-8 text-[12px] md:text-[13px] font-light tracking-[0.16em] text-background/72">
-              <a href="#" className="hover:text-background transition">
-                INSTAGRAM
-              </a>
-              <a href="#" className="hover:text-background transition">
-                FACEBOOK
-              </a>
+            <div className="flex flex-wrap items-center gap-8 text-[12px] md:text-[13px] font-light tracking-[0.16em] text-background/72">
+              {socialLinks.instagram && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-background transition"
+                >
+                  INSTAGRAM
+                </a>
+              )}
+              {socialLinks.facebook && (
+                <a
+                  href={socialLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-background transition"
+                >
+                  FACEBOOK
+                </a>
+              )}
             </div>
           </div>
         </div>

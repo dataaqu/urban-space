@@ -1,11 +1,12 @@
 'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
-import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import ResponsiveProjectImage from '@/components/projects/ResponsiveProjectImage';
 
 interface ProjectPage {
   image1: string | null;
+  mobileImage1?: string | null;
 }
 
 interface Project {
@@ -17,6 +18,7 @@ interface Project {
   locationKa?: string | null;
   locationEn?: string | null;
   featuredImage?: string | null;
+  mobileImage?: string | null;
   pages?: ProjectPage[];
 }
 
@@ -50,12 +52,15 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
     const location = locale === 'ka' ? project.locationKa : project.locationEn;
     const imageSrc =
       project.featuredImage || project.pages?.[0]?.image1 || '/poto/2.webp';
+    const mobileSrc =
+      project.mobileImage || project.pages?.[0]?.mobileImage1 || null;
 
     return (
       <Link key={project.id} href={`/projects/${project.slug}`} className="group block">
         <div className="overflow-hidden relative">
-          <Image
+          <ResponsiveProjectImage
             src={imageSrc}
+            mobileSrc={mobileSrc}
             alt={title}
             width={1600}
             height={1200}
@@ -102,6 +107,17 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
               {lastTwo.map((project) => renderCard(project))}
             </div>
           )}
+        </div>
+
+        <div className="mt-20 flex justify-center md:hidden">
+          <Link
+            href="/projects"
+            className={`inline-block text-center font-light tracking-[0.2em] text-[#222222] hover:opacity-70 transition-opacity whitespace-nowrap pb-2 border-b border-[#222222]/40 ${
+              locale === 'ka' ? 'text-[16px]' : 'text-[18px]'
+            }`}
+          >
+            {locale === 'ka' ? 'იხილე პროექტები' : 'EXPLORE PROJECTS'}
+          </Link>
         </div>
       </div>
     </section>
