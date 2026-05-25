@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { Minus, Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useSwipeMenu } from '@/hooks/useSwipeMenu';
 
 interface SocialLinks {
@@ -29,7 +29,6 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
   const isUrbanActive = isProjects && activeCategory === 'URBAN';
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projectsOpen, setProjectsOpen] = useState(true);
 
   useSwipeMenu(() => setMenuOpen(true), !menuOpen);
 
@@ -62,7 +61,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
                 : 'text-[17px] xl:text-[19px] 2xl:text-[22px]'
             }`}
           >
-            <div className="flex flex-col items-start">
+            <div className="relative flex flex-col items-start">
               <Link
                 href="/projects"
                 className={`flex h-8 xl:h-9 2xl:h-10 items-end leading-none transition hover:text-foreground/75 ${
@@ -73,7 +72,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
               </Link>
               {isProjects && (
                 <div
-                  className={`mt-2.5 flex items-center gap-2 font-light tracking-[0.05em] leading-none ${
+                  className={`absolute left-0 top-full mt-2.5 flex items-center gap-3 font-light tracking-[0.05em] leading-none ${
                     language === 'ka'
                       ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
                       : 'text-[14px] xl:text-[15px] 2xl:text-[17px]'
@@ -115,7 +114,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
                 isStudio ? 'text-foreground font-medium' : 'text-foreground/45'
               }`}
             >
-              {language === 'ka' ? 'ჩვენ შესახებ' : 'About Us'}
+              {language === 'ka' ? 'ჩვენ შესახებ' : 'About'}
             </Link>
             <Link
               href="/contact"
@@ -213,28 +212,13 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           <nav className="flex-1 flex flex-col justify-center px-8">
             <div className="space-y-8">
               <div>
-                <button
-                  type="button"
-                  onClick={() => setProjectsOpen((v) => !v)}
-                  className="w-full flex items-center justify-between text-background/95 hover:text-background transition"
-                >
+                <div className="w-full flex items-center text-background/95">
                   <span className="text-[15px] font-light tracking-[0.22em]">
                     {language === 'ka' ? 'პროექტები' : 'PROJECTS'}
                   </span>
-                  {projectsOpen ? (
-                    <Minus className="h-4 w-4" strokeWidth={1} />
-                  ) : (
-                    <Plus className="h-4 w-4" strokeWidth={1} />
-                  )}
-                </button>
+                </div>
 
-                <div
-                  className={`grid transition-all duration-500 ease-out ${
-                    projectsOpen
-                      ? 'grid-rows-[1fr] opacity-100 mt-5'
-                      : 'grid-rows-[0fr] opacity-0 mt-0'
-                  }`}
-                >
+                <div className="mt-5">
                   <div className="overflow-hidden">
                     <div className="border-l border-background/20 pl-5 flex flex-col gap-3">
                       <Link

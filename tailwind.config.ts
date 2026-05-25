@@ -8,6 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // Rotated phones: landscape orientation with limited height.
+        // Excludes tablets/desktops (height > 600) and portrait mobile.
+        'short-landscape': { raw: '(orientation: landscape) and (max-height: 600px)' },
+      },
       colors: {
         // full-project clone tokens
         background: 'hsl(var(--background))',

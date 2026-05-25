@@ -262,12 +262,12 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5">
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center h-[50vh] md:h-auto md:flex-1 md:min-h-0">
+        <div className="relative flex w-full items-center justify-center h-[50vh] md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
-            <div key={activeIndex} className="flex flex-col md:flex-row h-full w-full items-center justify-center gap-3 md:gap-6">
-              <div className="relative h-[48%] w-full md:h-full md:w-[48%]">
+            <div key={activeIndex} className="flex flex-col md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-3 md:gap-6 short-landscape:gap-6">
+              <div className="relative h-[48%] w-full md:h-full md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                 <ResponsiveProjectImage
                   src={page.image1}
                   mobileSrc={page.mobileImage1}
@@ -278,7 +278,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   priority={activeIndex === 0}
                 />
               </div>
-              <div className="relative h-[48%] w-full md:h-full md:w-[48%]">
+              <div className="relative h-[48%] w-full md:h-full md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                 <ResponsiveProjectImage
                   src={page.image2 as string}
                   mobileSrc={page.mobileImage2}
@@ -310,7 +310,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Text block — fixed min-height so info button doesn't shift */}
-        <div className="mt-6 md:mt-5 text-center shrink-0 min-h-[80px] md:min-h-[64px] flex flex-col items-center justify-start">
+        <div className="mt-6 md:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] md:min-h-[64px] short-landscape:min-h-0 flex flex-col items-center justify-start">
           {activeIndex === 0 && (
             <>
               <h2
@@ -334,7 +334,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Info button */}
-        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px] md:mt-4">
+        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px] short-landscape:h-[40px] md:mt-4">
           {hasInfo && (
             <button
               type="button"
