@@ -336,7 +336,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
           }}
         >
           <h1
-            className="text-[28px] md:text-[36px] lg:text-[42px] xl:text-[48px] 2xl:text-[56px] font-light tracking-[0.16em] leading-none whitespace-nowrap"
+            className="text-[34px] md:text-[36px] lg:text-[42px] xl:text-[48px] 2xl:text-[56px] font-light tracking-[0.16em] leading-none whitespace-nowrap"
             style={{
               fontFamily: '"Inter", system-ui, sans-serif',
               textShadow: docked ? 'none' : '0 2px 18px rgba(0,0,0,0.45)',
@@ -348,7 +348,11 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
             className={`mt-2 md:mt-3 block h-[2px] md:h-px w-24 md:w-32 mx-auto md:mx-0 transition-colors ${subtleBorderColor}`}
           />
           <p
-            className="mt-3 text-[12px] md:text-[13px] lg:text-[15px] xl:text-[16px] 2xl:text-[18px] font-light tracking-[0.12em] opacity-95"
+            className={`mt-3 font-light tracking-[0.12em] opacity-95 ${
+              language === 'ka'
+                ? 'text-[11px] md:text-[13px] lg:text-[15px] xl:text-[16px] 2xl:text-[18px]'
+                : 'text-sm md:text-[13px] lg:text-[15px] xl:text-[16px] 2xl:text-[18px]'
+            }`}
             style={{ textShadow: docked ? 'none' : '0 1px 10px rgba(0,0,0,0.45)' }}
           >
             {heroTagline}

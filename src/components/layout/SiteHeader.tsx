@@ -43,7 +43,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
       <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20">
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group block">
-            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] xl:text-[36px] 2xl:text-[40px]">
+            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[26px] xl:text-[36px] 2xl:text-[40px]">
               URBAN SPACE
             </div>
             {/* Tablet-only divider (matches urbanspace-mobile); hidden on mobile and desktop */}
