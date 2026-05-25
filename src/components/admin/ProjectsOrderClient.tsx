@@ -13,7 +13,7 @@ export interface OrderRow {
   id: string;
   titleKa: string;
   titleEn: string;
-  category: 'ARCHITECTURE' | 'URBAN' | string;
+  categories: ('ARCHITECTURE' | 'URBAN' | string)[];
   thumbnail: string | null;
   featured: boolean;
   featuredOrder: number | null;
@@ -291,9 +291,11 @@ export default function ProjectsOrderClient({ projects: initial }: Props) {
                       {p.titleKa}
                     </p>
                     <p className="truncate text-xs text-neutral-500">
-                      {p.category === 'ARCHITECTURE'
-                        ? 'არქიტექტურა'
-                        : 'ურბანული'}
+                      {p.categories
+                        .map((c) =>
+                          c === 'ARCHITECTURE' ? 'არქიტექტურა' : 'ურბანული'
+                        )
+                        .join(', ')}
                       {p.featured && ' · მთავარ გვერდზე'}
                     </p>
                   </div>

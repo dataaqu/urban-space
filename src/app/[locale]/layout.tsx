@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { unstable_cache } from 'next/cache';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -7,6 +8,20 @@ import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
 import prisma from '@/lib/prisma';
 import '@/app/globals.css';
+
+const getSocialLinks = unstable_cache(
+  async () => {
+    const dbInfo = await prisma.contactInfo
+      .findUnique({ where: { id: 'singleton' } })
+      .catch(() => null);
+    return {
+      facebook: dbInfo?.facebook?.trim() || '',
+      instagram: dbInfo?.instagram?.trim() || '',
+    };
+  },
+  ['contact-info-social'],
+  { revalidate: 3600, tags: ['contact-info'] },
+);
 
 const notoSans = Noto_Sans({
   subsets: ['latin', 'latin-ext'],
@@ -55,17 +70,10 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  const [messages, dbInfo] = await Promise.all([
+  const [messages, social] = await Promise.all([
     getMessages({ locale }),
-    prisma.contactInfo
-      .findUnique({ where: { id: 'singleton' } })
-      .catch(() => null),
+    getSocialLinks(),
   ]);
-
-  const social = {
-    facebook: dbInfo?.facebook?.trim() || '',
-    instagram: dbInfo?.instagram?.trim() || '',
-  };
 
   const fontVars = `${notoSans.variable} ${inter.variable} ${cormorant.variable} ${notoSansGeorgian.variable}`;
   const langClass = locale === 'ka' ? 'font-georgian' : 'font-inter';

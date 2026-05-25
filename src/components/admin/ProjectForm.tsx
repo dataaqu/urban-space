@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   Input,
-  Select,
   useToast,
 } from './ui';
 
@@ -17,7 +16,7 @@ interface ProjectFormProps {
     id: string;
     titleKa: string;
     titleEn: string;
-    category: string;
+    categories: string[];
     locationKa: string | null;
     locationEn: string | null;
     featuredImage: string | null;
@@ -34,7 +33,10 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   const [form, setForm] = useState({
     titleKa: project?.titleKa || '',
     titleEn: project?.titleEn || '',
-    category: project?.category || 'ARCHITECTURE',
+    categories:
+      project?.categories && project.categories.length > 0
+        ? project.categories
+        : ['ARCHITECTURE'],
     locationKa: project?.locationKa || '',
     locationEn: project?.locationEn || '',
     featuredImage: project?.featuredImage || '',
@@ -110,6 +112,20 @@ export default function ProjectForm({ project }: ProjectFormProps) {
     }));
   };
 
+  const toggleCategory = (cat: 'ARCHITECTURE' | 'URBAN') => {
+    setForm((prev) => {
+      const has = prev.categories.includes(cat);
+      // Keep at least one category selected.
+      if (has && prev.categories.length === 1) return prev;
+      return {
+        ...prev,
+        categories: has
+          ? prev.categories.filter((c) => c !== cat)
+          : [...prev.categories, cat],
+      };
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
       <Card padded>
@@ -141,15 +157,33 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          <Select
-            label="კატეგორია"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-          >
-            <option value="ARCHITECTURE">არქიტექტურა</option>
-            <option value="URBAN">ურბანული</option>
-          </Select>
+          <div>
+            <label className="block text-sm font-medium text-dark-900">
+              კატეგორია
+            </label>
+            <p className="mt-0.5 text-xs text-neutral-500">
+              მონიშნე ერთი ან ორივე
+            </p>
+            <div className="mt-2 flex flex-col gap-2">
+              {([
+                ['ARCHITECTURE', 'არქიტექტურა'],
+                ['URBAN', 'ურბანული'],
+              ] as const).map(([value, label]) => (
+                <label
+                  key={value}
+                  className="inline-flex items-center gap-2 text-sm text-dark-900"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.categories.includes(value)}
+                    onChange={() => toggleCategory(value)}
+                    className="h-4 w-4"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </div>
           <Input
             label="აღწერა (ქართ.)"
             name="locationKa"

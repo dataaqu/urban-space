@@ -25,10 +25,12 @@ export default function ProjectsClient({
   const locale = useLocale();
   const activeCategory = initialCategory as CategoryFilter;
 
-  const architectureProjects = projects.filter(
-    (p) => p.category === 'ARCHITECTURE'
+  const architectureProjects = projects.filter((p) =>
+    p.categories.includes('ARCHITECTURE')
   );
-  const urbanProjects = projects.filter((p) => p.category === 'URBAN');
+  const urbanProjects = projects.filter((p) =>
+    p.categories.includes('URBAN')
+  );
 
   let visibleProjects: ProjectWithPages[];
   if (activeCategory === 'ARCHITECTURE') {
@@ -36,7 +38,13 @@ export default function ProjectsClient({
   } else if (activeCategory === 'URBAN') {
     visibleProjects = urbanProjects;
   } else {
-    visibleProjects = [...architectureProjects, ...urbanProjects];
+    // All: architecture first, then urban-only — each project once (dedupe).
+    const seen = new Set<string>();
+    visibleProjects = [...architectureProjects, ...urbanProjects].filter((p) => {
+      if (seen.has(p.id)) return false;
+      seen.add(p.id);
+      return true;
+    });
   }
 
   if (visibleProjects.length === 0) {
@@ -80,7 +88,7 @@ export default function ProjectsClient({
               null;
 
             return (
-              <article key={project.id} className="mx-auto w-[80%] sm:w-auto">
+              <article key={project.id} className="mx-auto w-[90%] sm:w-auto">
                 <Link href={`/projects/${project.slug}`} className="group block">
                   <div className="overflow-hidden bg-transparent">
                     <ResponsiveProjectImage

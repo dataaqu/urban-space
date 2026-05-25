@@ -69,7 +69,6 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         id: project.id,
         title,
         description,
-        category: project.category,
         pages,
       }}
     />

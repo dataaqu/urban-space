@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/routing';
-import { Minus, Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface HeroSlide {
   id: string;
@@ -23,6 +23,9 @@ interface HeroProps {
     facebook: string;
     instagram: string;
   };
+  /** Whether the intro loader has finished. While false on mobile the hero
+   *  title is kept hidden so it doesn't ghost through the translucent loader. */
+  splashDone?: boolean;
 }
 
 const fallbackBackgrounds = [
@@ -33,7 +36,7 @@ const fallbackBackgrounds = [
   '/full-project/project3.jpg',
 ];
 
-export default function Hero({ slides, content, social }: HeroProps) {
+export default function Hero({ slides, content, social, splashDone = true }: HeroProps) {
   const locale = useLocale();
   const socialLinks = social ?? { facebook: '', instagram: '' };
   const router = useRouter();
@@ -47,8 +50,23 @@ export default function Hero({ slides, content, social }: HeroProps) {
 
   const [currentBg, setCurrentBg] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [projectsOpen, setProjectsOpen] = useState(true);
   const [docked, setDocked] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
+
+  // Detect mobile/tablet layout once mounted. Until the intro loader finishes
+  // we keep the hero top layer hidden on mobile so the title doesn't show
+  // through the translucent loader. Desktop reveals immediately (no flash).
+  useEffect(() => {
+    setMounted(true);
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const update = () => setIsMobileLayout(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const showTopLayer = splashDone || (mounted && !isMobileLayout);
 
   const heroTagline =
     language === 'ka'
@@ -121,27 +139,29 @@ export default function Hero({ slides, content, social }: HeroProps) {
 
       if (ctaRef.current) {
         if (isMobileLayout) {
-          // Mobile: anchor near 67% of vh
+          // Mobile: anchor near 67% of vh, fade out on scroll
           const ctaAnchor = isLandscapePhone ? 0.78 : isTablet ? 0.72 : 0.67;
           const ctaExtraOffset = isTablet ? 24 : 0;
           const ty = vh * ctaAnchor - 36 + ctaExtraOffset;
           ctaRef.current.style.transform = `translate3d(-50%, ${ty}px, 0) scale(${isLandscapePhone ? 0.85 : 1})`;
           ctaRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
+          ctaRef.current.style.pointerEvents = p > 0.33 ? 'none' : 'auto';
         } else {
+          // Desktop: stays visible and docks into the header
           const scale = 1 - p * 0.4;
           const translateY = (1 - p) * vh * 0.78;
           ctaRef.current.style.transform = `translate3d(-50%, ${translateY}px, 0) scale(${scale})`;
-          ctaRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
+          ctaRef.current.style.opacity = '1';
+          ctaRef.current.style.pointerEvents = 'auto';
         }
-        ctaRef.current.style.pointerEvents = p > 0.33 ? 'none' : 'auto';
       }
 
-      // Arrow position — near the bottom on mobile, ~78% on desktop
+      // Arrow position — near the bottom of the viewport, below the CTA text
       if (arrowWrapRef.current) {
         if (isMobileLayout) {
           arrowWrapRef.current.style.top = `${vh - 56}px`;
         } else {
-          arrowWrapRef.current.style.top = `${vh * 0.78}px`;
+          arrowWrapRef.current.style.top = `${vh - 70}px`;
         }
       }
 
@@ -247,7 +267,14 @@ export default function Hero({ slides, content, social }: HeroProps) {
       </section>
 
       {/* Fixed morphing top layer */}
-      <div className="fixed inset-x-0 top-0 z-40 pointer-events-none">
+      <div
+        className="fixed inset-x-0 top-0 z-40 pointer-events-none"
+        style={{
+          opacity: showTopLayer ? 1 : 0,
+          transition: 'opacity 700ms ease',
+          willChange: 'opacity',
+        }}
+      >
         <div
           ref={topbarRef}
           className="absolute inset-x-0 top-0 h-24 bg-background/95 backdrop-blur-sm border-b border-border"
@@ -362,7 +389,7 @@ export default function Hero({ slides, content, social }: HeroProps) {
             })
           }
           aria-label="Scroll down"
-          className={`absolute left-1/2 -translate-x-1/2 pointer-events-auto text-center text-[22px] md:text-[20px] lg:text-[28px] font-light leading-none opacity-70 md:opacity-60 lg:opacity-40 animate-[bounce_2.6s_ease-in-out_infinite] hover:opacity-90 transition-opacity ${textOnDark}`}
+          className={`absolute left-1/2 -translate-x-1/2 pointer-events-auto text-center text-[22px] md:text-[20px] lg:text-[28px] font-light leading-none opacity-90 animate-[bounce_2.6s_ease-in-out_infinite] hover:opacity-100 transition-opacity ${textOnDark}`}
           style={{ top: 'auto' }}
         >
           <span ref={arrowRef} aria-hidden>
@@ -424,47 +451,32 @@ export default function Hero({ slides, content, social }: HeroProps) {
           <nav className="flex-1 flex flex-col justify-center px-8 md:px-10">
             <div className="space-y-8">
               <div>
-                <button
-                  type="button"
-                  onClick={() => setProjectsOpen((v) => !v)}
-                  className="w-full flex items-center justify-between text-background/95 hover:text-background transition"
+                <Link
+                  href="/projects"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full flex items-center text-background/95 hover:text-background transition"
                 >
                   <span className="text-[15px] md:text-[18px] font-light tracking-[0.22em]">
                     {language === 'ka' ? 'პროექტები' : 'PROJECTS'}
                   </span>
-                  {projectsOpen ? (
-                    <Minus className="h-4 w-4" strokeWidth={1} />
-                  ) : (
-                    <Plus className="h-4 w-4" strokeWidth={1} />
-                  )}
-                </button>
+                </Link>
 
-                <div
-                  className={`grid transition-all duration-500 ease-out ${
-                    projectsOpen
-                      ? 'grid-rows-[1fr] opacity-100 mt-5'
-                      : 'grid-rows-[0fr] opacity-0 mt-0'
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="border-l border-background/20 pl-5 flex flex-col gap-3">
-                      <Link
-                        href="/projects?category=ARCHITECTURE"
-                        onClick={() => setMenuOpen(false)}
-                        className="text-[15px] md:text-[16px] font-light tracking-[0.03em] text-background/72 hover:text-background transition"
-                      >
-                        {language === 'ka' ? 'არქიტექტურა' : 'Architecture'}
-                      </Link>
+                <div className="mt-5 border-l border-background/20 pl-5 flex flex-col gap-3">
+                  <Link
+                    href="/projects?category=ARCHITECTURE"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-[15px] md:text-[16px] font-light tracking-[0.03em] text-background/72 hover:text-background transition"
+                  >
+                    {language === 'ka' ? 'არქიტექტურა' : 'Architecture'}
+                  </Link>
 
-                      <Link
-                        href="/projects?category=URBAN"
-                        onClick={() => setMenuOpen(false)}
-                        className="text-[15px] md:text-[16px] font-light tracking-[0.03em] text-background/72 hover:text-background transition"
-                      >
-                        {language === 'ka' ? 'ურბანული' : 'Urban'}
-                      </Link>
-                    </div>
-                  </div>
+                  <Link
+                    href="/projects?category=URBAN"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-[15px] md:text-[16px] font-light tracking-[0.03em] text-background/72 hover:text-background transition"
+                  >
+                    {language === 'ka' ? 'ურბანული' : 'Urban'}
+                  </Link>
                 </div>
               </div>
 

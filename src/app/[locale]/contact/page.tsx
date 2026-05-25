@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';
@@ -19,14 +19,22 @@ export default async function ContactPage() {
   const t = await getTranslations('contact');
   const lang = locale as 'ka' | 'en';
 
-  const [dbInfo, content] = await Promise.all([
-    prisma.contactInfo.upsert({
-      where: { id: SINGLETON_ID },
-      update: {},
-      create: { id: SINGLETON_ID },
-    }),
+  const [foundInfo, content] = await Promise.all([
+    prisma.contactInfo
+      .findUnique({ where: { id: SINGLETON_ID } })
+      .catch(() => null),
     getContentMap('contact'),
   ]);
+  const dbInfo = foundInfo ?? {
+    email: null,
+    phone: null,
+    addressKa: null,
+    addressEn: null,
+    facebook: null,
+    instagram: null,
+    mapLat: null,
+    mapLng: null,
+  };
 
   const text = (key: string, fallback: string) =>
     content[key]?.[lang]?.trim() || fallback;

@@ -14,7 +14,6 @@ interface Project {
   slug: string;
   titleKa: string;
   titleEn: string;
-  category: string;
   locationKa?: string | null;
   locationEn?: string | null;
   featuredImage?: string | null;
@@ -44,8 +43,8 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
 
   const titleSizing =
     locale === 'ka'
-      ? 'text-[22px] md:text-[34px]'
-      : 'text-[28px] md:text-[44px]';
+      ? 'text-[16px] md:text-[34px]'
+      : 'text-[18px] md:text-[44px]';
 
   const renderCard = (project: Project) => {
     const title = locale === 'ka' ? project.titleKa : project.titleEn;
@@ -83,11 +82,11 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
   return (
     <section
       id="selected-work"
-      className="bg-[#F2F2F2] px-3 py-24 md:px-4 md:py-32"
+      className="bg-[#F2F2F2] px-8 py-24 md:px-10 md:py-32"
     >
       <div className="mx-auto max-w-[1920px]">
         <div className="mb-20">
-          <p className="text-[18px] md:text-[26px] uppercase tracking-[0.2em] text-[#777777] font-light">
+          <p className="text-[12px] md:text-[26px] uppercase tracking-[0.2em] text-[#777777] font-light">
             {getText('featured.badge', 'badge')}
           </p>
           <h2

@@ -1,12 +1,26 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
+import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
-import Hero from '@/components/home/Hero';
+import HomeIntro from '@/components/home/HomeIntro';
 import SelectedWork from '@/components/home/SelectedWork';
 import HomeFooter from '@/components/home/HomeFooter';
-import SplashScreen from '@/components/home/SplashScreen';
 import { getHeroSlides, getFeaturedProjects, getContentMap } from '@/lib/content';
 import prisma from '@/lib/prisma';
+
+const getHomeSocial = unstable_cache(
+  async () => {
+    const dbInfo = await prisma.contactInfo
+      .findUnique({ where: { id: 'singleton' } })
+      .catch(() => null);
+    return {
+      facebook: dbInfo?.facebook?.trim() || '',
+      instagram: dbInfo?.instagram?.trim() || '',
+    };
+  },
+  ['contact-info-social'],
+  { revalidate: 3600, tags: ['contact-info'] },
+);
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home.hero' });
@@ -18,24 +32,16 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 }
 
 export default async function HomePage() {
-  const [slides, featuredProjects, homeContent, dbInfo] = await Promise.all([
+  const [slides, featuredProjects, homeContent, social] = await Promise.all([
     getHeroSlides(),
     getFeaturedProjects(),
     getContentMap('home'),
-    prisma.contactInfo
-      .findUnique({ where: { id: 'singleton' } })
-      .catch(() => null),
+    getHomeSocial(),
   ]);
-
-  const social = {
-    facebook: dbInfo?.facebook?.trim() || '',
-    instagram: dbInfo?.instagram?.trim() || '',
-  };
 
   return (
     <>
-      <SplashScreen />
-      <Hero slides={slides} content={homeContent} social={social} />
+      <HomeIntro slides={slides} content={homeContent} social={social} />
       <SelectedWork projects={featuredProjects} content={homeContent} />
       <HomeFooter />
     </>

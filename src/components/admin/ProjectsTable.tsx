@@ -26,7 +26,7 @@ export interface ProjectRow {
   id: string;
   titleKa: string;
   titleEn: string;
-  category: 'ARCHITECTURE' | 'URBAN' | string;
+  categories: ('ARCHITECTURE' | 'URBAN' | string)[];
   thumbnail: string | null;
   pageCount: number;
   featured: boolean;
@@ -80,7 +80,7 @@ export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return projects.filter((p) => {
-      if (category !== 'ALL' && p.category !== category) return false;
+      if (category !== 'ALL' && !p.categories.includes(category)) return false;
       if (!q) return true;
       return (
         p.titleKa.toLowerCase().includes(q) ||
@@ -209,11 +209,13 @@ export default function ProjectsTable({ projects }: { projects: ProjectRow[] }) 
                       </p>
                     </td>
                     <td className="px-5 py-3">
-                      <Badge>
-                        {project.category === 'ARCHITECTURE'
-                          ? 'არქიტექტურა'
-                          : 'ურბანული'}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {project.categories.map((c) => (
+                          <Badge key={c}>
+                            {c === 'ARCHITECTURE' ? 'არქიტექტურა' : 'ურბანული'}
+                          </Badge>
+                        ))}
+                      </div>
                     </td>
                     <td className="px-5 py-3 text-[15px] text-neutral-600 tabular-nums">
                       {project.pageCount}

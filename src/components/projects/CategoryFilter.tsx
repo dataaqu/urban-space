@@ -12,14 +12,30 @@ export default function CategoryFilter({ activeCategory }: CategoryFilterProps) 
   const locale = useLocale();
   const language = locale as 'en' | 'ka';
   const [hidden, setHidden] = useState(false);
+  const [atTop, setAtTop] = useState(true);
 
   useEffect(() => {
+    let idleTimer: ReturnType<typeof setTimeout>;
     const onScroll = () => {
-      setHidden(window.scrollY > 10);
+      // Near the top it's always visible.
+      if (window.scrollY <= 10) {
+        clearTimeout(idleTimer);
+        setAtTop(true);
+        setHidden(false);
+        return;
+      }
+      // Hide while actively scrolling, then reveal once scrolling stops.
+      setAtTop(false);
+      setHidden(true);
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => setHidden(false), 250);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(idleTimer);
+    };
   }, []);
 
   const isArch = activeCategory === 'ARCHITECTURE';
@@ -43,7 +59,7 @@ export default function CategoryFilter({ activeCategory }: CategoryFilterProps) 
 
   return (
     <div
-      className={`sticky top-[56px] z-30 bg-background/85 backdrop-blur-md md:top-[100px] ${
+      className={`sticky top-[56px] md:top-[100px] z-30 bg-background/85 backdrop-blur-md lg:hidden ${
         hidden ? 'pointer-events-none' : ''
       }`}
       style={{
@@ -54,13 +70,15 @@ export default function CategoryFilter({ activeCategory }: CategoryFilterProps) 
       }}
     >
       <div className="px-6 py-3 md:px-10 md:py-4">
-        <div className="mx-auto flex max-w-[1680px] flex-col items-center md:flex-row md:justify-center">
-          <Link
-            href="/projects"
-            className="mb-3 text-[11px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition md:hidden"
-          >
-            {language === 'ka' ? 'პროექტები' : 'Projects'}
-          </Link>
+        <div className="mx-auto flex max-w-[1680px] flex-col items-center lg:flex-row lg:justify-center">
+          {atTop && (
+            <Link
+              href="/projects"
+              className="mb-3 text-[11px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition lg:hidden"
+            >
+              {language === 'ka' ? 'პროექტები' : 'Projects'}
+            </Link>
+          )}
           <div className="flex items-center justify-center gap-10 md:gap-16">
             {renderLink(
               '/projects?category=ARCHITECTURE',

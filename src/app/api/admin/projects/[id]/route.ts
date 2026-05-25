@@ -19,6 +19,17 @@ export async function PUT(
   try {
     const data = await request.json();
 
+    // Accept `categories` (array); fall back to legacy single `category`.
+    const categories: string[] = Array.isArray(data.categories)
+      ? Array.from(new Set(data.categories as string[]))
+      : data.category
+        ? [data.category]
+        : [];
+    const validCategories = ['ARCHITECTURE', 'URBAN'];
+    if (categories.length === 0 || !categories.every((c) => validCategories.includes(c))) {
+      return NextResponse.json({ error: 'At least one valid category is required' }, { status: 400 });
+    }
+
     // Clean up old images if replaced
     const existing = await prisma.project.findUnique({
       where: { id: params.id },
@@ -37,7 +48,7 @@ export async function PUT(
         slug: data.slug,
         titleKa: data.titleKa,
         titleEn: data.titleEn,
-        category: data.category,
+        categories: categories as ('ARCHITECTURE' | 'URBAN')[],
         locationKa: data.locationKa || null,
         locationEn: data.locationEn || null,
         featuredImage: data.featuredImage || null,

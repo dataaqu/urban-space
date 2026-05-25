@@ -38,7 +38,7 @@ async function main() {
       slug: 'residential-complex-vake',
       titleKa: 'საცხოვრებელი კომპლექსი ვაკეში',
       titleEn: 'Residential Complex in Vake',
-      category: 'ARCHITECTURE',
+      categories: ['ARCHITECTURE'],
       pages: {
         create: [
           {
@@ -62,7 +62,7 @@ async function main() {
       slug: 'urban-renewal-old-tbilisi',
       titleKa: 'ძველი თბილისის განახლების პროექტი',
       titleEn: 'Old Tbilisi Urban Renewal Project',
-      category: 'URBAN',
+      categories: ['URBAN'],
       pages: {
         create: [
           {

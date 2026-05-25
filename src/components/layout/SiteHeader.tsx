@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useLocale } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { Minus, Plus, X } from 'lucide-react';
 import { useSwipeMenu } from '@/hooks/useSwipeMenu';
@@ -22,6 +23,11 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
   const isStudio = pathname === '/studio' || pathname.startsWith('/studio/');
   const isContact = pathname === '/contact';
 
+  const searchParams = useSearchParams();
+  const activeCategory = searchParams?.get('category');
+  const isArchActive = isProjects && activeCategory === 'ARCHITECTURE';
+  const isUrbanActive = isProjects && activeCategory === 'URBAN';
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(true);
 
@@ -37,10 +43,12 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
       <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20">
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group block">
-            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px]">
+            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] xl:text-[36px] 2xl:text-[40px]">
               URBAN SPACE
             </div>
-            <div className="hidden md:block mt-1.5 text-[10px] tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[12px]">
+            {/* Tablet-only divider (matches urbanspace-mobile); hidden on mobile and desktop */}
+            <span className="hidden md:block lg:hidden mt-2 h-px w-24 bg-foreground/60" />
+            <div className="hidden md:block mt-1.5 text-[10px] tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[12px] xl:text-[13px] 2xl:text-[15px]">
               {language === 'ka'
                 ? 'არქიტექტურა და ურბანული დაგეგმარება'
                 : 'Architecture & urban planning'}
@@ -48,21 +56,62 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           </Link>
 
           <nav
-            className={`absolute left-1/2 top-[38%] hidden -translate-x-1/2 -translate-y-1/2 items-start gap-12 tracking-[0.06em] md:flex ${
-              language === 'ka' ? 'text-[14px]' : 'text-[17px]'
+            className={`absolute left-1/2 top-5 hidden -translate-x-1/2 items-start gap-12 xl:gap-14 2xl:gap-16 tracking-[0.06em] lg:flex ${
+              language === 'ka'
+                ? 'text-[14px] xl:text-[16px] 2xl:text-[18px]'
+                : 'text-[17px] xl:text-[19px] 2xl:text-[22px]'
             }`}
           >
-            <Link
-              href="/projects"
-              className={`self-start transition hover:text-foreground/75 ${
-                isProjects ? 'text-foreground font-medium' : 'text-foreground/45'
-              }`}
-            >
-              {language === 'ka' ? 'პროექტები' : 'Projects'}
-            </Link>
+            <div className="flex flex-col items-start">
+              <Link
+                href="/projects"
+                className={`flex h-8 xl:h-9 2xl:h-10 items-end leading-none transition hover:text-foreground/75 ${
+                  isProjects ? 'text-foreground font-medium' : 'text-foreground/45'
+                }`}
+              >
+                {language === 'ka' ? 'პროექტები' : 'Projects'}
+              </Link>
+              {isProjects && (
+                <div
+                  className={`mt-2.5 flex items-center gap-2 font-light tracking-[0.05em] leading-none ${
+                    language === 'ka'
+                      ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
+                      : 'text-[14px] xl:text-[15px] 2xl:text-[17px]'
+                  }`}
+                >
+                  <Link
+                    href={isArchActive ? '/projects' : '/projects?category=ARCHITECTURE'}
+                    className={`flex flex-col items-start transition hover:text-foreground ${
+                      isArchActive ? 'text-foreground' : 'text-foreground/55'
+                    }`}
+                  >
+                    <span>{language === 'ka' ? 'არქიტექტურა' : 'Architecture'}</span>
+                    <span
+                      className={`mt-1 h-px bg-foreground/60 transition-all duration-300 ${
+                        isArchActive ? 'w-full opacity-100' : 'w-0 opacity-0'
+                      }`}
+                    />
+                  </Link>
+                  <span className="text-foreground/40">-</span>
+                  <Link
+                    href={isUrbanActive ? '/projects' : '/projects?category=URBAN'}
+                    className={`flex flex-col items-start transition hover:text-foreground ${
+                      isUrbanActive ? 'text-foreground' : 'text-foreground/55'
+                    }`}
+                  >
+                    <span>{language === 'ka' ? 'ურბანული' : 'Urban'}</span>
+                    <span
+                      className={`mt-1 h-px bg-foreground/60 transition-all duration-300 ${
+                        isUrbanActive ? 'w-full opacity-100' : 'w-0 opacity-0'
+                      }`}
+                    />
+                  </Link>
+                </div>
+              )}
+            </div>
             <Link
               href="/studio"
-              className={`self-start transition hover:text-foreground/75 ${
+              className={`flex h-8 xl:h-9 2xl:h-10 items-end leading-none transition hover:text-foreground/75 ${
                 isStudio ? 'text-foreground font-medium' : 'text-foreground/45'
               }`}
             >
@@ -70,7 +119,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
             </Link>
             <Link
               href="/contact"
-              className={`self-start transition hover:text-foreground/75 ${
+              className={`flex h-8 xl:h-9 2xl:h-10 items-end leading-none transition hover:text-foreground/75 ${
                 isContact ? 'text-foreground font-medium' : 'text-foreground/45'
               }`}
             >
@@ -94,7 +143,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
               type="button"
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               onClick={() => setMenuOpen((v) => !v)}
-              className="group relative mt-1 flex h-5 w-5 flex-col justify-between md:hidden"
+              className="group relative mt-1 flex h-5 w-5 flex-col justify-between lg:hidden"
             >
               <span
                 className={`block h-[1px] w-full bg-foreground/80 transition ${
@@ -119,7 +168,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
       {/* Side menu backdrop */}
       <div
         onClick={() => setMenuOpen(false)}
-        className={`fixed inset-0 z-40 transition-opacity duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 transition-opacity duration-500 lg:hidden ${
           menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         style={{
@@ -130,7 +179,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
       />
 
       <aside
-        className={`fixed top-0 right-0 z-50 h-full w-full sm:w-[420px] text-background shadow-elegant transition-transform duration-500 ease-out md:hidden ${
+        className={`fixed top-0 right-0 z-50 h-full w-full sm:w-[420px] text-background shadow-elegant transition-transform duration-500 ease-out lg:hidden ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{

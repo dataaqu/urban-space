@@ -16,7 +16,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
     raw === 'URBAN' ? 'URBAN' : raw === 'ARCHITECTURE' ? 'ARCHITECTURE' : 'ALL';
 
   const where =
-    category === 'ALL' ? {} : { category: category as ProjectCategory };
+    category === 'ALL' ? {} : { categories: { has: category as ProjectCategory } };
 
   let projects: Awaited<ReturnType<typeof prisma.project.findMany>> = [];
   try {

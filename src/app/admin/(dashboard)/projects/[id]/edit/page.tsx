@@ -40,7 +40,7 @@ export default async function EditProjectPage({
             id: project.id,
             titleKa: project.titleKa,
             titleEn: project.titleEn,
-            category: project.category,
+            categories: project.categories,
             locationKa: project.locationKa,
             locationEn: project.locationEn,
             featuredImage: project.featuredImage,

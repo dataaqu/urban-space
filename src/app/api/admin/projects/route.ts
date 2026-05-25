@@ -15,11 +15,20 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
 
-    if (!data.titleKa || !data.titleEn || !data.category) {
-      return NextResponse.json({ error: 'titleKa, titleEn, category are required' }, { status: 400 });
+    // Accept `categories` (array); fall back to legacy single `category`.
+    const categories: string[] = Array.isArray(data.categories)
+      ? data.categories
+      : data.category
+        ? [data.category]
+        : [];
+
+    if (!data.titleKa || !data.titleEn || categories.length === 0) {
+      return NextResponse.json({ error: 'titleKa, titleEn and at least one category are required' }, { status: 400 });
     }
 
-    if (!['ARCHITECTURE', 'URBAN'].includes(data.category)) {
+    const validCategories = ['ARCHITECTURE', 'URBAN'];
+    const uniqueCategories = Array.from(new Set(categories));
+    if (!uniqueCategories.every((c) => validCategories.includes(c))) {
       return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
     }
 
@@ -41,7 +50,7 @@ export async function POST(request: NextRequest) {
         slug,
         titleKa: data.titleKa,
         titleEn: data.titleEn,
-        category: data.category,
+        categories: uniqueCategories as ('ARCHITECTURE' | 'URBAN')[],
         locationKa: data.locationKa || null,
         locationEn: data.locationEn || null,
         featuredImage: data.featuredImage || null,

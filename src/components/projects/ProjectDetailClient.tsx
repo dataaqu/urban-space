@@ -52,6 +52,18 @@ const META_LABELS = {
   },
 } as const;
 
+function RichTextBlock({ html, withDivider }: { html: string; withDivider: boolean }) {
+  // html is already DOMPurify-sanitized upstream before reaching this component
+  return (
+    <div
+      className={`prose prose-sm md:prose-base max-w-none break-words ${
+        withDivider ? 'mt-6 pt-6 border-t border-foreground/10' : ''
+      }`}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
 function getMetadataItems(page: PageData, locale: string) {
   const isKa = locale === 'ka';
   const labels = isKa ? META_LABELS.ka : META_LABELS.en;
@@ -76,7 +88,6 @@ interface ProjectDetailClientProps {
     id: string;
     title: string;
     description: string | null;
-    category: string;
     pages: PageData[];
   };
 }
@@ -202,10 +213,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const metaPage =
     project.pages.find((p) => getMetadataItems(p, locale).length > 0) ?? page;
   const metaItems = getMetadataItems(metaPage, locale);
-  const hasInfo = metaItems.length > 0;
   const hasTwoImages = page.type === 'DOUBLE_IMAGE' && !!page.image2;
-  const rawPageText = (isKa ? page.textRightKa : page.textRightEn)?.trim() || '';
+  const textPage =
+    project.pages.find((p) =>
+      ((isKa ? p.textRightKa : p.textRightEn)?.trim() ?? '').length > 0,
+    ) ?? page;
+  const rawPageText =
+    (isKa ? textPage.textRightKa : textPage.textRightEn)?.trim() || '';
   const pageTextHtml = useMemo(() => DOMPurify.sanitize(rawPageText), [rawPageText]);
+  const hasInfo = metaItems.length > 0 || pageTextHtml.length > 0;
 
   return (
     <main className="h-[calc(100vh-80px)] overflow-hidden bg-background text-foreground">
@@ -213,7 +229,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       <Link
         href="/projects"
         aria-label={closeLabel}
-        className="fixed right-4 top-[92px] md:right-8 md:top-[100px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 top-[110px] md:right-8 md:top-[130px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
@@ -246,9 +262,9 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-14 md:pb-4">
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center h-[42vh] md:h-auto md:flex-1 md:min-h-0">
+        <div className="relative flex w-full items-center justify-center h-[50vh] md:h-auto md:flex-1 md:min-h-0">
           {hasTwoImages ? (
             <div key={activeIndex} className="flex flex-col md:flex-row h-full w-full items-center justify-center gap-3 md:gap-6">
               <div className="relative h-[48%] w-full md:h-full md:w-[48%]">
@@ -291,20 +307,10 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             </div>
           )}
 
-          {pageTextHtml && (
-            <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 w-[22%] max-w-[320px] pr-4 lg:pr-8 items-center pointer-events-none">
-              <div
-                className={`pointer-events-auto break-words text-foreground/75 leading-relaxed font-light prose prose-sm md:prose-base max-w-none ${
-                  isKa ? 'text-[13px] md:text-[15px]' : 'text-[14px] md:text-[16px]'
-                }`}
-                dangerouslySetInnerHTML={{ __html: pageTextHtml }}
-              />
-            </div>
-          )}
         </div>
 
         {/* Text block — fixed min-height so info button doesn't shift */}
-        <div className="mt-6 md:mt-4 text-center shrink-0 min-h-[80px] md:min-h-[64px] flex flex-col items-center justify-start">
+        <div className="mt-6 md:mt-5 text-center shrink-0 min-h-[80px] md:min-h-[64px] flex flex-col items-center justify-start">
           {activeIndex === 0 && (
             <>
               <h2
@@ -316,7 +322,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </h2>
               {project.description && (
                 <p
-                  className={`mt-3 mb-[15px] text-foreground/60 leading-relaxed max-w-[640px] ${
+                  className={`mt-3 md:mt-4 text-foreground/60 leading-relaxed max-w-[640px] ${
                     isKa ? 'text-[12px] md:text-[14px]' : 'text-[14px] md:text-[16px]'
                   }`}
                 >
@@ -328,7 +334,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Info button */}
-        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px]">
+        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px] md:mt-4">
           {hasInfo && (
             <button
               type="button"
@@ -344,28 +350,29 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
       </div>
 
-      {/* Drawer backdrop */}
+      {/* Drawer backdrop — dark on mobile, transparent on desktop, both close on click */}
       <div
         onClick={() => setInfoOpen(false)}
-        className={`fixed inset-x-0 bottom-0 top-auto h-[50vh] z-40 transition-opacity duration-500 ${
+        className={`fixed inset-0 lg:top-[96px] z-20 transition-opacity duration-500 ${
           infoOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
-        style={{ background: 'rgba(0,0,0,0.15)' }}
       />
 
-      {/* Drawer */}
+      {/* Drawer — slides from bottom on mobile, from left on desktop */}
       <aside
         aria-hidden={!infoOpen}
-        className={`fixed inset-x-0 bottom-0 z-50 h-[50vh] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
-          infoOpen ? 'translate-y-0' : 'translate-y-full'
+        className={`fixed inset-x-0 bottom-0 z-30 h-[50vh] lg:inset-x-auto lg:left-0 lg:top-[96px] lg:bottom-0 lg:h-[calc(100vh-96px)] lg:w-[500px] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
+          infoOpen
+            ? 'translate-y-0 lg:translate-x-0'
+            : 'translate-y-full lg:translate-y-0 lg:-translate-x-full'
         }`}
       >
         <div className="relative flex h-full flex-col">
-          <div className="flex justify-center pt-3">
+          <div className="flex justify-center pt-3 lg:hidden">
             <span className="h-1 w-10 rounded-full bg-foreground/20" />
           </div>
 
-          <div className="flex items-center justify-end px-6 md:px-10 pt-3">
+          <div className="flex items-center justify-end px-6 lg:px-10 pt-3 lg:pt-6">
             <button
               type="button"
               onClick={() => setInfoOpen(false)}
@@ -376,20 +383,30 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 py-6 md:px-10 md:py-8">
+          <div className="flex-1 overflow-y-auto px-6 py-6 lg:px-10 lg:py-8">
             <div
-              className={`max-w-[720px] mx-auto text-foreground/75 leading-relaxed font-light ${
-                isKa ? 'text-[13px] md:text-[15px]' : 'text-[14px] md:text-[16px]'
+              className={`max-w-[720px] mx-auto lg:mx-0 text-foreground/75 leading-relaxed font-light ${
+                isKa ? 'text-[13px] lg:text-[15px]' : 'text-[14px] lg:text-[16px]'
               }`}
             >
-              <div className="space-y-2">
-                {metaItems.map((item, i) => (
-                  <p key={i}>
-                    <span className="text-foreground/50">{item.label}:</span>{' '}
-                    {item.value}
-                  </p>
-                ))}
-              </div>
+              {metaItems.length > 0 && (
+                <div className="space-y-2">
+                  {metaItems.map((item, i) => (
+                    <p key={i}>
+                      <span className="text-foreground/50">{item.label}:</span>{' '}
+                      {item.value}
+                    </p>
+                  ))}
+                </div>
+              )}
+              {pageTextHtml && (
+                <div className="hidden lg:block">
+                  <RichTextBlock
+                    html={pageTextHtml}
+                    withDivider={metaItems.length > 0}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

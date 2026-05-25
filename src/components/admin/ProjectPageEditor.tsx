@@ -337,12 +337,44 @@ export default function ProjectPageEditor({
                   </div>
 
                   {editForm.type === 'SINGLE_IMAGE' ? (
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                      <MetadataInputs
-                        editForm={editForm}
-                        setEditForm={setEditForm}
-                      />
-                      <div className="space-y-3">
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                      <div className="min-w-0 space-y-4">
+                        <MetadataInputs
+                          editForm={editForm}
+                          setEditForm={setEditForm}
+                        />
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            ტექსტი (ქართ.)
+                          </label>
+                          <RichTextEditor
+                            content={editForm.textRightKa || ''}
+                            onChange={(html) =>
+                              setEditForm((prev) => ({
+                                ...prev,
+                                textRightKa: html,
+                              }))
+                            }
+                            placeholder="ქართული ტექსტი..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            ტექსტი (ინგ.)
+                          </label>
+                          <RichTextEditor
+                            content={editForm.textRightEn || ''}
+                            onChange={(html) =>
+                              setEditForm((prev) => ({
+                                ...prev,
+                                textRightEn: html,
+                              }))
+                            }
+                            placeholder="English text..."
+                          />
+                        </div>
+                      </div>
+                      <div className="min-w-0 space-y-3">
                         <div>
                           <label className="block text-sm font-medium text-dark-700 mb-1.5">
                             სურათი — Desktop
@@ -371,38 +403,6 @@ export default function ProjectPageEditor({
                               setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
                             }
                             folder="urban-space/projects"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                            მარჯვენა (ქართ.)
-                          </label>
-                          <RichTextEditor
-                            content={editForm.textRightKa || ''}
-                            onChange={(html) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                textRightKa: html,
-                              }))
-                            }
-                            placeholder="ქართული ტექსტი..."
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                            მარჯვენა (ინგ.)
-                          </label>
-                          <RichTextEditor
-                            content={editForm.textRightEn || ''}
-                            onChange={(html) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                textRightEn: html,
-                              }))
-                            }
-                            placeholder="English text..."
                           />
                         </div>
                       </div>

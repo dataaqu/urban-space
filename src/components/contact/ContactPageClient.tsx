@@ -61,19 +61,19 @@ export default function ContactPageClient({
 
   return (
     <div className="bg-background text-foreground">
-      <main className="px-8 pt-12 pb-20 mx-auto max-w-[820px] md:px-10 md:pt-16 lg:max-w-[1400px]">
-        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-32 xl:gap-40 lg:items-start">
+      <main className="px-8 pt-12 pb-20 mx-auto max-w-[820px] md:px-10 md:pt-16 lg:max-w-[1400px] lg:px-16 lg:pt-8 lg:pb-10 xl:px-20 2xl:pt-16 2xl:pb-20 lg:min-h-[calc(100vh-96px)] lg:flex lg:flex-col">
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:gap-12 xl:gap-20 2xl:gap-40 lg:items-start">
           {/* LEFT COLUMN */}
           <div>
             {/* INTRO */}
-            <section className="mb-12 md:mb-16">
+            <section className="mb-12 md:mb-16 lg:mb-8 2xl:mb-16">
               <h1
-                className="text-[29px] md:text-[45px] font-light tracking-[0.04em] leading-none"
+                className="text-[29px] md:text-[45px] lg:text-[34px] 2xl:text-[45px] font-light tracking-[0.04em] leading-none"
                 style={{ fontFamily: 'var(--font-cormorant), "Cormorant Garamond", serif' }}
               >
                 {info.title}
               </h1>
-              <p className="mt-5 md:mt-6 text-[15px] md:text-[17px] font-light text-foreground/70 max-w-[520px]">
+              <p className="mt-5 md:mt-6 lg:mt-4 2xl:mt-6 text-[15px] md:text-[17px] lg:text-[14px] 2xl:text-[17px] font-light text-foreground/70 max-w-[520px]">
                 {info.intro}
               </p>
             </section>
@@ -84,22 +84,22 @@ export default function ContactPageClient({
             </section>
 
             {/* CONTACT INFO */}
-            <section className="mb-12 mt-10 flex flex-col items-center gap-8 lg:items-start">
-              <div className="flex flex-col items-center gap-6 lg:items-start">
-                <div className="flex items-center gap-3 text-sm md:text-base font-light opacity-90">
+            <section className="mb-12 mt-10 lg:mb-6 lg:mt-6 2xl:mb-12 2xl:mt-10 flex flex-col items-center gap-8 lg:gap-5 2xl:gap-8 lg:items-start">
+              <div className="flex flex-col items-center gap-6 lg:gap-3 2xl:gap-6 lg:items-start">
+                <div className="flex items-center gap-3 text-sm md:text-base lg:text-[13px] 2xl:text-base font-light opacity-90">
                   <MapPin size={16} strokeWidth={1.25} className="shrink-0" />
                   <span>{info.address}</span>
                 </div>
                 <a
                   href={`tel:${info.phone.replace(/\s/g, '')}`}
-                  className="flex items-center gap-3 text-sm md:text-base font-light hover:opacity-70 transition-opacity"
+                  className="flex items-center gap-3 text-sm md:text-base lg:text-[13px] 2xl:text-base font-light hover:opacity-70 transition-opacity"
                 >
                   <Phone size={16} strokeWidth={1.25} />
                   {info.phone}
                 </a>
                 <a
                   href={`mailto:${info.email}`}
-                  className="flex items-center gap-3 text-sm md:text-base font-light hover:opacity-70 transition-opacity"
+                  className="flex items-center gap-3 text-sm md:text-base lg:text-[13px] 2xl:text-base font-light hover:opacity-70 transition-opacity"
                 >
                   <Mail size={16} strokeWidth={1.25} />
                   {info.email}
@@ -139,23 +139,23 @@ export default function ContactPageClient({
             </section>
 
             {/* START A PROJECT FORM */}
-            <section className="pt-8 border-t border-foreground/15">
+            <section className="pt-8 lg:pt-5 2xl:pt-8 border-t border-foreground/15">
               <h2
-                className="mb-5 text-[18px] md:text-[22px] font-light tracking-[0.04em]"
+                className="mb-5 lg:mb-3 2xl:mb-5 text-[18px] md:text-[22px] lg:text-[16px] 2xl:text-[22px] font-light tracking-[0.04em]"
                 style={{ fontFamily: 'var(--font-cormorant), "Cormorant Garamond", serif' }}
               >
                 {info.formCta}
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-3">
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-2 2xl:space-y-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:gap-2 2xl:gap-3">
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={info.namePlaceholder}
-                    className="w-full border border-black/10 bg-white/60 px-4 py-3 text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
+                    className="w-full border border-black/10 bg-white/60 px-4 py-3 lg:py-2 2xl:py-3 text-[14px] lg:text-[13px] 2xl:text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
                   />
                   <input
                     type="email"
@@ -163,21 +163,21 @@ export default function ContactPageClient({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={info.emailPlaceholder}
-                    className="w-full border border-black/10 bg-white/60 px-4 py-3 text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
+                    className="w-full border border-black/10 bg-white/60 px-4 py-3 lg:py-2 2xl:py-3 text-[14px] lg:text-[13px] 2xl:text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
                   />
                 </div>
                 <textarea
-                  rows={4}
+                  rows={3}
                   required
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={info.formPlaceholder}
-                  className="w-full resize-none border border-black/10 bg-white/60 px-4 py-3 text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
+                  className="w-full resize-none border border-black/10 bg-white/60 px-4 py-3 lg:py-2 2xl:py-3 text-[14px] lg:text-[13px] 2xl:text-[14px] outline-none placeholder:text-[#8A8A8A] focus:border-black/30"
                 />
                 <button
                   type="submit"
                   disabled={status === 'sending'}
-                  className="w-full border border-black/20 px-5 py-3 text-[12px] uppercase tracking-[0.22em] transition hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full border border-black/20 px-5 py-3 lg:py-2 2xl:py-3 text-[12px] uppercase tracking-[0.22em] transition hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {status === 'sending' ? info.formSending : info.formSubmit}
                 </button>
@@ -192,7 +192,7 @@ export default function ContactPageClient({
           </div>
 
           {/* RIGHT COLUMN — enlarged map, desktop only */}
-          <aside className="hidden lg:block lg:h-full lg:self-stretch lg:min-h-[520px]">
+          <aside className="hidden lg:block lg:h-full lg:self-stretch lg:min-h-[380px] 2xl:min-h-[520px]">
             <div className="h-full w-full overflow-hidden">
               <MinimalMap lat={info.mapLat ?? undefined} lng={info.mapLng ?? undefined} />
             </div>
@@ -200,17 +200,17 @@ export default function ContactPageClient({
         </div>
 
         {/* IN-PAGE FOOTER */}
-        <footer className="mt-20 pt-10 border-t border-foreground/15 text-center space-y-2">
+        <footer className="mt-20 pt-10 lg:mt-auto lg:pt-6 2xl:pt-10 border-t border-foreground/15 text-center space-y-2 lg:space-y-1 2xl:space-y-2">
           <p
-            className="text-[20px] md:text-[24px] font-light tracking-[0.04em]"
+            className="text-[20px] md:text-[24px] lg:text-[18px] 2xl:text-[24px] font-light tracking-[0.04em]"
             style={{ fontFamily: 'var(--font-cormorant), "Cormorant Garamond", serif' }}
           >
             Urban Space
           </p>
-          <p className="text-[12px] md:text-[13px] font-light tracking-[0.18em] uppercase text-foreground/60">
+          <p className="text-[12px] md:text-[13px] lg:text-[11px] 2xl:text-[13px] font-light tracking-[0.18em] uppercase text-foreground/60">
             {info.tagline}
           </p>
-          <p className="text-[11px] md:text-[12px] font-light tracking-[0.14em] uppercase text-foreground/40">
+          <p className="text-[11px] md:text-[12px] lg:text-[10px] 2xl:text-[12px] font-light tracking-[0.14em] uppercase text-foreground/40">
             © 2026 Urban Space
           </p>
         </footer>

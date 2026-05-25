@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const category = searchParams.get('category') as ProjectCategory | null;
 
-    const where: { category?: ProjectCategory } = {};
-    if (category) where.category = category;
+    const where: { categories?: { has: ProjectCategory } } = {};
+    if (category) where.categories = { has: category };
 
     const projects = await prisma.project.findMany({
       where,

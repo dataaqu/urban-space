@@ -59,7 +59,7 @@ model Project {
   slug          String          @unique
   titleKa       String
   titleEn       String
-  category      ProjectCategory
+  categories    ProjectCategory[] @default([])
   locationKa    String?
   locationEn    String?
   featuredImage String?
@@ -71,7 +71,6 @@ model Project {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
-  @@index([category])
   @@index([featured])
   @@index([displayOrder])
 }
