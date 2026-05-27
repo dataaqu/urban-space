@@ -118,14 +118,13 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
       const p = Math.min(1, Math.max(0, raw));
 
       if (logoRef.current) {
-        if (isMobile || isLandscapePhone) {
-          // Mobile: centered initially, scrolls to top-left dock
-          const scale = isLandscapePhone ? 1 - p * 0.55 : 1 - p * 0.505;
+        if (isMobile) {
+          // Mobile (portrait): centered initially, scrolls to top-left dock
+          const scale = 1 - p * 0.505;
           const h1El = logoRef.current.querySelector('h1') as HTMLElement | null;
           const h1Width = h1El?.offsetWidth ?? logoRef.current.offsetWidth;
           const initialX = vw / 2 - 32 - h1Width / 2;
-          const verticalAnchor = isLandscapePhone ? 0.22 : 0.35;
-          const initialY = vh * verticalAnchor - 32;
+          const initialY = vh * 0.35 - 32;
           const tx = initialX * (1 - p);
           const ty = initialY * (1 - p);
           logoRef.current.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
