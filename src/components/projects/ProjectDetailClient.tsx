@@ -224,12 +224,12 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const hasInfo = metaItems.length > 0 || pageTextHtml.length > 0;
 
   return (
-    <main className="h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground">
+    <main className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground">
       {/* Close link */}
       <Link
         href="/projects"
         aria-label={closeLabel}
-        className="fixed right-4 top-[110px] md:right-8 md:top-[130px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
@@ -262,9 +262,9 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-[52px] pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center h-[50vh] md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
+        <div className="relative flex w-full items-center justify-center h-[46vh] md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <div key={activeIndex} className="flex flex-col md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-3 md:gap-6 short-landscape:gap-6">
               <div className="relative h-[48%] w-full md:h-full md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">

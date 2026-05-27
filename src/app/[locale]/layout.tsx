@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -8,6 +9,14 @@ import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
 import prisma from '@/lib/prisma';
 import '@/app/globals.css';
+
+export const metadata: Metadata = {
+  icons: {
+    icon: '/u.png',
+    shortcut: '/u.png',
+    apple: '/u.png',
+  },
+};
 
 const getSocialLinks = unstable_cache(
   async () => {

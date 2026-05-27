@@ -12,6 +12,11 @@ const inter = Inter({
 export const metadata = {
   title: 'Admin Panel - Urban Space',
   robots: 'noindex, nofollow',
+  icons: {
+    icon: '/u.png',
+    shortcut: '/u.png',
+    apple: '/u.png',
+  },
 };
 
 export default function AdminRootLayout({ children }: { children: ReactNode }) {

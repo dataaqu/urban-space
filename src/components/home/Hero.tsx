@@ -148,7 +148,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
         } else {
           // Desktop: stays visible and docks into the header
           const scale = 1 - p * 0.4;
-          const translateY = (1 - p) * vh * 0.78;
+          const translateY = (1 - p) * vh * 0.72;
           ctaRef.current.style.transform = `translate3d(-50%, ${translateY}px, 0) scale(${scale})`;
           ctaRef.current.style.opacity = '1';
           ctaRef.current.style.pointerEvents = 'auto';
@@ -160,7 +160,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
         if (isMobileLayout) {
           arrowWrapRef.current.style.top = `${vh - 56}px`;
         } else {
-          arrowWrapRef.current.style.top = `${vh - 70}px`;
+          arrowWrapRef.current.style.top = `${vh - 50}px`;
         }
       }
 

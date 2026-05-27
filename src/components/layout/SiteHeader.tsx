@@ -55,10 +55,10 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           </Link>
 
           <nav
-            className={`absolute left-1/2 top-5 hidden -translate-x-1/2 items-start gap-12 xl:gap-14 2xl:gap-16 tracking-[0.06em] lg:flex ${
+            className={`absolute left-1/2 top-5 hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
               language === 'ka'
-                ? 'text-[14px] xl:text-[16px] 2xl:text-[18px]'
-                : 'text-[17px] xl:text-[19px] 2xl:text-[22px]'
+                ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
+                : 'text-[15px] xl:text-[17px] 2xl:text-[19px]'
             }`}
           >
             <div className="relative flex flex-col items-start">

@@ -108,7 +108,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
           )}
         </div>
 
-        <div className="mt-20 flex justify-center md:hidden">
+        <div className="mt-20 flex justify-center md:hidden short-landscape:flex">
           <Link
             href="/projects"
             className={`inline-block text-center font-medium tracking-[0.2em] text-[#222222] hover:opacity-70 transition-opacity whitespace-nowrap pb-2 border-b border-[#222222]/40 ${

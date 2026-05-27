@@ -71,7 +71,7 @@ export default function ProjectsClient({
     <>
       <CategoryFilter activeCategory={activeCategory} />
       <section className="px-8 pb-20 pt-8 md:px-10 md:pb-24 md:pt-10">
-        <div className="mx-auto max-w-[1680px]">
+        <div className="mx-auto max-w-[1428px]">
           <div className="grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 sm:gap-y-20 md:grid-cols-2 md:gap-y-24 xl:gap-x-8 xl:gap-y-28 items-start">
           {visibleProjects.map((project) => {
             const projectTitle =
