@@ -30,7 +30,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useSwipeMenu(() => setMenuOpen(true), !menuOpen);
+  useSwipeMenu(() => setMenuOpen(true), () => setMenuOpen(false));
 
   const toggleLanguage = () => {
     const next = language === 'en' ? 'ka' : 'en';
@@ -212,11 +212,15 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           <nav className="flex-1 flex flex-col justify-center px-8">
             <div className="space-y-8">
               <div>
-                <div className="w-full flex items-center text-background/95">
+                <Link
+                  href="/projects"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full flex items-center text-background/95 hover:text-background transition"
+                >
                   <span className="text-[15px] font-light tracking-[0.22em]">
                     {language === 'ka' ? 'პროექტები' : 'PROJECTS'}
                   </span>
-                </div>
+                </Link>
 
                 <div className="mt-5">
                   <div className="overflow-hidden">

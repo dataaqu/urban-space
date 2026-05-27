@@ -224,7 +224,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const hasInfo = metaItems.length > 0 || pageTextHtml.length > 0;
 
   return (
-    <main className="h-[calc(100vh-80px)] overflow-hidden bg-background text-foreground">
+    <main className="h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground">
       {/* Close link */}
       <Link
         href="/projects"
@@ -262,7 +262,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(16px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-6 pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         <div className="relative flex w-full items-center justify-center h-[50vh] md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (

@@ -1,11 +1,17 @@
 import { useEffect } from 'react';
 
 /**
- * Detects a right-to-left horizontal swipe on touch devices and triggers `onOpen`.
+ * Detects horizontal swipes on touch devices to control the mobile menu.
+ * - Right-to-left swipe  → `onOpen`
+ * - Left-to-right swipe  → `onClose`
  * Only active when viewport width is < 1024px (mobile + tablet).
  * Ignores swipes that are mostly vertical (scrolling).
  */
-export function useSwipeMenu(onOpen: () => void, enabled: boolean = true) {
+export function useSwipeMenu(
+  onOpen: () => void,
+  onClose: () => void,
+  enabled: boolean = true,
+) {
   useEffect(() => {
     if (!enabled) return;
     if (typeof window === 'undefined') return;
@@ -33,8 +39,13 @@ export function useSwipeMenu(onOpen: () => void, enabled: boolean = true) {
       const dx = t.clientX - startX;
       const dy = t.clientY - startY;
 
-      if (dx < -60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      const isHorizontal = Math.abs(dx) > Math.abs(dy) * 1.5;
+      if (!isHorizontal) return;
+
+      if (dx < -60) {
         onOpen();
+      } else if (dx > 60) {
+        onClose();
       }
     };
 
@@ -44,5 +55,5 @@ export function useSwipeMenu(onOpen: () => void, enabled: boolean = true) {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchend', onTouchEnd);
     };
-  }, [onOpen, enabled]);
+  }, [onOpen, onClose, enabled]);
 }

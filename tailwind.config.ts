@@ -9,6 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
+        // Tablet breakpoint. Fires on width >= 768px (normal tablets) OR on
+        // rotated phones (landscape with limited height) so a phone in
+        // landscape gets the full tablet layout. Portrait < 768px stays
+        // mobile; >= 1024px (lg) stays desktop — those thresholds unchanged.
+        md: { raw: '(min-width: 768px), (orientation: landscape) and (max-height: 600px)' },
         // Rotated phones: landscape orientation with limited height.
         // Excludes tablets/desktops (height > 600) and portrait mobile.
         'short-landscape': { raw: '(orientation: landscape) and (max-height: 600px)' },

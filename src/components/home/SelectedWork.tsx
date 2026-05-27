@@ -111,7 +111,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
         <div className="mt-20 flex justify-center md:hidden">
           <Link
             href="/projects"
-            className={`inline-block text-center font-light tracking-[0.2em] text-[#222222] hover:opacity-70 transition-opacity whitespace-nowrap pb-2 border-b border-[#222222]/40 ${
+            className={`inline-block text-center font-medium tracking-[0.2em] text-[#222222] hover:opacity-70 transition-opacity whitespace-nowrap pb-2 border-b border-[#222222]/40 ${
               locale === 'ka' ? 'text-[16px]' : 'text-[18px]'
             }`}
           >

@@ -50,8 +50,8 @@ export default function CategoryFilter({ activeCategory }: CategoryFilterProps) 
         {label}
       </span>
       <span
-        className={`mt-2 h-px bg-foreground/60 transition-all duration-300 ${
-          active ? 'w-1/2 opacity-100' : 'w-0 opacity-0'
+        className={`mt-2 h-px bg-foreground/60 ${
+          active ? 'w-1/2 opacity-100 transition-all duration-300' : 'w-0 opacity-0'
         }`}
       />
     </Link>
