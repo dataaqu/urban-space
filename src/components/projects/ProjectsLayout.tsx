@@ -11,7 +11,11 @@ export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
   const isDetailPage = pathname !== '/projects' && pathname.startsWith('/projects/');
 
   return (
-    <div className="bg-background text-foreground flex flex-col min-h-[calc(100vh-80px)]">
+    <div
+      className={`bg-background text-foreground flex flex-col ${
+        isDetailPage ? '' : 'min-h-[calc(100vh-80px)]'
+      }`}
+    >
       <div className="flex-1">{children}</div>
 
       {!isDetailPage && (

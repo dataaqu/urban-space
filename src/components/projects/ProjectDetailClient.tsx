@@ -56,6 +56,21 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const lockRef = useRef(false);
   const infoOpenRef = useRef(false);
 
+  // The site header is sticky and its height varies by breakpoint, locale and
+  // font loading. Measure it so the slide stage fills exactly the space below
+  // it — otherwise the page slightly overflows and a scroll eats the top gap.
+  const [stageHeight, setStageHeight] = useState<string>();
+  useEffect(() => {
+    const update = () => {
+      const header = document.querySelector('header');
+      const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
+      setStageHeight(`calc(100dvh - ${h}px)`);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   const isKa = locale === 'ka';
   const closeLabel = isKa ? 'დახურვა' : 'Close';
   const infoLabel = isKa ? 'პროექტის ინფორმაცია' : 'Project Information';
@@ -183,7 +198,10 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const hasInfo = metaInfoHtml.length > 0 || pageTextHtml.length > 0;
 
   return (
-    <main className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground">
+    <main
+      className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground"
+      style={stageHeight ? { height: stageHeight } : undefined}
+    >
       {/* Close link */}
       <Link
         href="/projects"
@@ -223,10 +241,14 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       {/* Center stack */}
       <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-[52px] pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center h-[46vh] md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
+        <div
+          className={`relative flex w-full items-center justify-center md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0 ${
+            hasTwoImages ? 'h-[64vh]' : 'h-[46vh]'
+          }`}
+        >
           {hasTwoImages ? (
             <div key={activeIndex} className="flex flex-col md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-3 md:gap-6 short-landscape:gap-6">
-              <div className="relative h-[48%] w-full md:h-full md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+              <div className="relative h-[48%] w-full md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                 <ResponsiveProjectImage
                   src={page.image1}
                   mobileSrc={page.mobileImage1}
@@ -237,7 +259,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   priority={activeIndex === 0}
                 />
               </div>
-              <div className="relative h-[48%] w-full md:h-full md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+              <div className="relative h-[48%] w-full md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                 <ResponsiveProjectImage
                   src={page.image2 as string}
                   mobileSrc={page.mobileImage2}
