@@ -247,29 +247,55 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           }`}
         >
           {hasTwoImages ? (
-            <div key={activeIndex} className="flex flex-col md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-3 md:gap-6 short-landscape:gap-6">
-              <div className="relative h-[48%] w-full md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
-                <ResponsiveProjectImage
-                  src={page.image1}
-                  mobileSrc={page.mobileImage1}
+            <>
+              {/* Mobile portrait: each photo hugs its own size — no letterbox bands,
+                  centered as a group, capped height so the pair never overflows. */}
+              <div
+                key={`m-${activeIndex}`}
+                className="mt-[60px] flex h-full w-full flex-col items-center justify-center gap-3 md:hidden short-landscape:hidden"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={page.mobileImage1 ?? page.image1}
                   alt={project.title}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  priority={activeIndex === 0}
+                  className="block h-auto max-h-[47%] w-auto max-w-full object-contain"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={page.mobileImage2 ?? (page.image2 as string)}
+                  alt={project.title}
+                  className="block h-auto max-h-[47%] w-auto max-w-full object-contain"
                 />
               </div>
-              <div className="relative h-[48%] w-full md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
-                <ResponsiveProjectImage
-                  src={page.image2 as string}
-                  mobileSrc={page.mobileImage2}
-                  alt={project.title}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                />
+
+              {/* Tablet / desktop / landscape: side-by-side, unchanged */}
+              <div
+                key={`d-${activeIndex}`}
+                className="hidden md:flex short-landscape:flex md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-6"
+              >
+                <div className="relative md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                  <ResponsiveProjectImage
+                    src={page.image1}
+                    mobileSrc={page.mobileImage1}
+                    alt={project.title}
+                    fill
+                    className="object-contain"
+                    sizes="40vw"
+                    priority={activeIndex === 0}
+                  />
+                </div>
+                <div className="relative md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                  <ResponsiveProjectImage
+                    src={page.image2 as string}
+                    mobileSrc={page.mobileImage2}
+                    alt={project.title}
+                    fill
+                    className="object-contain"
+                    sizes="40vw"
+                  />
+                </div>
               </div>
-            </div>
+            </>
           ) : page.image1 ? (
             <div key={activeIndex} className="relative h-full w-full">
               <ResponsiveProjectImage
