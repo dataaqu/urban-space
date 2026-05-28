@@ -47,19 +47,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     mobileImage2: page.mobileImage2,
     textRightKa: page.textRightKa || null,
     textRightEn: page.textRightEn || null,
-    architectsKa: page.architectsKa,
-    architectsEn: page.architectsEn,
-    metaLocationKa: page.metaLocationKa,
-    metaLocationEn: page.metaLocationEn,
-    typeKa: page.typeKa,
-    typeEn: page.typeEn,
-    statusKa: page.statusKa,
-    statusEn: page.statusEn,
-    areaKa: page.areaKa,
-    areaEn: page.areaEn,
-    clientKa: page.clientKa,
-    clientEn: page.clientEn,
-    year: page.year,
+    metaInfoKa: page.metaInfoKa || null,
+    metaInfoEn: page.metaInfoEn || null,
   }));
 
   return (

@@ -16,70 +16,25 @@ interface PageData {
   mobileImage2: string | null;
   textRightKa: string | null;
   textRightEn: string | null;
-  architectsKa: string | null;
-  architectsEn: string | null;
-  metaLocationKa: string | null;
-  metaLocationEn: string | null;
-  typeKa: string | null;
-  typeEn: string | null;
-  statusKa: string | null;
-  statusEn: string | null;
-  areaKa: string | null;
-  areaEn: string | null;
-  clientKa: string | null;
-  clientEn: string | null;
-  year: string | null;
+  metaInfoKa: string | null;
+  metaInfoEn: string | null;
 }
 
-const META_LABELS = {
-  ka: {
-    architects: 'არქიტექტორები',
-    metaLocation: 'მდებარეობა',
-    type: 'ტიპი',
-    status: 'სტატუსი',
-    area: 'შენობის ფართობი',
-    client: 'დამკვეთი',
-    year: 'წელი',
-  },
-  en: {
-    architects: 'Architects',
-    metaLocation: 'Location',
-    type: 'Type',
-    status: 'Status',
-    area: 'Building Area',
-    client: 'Client',
-    year: 'Year',
-  },
-} as const;
-
-function RichTextBlock({ html, withDivider }: { html: string; withDivider: boolean }) {
+function RichTextBlock({ html, withGap }: { html: string; withGap: boolean }) {
   // html is already DOMPurify-sanitized upstream before reaching this component
   return (
     <div
       className={`prose prose-sm md:prose-base max-w-none break-words ${
-        withDivider ? 'mt-6 pt-6 border-t border-foreground/10' : ''
+        withGap ? 'mt-12' : ''
       }`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }
 
-function getMetadataItems(page: PageData, locale: string) {
-  const isKa = locale === 'ka';
-  const labels = isKa ? META_LABELS.ka : META_LABELS.en;
-  const suffix = isKa ? 'Ka' : 'En';
-
-  const items: { label: string; value: string }[] = [];
-
-  (['architects', 'metaLocation', 'type', 'status', 'area', 'client'] as const).forEach((key) => {
-    const fieldKey = `${key}${suffix}` as keyof PageData;
-    const value = page[fieldKey] as string | null;
-    if (value) items.push({ label: labels[key], value });
-  });
-
-  if (page.year) items.push({ label: labels.year, value: page.year });
-
-  return items;
+function htmlHasContent(html: string | null | undefined): boolean {
+  if (!html) return false;
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, '').trim().length > 0;
 }
 
 interface ProjectDetailClientProps {
@@ -210,9 +165,13 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   }
 
   const page = project.pages[activeIndex];
-  const metaPage =
-    project.pages.find((p) => getMetadataItems(p, locale).length > 0) ?? page;
-  const metaItems = getMetadataItems(metaPage, locale);
+  const metaInfoPage =
+    project.pages.find((p) =>
+      htmlHasContent(isKa ? p.metaInfoKa : p.metaInfoEn),
+    ) ?? page;
+  const rawMetaInfo =
+    (isKa ? metaInfoPage.metaInfoKa : metaInfoPage.metaInfoEn) || '';
+  const metaInfoHtml = useMemo(() => DOMPurify.sanitize(rawMetaInfo), [rawMetaInfo]);
   const hasTwoImages = page.type === 'DOUBLE_IMAGE' && !!page.image2;
   const textPage =
     project.pages.find((p) =>
@@ -221,7 +180,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const rawPageText =
     (isKa ? textPage.textRightKa : textPage.textRightEn)?.trim() || '';
   const pageTextHtml = useMemo(() => DOMPurify.sanitize(rawPageText), [rawPageText]);
-  const hasInfo = metaItems.length > 0 || pageTextHtml.length > 0;
+  const hasInfo = metaInfoHtml.length > 0 || pageTextHtml.length > 0;
 
   return (
     <main className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground">
@@ -361,7 +320,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       {/* Drawer — slides from bottom on mobile, from left on desktop */}
       <aside
         aria-hidden={!infoOpen}
-        className={`fixed inset-x-0 bottom-0 z-30 h-[50vh] lg:inset-x-auto lg:left-0 lg:top-[96px] lg:bottom-0 lg:h-[calc(100vh-96px)] lg:w-[500px] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
+        className={`fixed inset-x-0 top-14 bottom-0 z-30 md:top-20 lg:inset-x-auto lg:left-0 lg:top-[96px] lg:bottom-0 lg:h-[calc(100vh-96px)] lg:w-[500px] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
           infoOpen
             ? 'translate-y-0 lg:translate-x-0'
             : 'translate-y-full lg:translate-y-0 lg:-translate-x-full'
@@ -372,7 +331,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             <span className="h-1 w-10 rounded-full bg-foreground/20" />
           </div>
 
-          <div className="flex items-center justify-end px-6 lg:px-10 pt-3 lg:pt-6">
+          <div className="flex items-center justify-end px-6 lg:px-10 pt-3 lg:pt-4">
             <button
               type="button"
               onClick={() => setInfoOpen(false)}
@@ -383,29 +342,18 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 py-6 lg:px-10 lg:py-8">
+          <div className="flex-1 overflow-y-auto px-6 py-6 lg:pl-16 lg:pr-10 lg:pt-3 lg:pb-8 xl:pl-20">
             <div
               className={`max-w-[720px] mx-auto lg:mx-0 text-foreground/75 leading-relaxed font-light ${
                 isKa ? 'text-[13px] lg:text-[15px]' : 'text-[14px] lg:text-[16px]'
               }`}
             >
-              {metaItems.length > 0 && (
-                <div className="space-y-2">
-                  {metaItems.map((item, i) => (
-                    <p key={i}>
-                      <span className="text-foreground/50">{item.label}:</span>{' '}
-                      {item.value}
-                    </p>
-                  ))}
-                </div>
-              )}
+              {metaInfoHtml && <RichTextBlock html={metaInfoHtml} withGap={false} />}
               {pageTextHtml && (
-                <div className="hidden lg:block">
-                  <RichTextBlock
-                    html={pageTextHtml}
-                    withDivider={metaItems.length > 0}
-                  />
-                </div>
+                <RichTextBlock
+                  html={pageTextHtml}
+                  withGap={metaInfoHtml.length > 0}
+                />
               )}
             </div>
           </div>

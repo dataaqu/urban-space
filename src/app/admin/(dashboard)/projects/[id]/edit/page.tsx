@@ -63,19 +63,8 @@ export default async function EditProjectPage({
               mobileImage2: p.mobileImage2,
               textRightKa: p.textRightKa,
               textRightEn: p.textRightEn,
-              architectsKa: p.architectsKa,
-              architectsEn: p.architectsEn,
-              metaLocationKa: p.metaLocationKa,
-              metaLocationEn: p.metaLocationEn,
-              typeKa: p.typeKa,
-              typeEn: p.typeEn,
-              statusKa: p.statusKa,
-              statusEn: p.statusEn,
-              areaKa: p.areaKa,
-              areaEn: p.areaEn,
-              clientKa: p.clientKa,
-              clientEn: p.clientEn,
-              year: p.year,
+              metaInfoKa: p.metaInfoKa,
+              metaInfoEn: p.metaInfoEn,
             }))}
           />
         </div>

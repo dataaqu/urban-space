@@ -139,7 +139,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
       if (ctaRef.current) {
         if (isMobileLayout) {
           // Mobile: anchor near 67% of vh, fade out on scroll
-          const ctaAnchor = isLandscapePhone ? 0.78 : isTablet ? 0.72 : 0.67;
+          const ctaAnchor = isLandscapePhone ? 0.68 : isTablet ? 0.72 : 0.67;
           const ctaExtraOffset = isTablet ? 24 : 0;
           const ty = vh * ctaAnchor - 36 + ctaExtraOffset;
           ctaRef.current.style.transform = `translate3d(-50%, ${ty}px, 0) scale(${isLandscapePhone ? 0.85 : 1})`;

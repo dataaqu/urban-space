@@ -36,104 +36,8 @@ interface ProjectPageData {
   mobileImage2: string | null;
   textRightKa: string | null;
   textRightEn: string | null;
-  architectsKa: string | null;
-  architectsEn: string | null;
-  metaLocationKa: string | null;
-  metaLocationEn: string | null;
-  typeKa: string | null;
-  typeEn: string | null;
-  statusKa: string | null;
-  statusEn: string | null;
-  areaKa: string | null;
-  areaEn: string | null;
-  clientKa: string | null;
-  clientEn: string | null;
-  year: string | null;
-}
-
-const META_FIELDS = [
-  { key: 'architects', labelKa: 'არქიტექტორები', labelEn: 'Architects' },
-  { key: 'metaLocation', labelKa: 'მდებარეობა', labelEn: 'Location' },
-  { key: 'type', labelKa: 'ტიპი', labelEn: 'Type' },
-  { key: 'status', labelKa: 'სტატუსი', labelEn: 'Status' },
-  { key: 'area', labelKa: 'შენობის ფართობი', labelEn: 'Area' },
-  { key: 'client', labelKa: 'დამკვეთი', labelEn: 'Client' },
-] as const;
-
-function MetadataInputs({
-  editForm,
-  setEditForm,
-}: {
-  editForm: Partial<ProjectPageData>;
-  setEditForm: React.Dispatch<React.SetStateAction<Partial<ProjectPageData>>>;
-}) {
-  const [lang, setLang] = useState<'ka' | 'en'>('ka');
-  const suffix = lang === 'ka' ? 'Ka' : 'En';
-
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-1 rounded-lg bg-neutral-100 p-1 w-fit">
-        <button
-          type="button"
-          onClick={() => setLang('ka')}
-          className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
-            lang === 'ka'
-              ? 'bg-white text-dark-900 shadow-sm'
-              : 'text-neutral-500 hover:text-neutral-700'
-          }`}
-        >
-          ქართული
-        </button>
-        <button
-          type="button"
-          onClick={() => setLang('en')}
-          className={`px-3 py-1.5 text-xs font-medium rounded transition-colors ${
-            lang === 'en'
-              ? 'bg-white text-dark-900 shadow-sm'
-              : 'text-neutral-500 hover:text-neutral-700'
-          }`}
-        >
-          English
-        </button>
-      </div>
-
-      {META_FIELDS.map((f) => {
-        const fieldKey = `${f.key}${suffix}` as keyof ProjectPageData;
-        const label = lang === 'ka' ? f.labelKa : f.labelEn;
-        return (
-          <div key={f.key}>
-            <label className="block text-xs font-medium text-dark-700 mb-1">
-              {label}
-            </label>
-            <input
-              type="text"
-              value={(editForm[fieldKey] as string) || ''}
-              onChange={(e) =>
-                setEditForm((prev) => ({ ...prev, [fieldKey]: e.target.value }))
-              }
-              className="w-full h-9 rounded-lg border border-neutral-200 bg-white px-3 text-sm hover:border-neutral-300 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
-              placeholder={lang === 'ka' ? '...' : '...'}
-            />
-          </div>
-        );
-      })}
-
-      <div>
-        <label className="block text-xs font-medium text-dark-700 mb-1">
-          წელი / Year
-        </label>
-        <input
-          type="text"
-          value={editForm.year || ''}
-          onChange={(e) =>
-            setEditForm((prev) => ({ ...prev, year: e.target.value }))
-          }
-          className="w-full h-9 rounded-lg border border-neutral-200 bg-white px-3 text-sm hover:border-neutral-300 outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
-          placeholder="2024"
-        />
-      </div>
-    </div>
-  );
+  metaInfoKa: string | null;
+  metaInfoEn: string | null;
 }
 
 const typeLabel = (t: PageType) => {
@@ -339,10 +243,36 @@ export default function ProjectPageEditor({
                   {editForm.type === 'SINGLE_IMAGE' ? (
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                       <div className="min-w-0 space-y-4">
-                        <MetadataInputs
-                          editForm={editForm}
-                          setEditForm={setEditForm}
-                        />
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            ინფორმაცია (ქართ.)
+                          </label>
+                          <RichTextEditor
+                            content={editForm.metaInfoKa || ''}
+                            onChange={(html) =>
+                              setEditForm((prev) => ({
+                                ...prev,
+                                metaInfoKa: html,
+                              }))
+                            }
+                            placeholder="არქიტექტორები: ..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            ინფორმაცია (ინგ.)
+                          </label>
+                          <RichTextEditor
+                            content={editForm.metaInfoEn || ''}
+                            onChange={(html) =>
+                              setEditForm((prev) => ({
+                                ...prev,
+                                metaInfoEn: html,
+                              }))
+                            }
+                            placeholder="Architects: ..."
+                          />
+                        </div>
                         <div>
                           <label className="block text-sm font-medium text-dark-700 mb-1.5">
                             ტექსტი (ქართ.)
