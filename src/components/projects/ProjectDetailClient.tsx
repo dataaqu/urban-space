@@ -206,14 +206,14 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       <Link
         href="/projects"
         aria-label={closeLabel}
-        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] z-20 text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] short-landscape:top-[64px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
 
       {/* Pagination dots */}
       {totalPages > 1 && (
-        <div className="fixed right-4 md:right-6 top-[42%] -translate-y-1/2 -mt-10 z-30 flex flex-col gap-3">
+        <div className="fixed right-4 md:right-6 top-[42%] -translate-y-1/2 -mt-10 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
@@ -239,7 +239,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[52px] pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3">
+      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[52px] pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
@@ -317,7 +317,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           {activeIndex === 0 && (
             <>
               <h2
-                className={`font-light tracking-[0.04em] text-foreground/90 ${
+                className={`font-light tracking-[0.04em] text-foreground/90 short-landscape:text-[16px] ${
                   isKa ? 'text-[18px] md:text-[26px]' : 'text-[22px] md:text-[32px]'
                 }`}
               >
@@ -325,7 +325,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </h2>
               {project.description && (
                 <p
-                  className={`mt-3 md:mt-4 text-foreground/60 leading-relaxed max-w-[640px] ${
+                  className={`mt-3 md:mt-4 short-landscape:mt-1 text-foreground/60 leading-relaxed max-w-[640px] short-landscape:text-[11px] ${
                     isKa ? 'text-[12px] md:text-[14px]' : 'text-[14px] md:text-[16px]'
                   }`}
                 >
@@ -344,7 +344,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               onClick={() => setInfoOpen(true)}
               className="group inline-flex flex-col items-center text-foreground/70 hover:text-foreground transition"
             >
-              <span className="text-[10px] md:text-[12px] font-light tracking-[0.22em] uppercase">
+              <span className="text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase">
                 {infoLabel}
               </span>
               <span className="mt-2 h-px w-10 bg-foreground/60 transition-all duration-300 group-hover:w-16" />
