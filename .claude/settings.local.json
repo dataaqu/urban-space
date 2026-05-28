@@ -19,7 +19,8 @@
       "mcp__planflow__planflow_task_update",
       "mcp__planflow__planflow_task_next",
       "mcp__planflow-mcp__planflow_explore",
-      "mcp__planflow-mcp__planflow_index"
+      "mcp__planflow-mcp__planflow_index",
+      "WebSearch"
     ]
   }
 }

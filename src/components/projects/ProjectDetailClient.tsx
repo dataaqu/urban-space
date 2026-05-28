@@ -55,6 +55,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const activeIndexRef = useRef(0);
   const lockRef = useRef(false);
   const infoOpenRef = useRef(false);
+  const asideRef = useRef<HTMLElement>(null);
 
   // The site header is sticky and its height varies by breakpoint, locale and
   // font loading. Measure it so the slide stage fills exactly the space below
@@ -81,6 +82,16 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
   useEffect(() => {
     infoOpenRef.current = infoOpen;
+  }, [infoOpen]);
+
+  // Use `inert` (not aria-hidden) on the closed drawer so its focusable
+  // children can't retain focus or be tabbed into while it's off-screen.
+  // Toggled imperatively because React 18 has no typed `inert` JSX prop.
+  useEffect(() => {
+    const el = asideRef.current;
+    if (!el) return;
+    if (infoOpen) el.removeAttribute('inert');
+    else el.setAttribute('inert', '');
   }, [infoOpen]);
 
   // Body scroll lock + ESC close when drawer is open
@@ -206,7 +217,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       <Link
         href="/projects"
         aria-label={closeLabel}
-        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] short-landscape:top-[64px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] short-landscape:top-[120px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
@@ -363,7 +374,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
       {/* Drawer — slides from bottom on mobile, from left on desktop */}
       <aside
-        aria-hidden={!infoOpen}
+        ref={asideRef}
         className={`fixed inset-x-0 top-14 bottom-0 z-30 md:top-20 lg:inset-x-auto lg:left-0 lg:top-[96px] lg:bottom-0 lg:h-[calc(100vh-96px)] lg:w-[500px] bg-background text-foreground shadow-elegant transition-transform duration-500 ease-out ${
           infoOpen
             ? 'translate-y-0 lg:translate-x-0'
