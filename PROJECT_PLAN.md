@@ -6,10 +6,10 @@
 |-------|-------|
 | **Project Name** | Urban Space Admin Panel - Restructure |
 | **Type** | Full-Stack Web App |
-| **Status** | Complete |
+| **Status** | In Progress |
 | **Created** | 2026-04-14 |
-| **Last Updated** | 2026-05-08 |
-| **Progress** | 31/31 tasks (100%) |
+| **Last Updated** | 2026-05-28 |
+| **Progress** | 31/32 tasks (97%) |
 | **Plugin Version** | 1.1.1 |
 
 ### Description
@@ -515,6 +515,26 @@ API endpoints-ის განახლება და ფრონტენდ
   - 1s idle timer auto-shows
   - `bg-background/85 backdrop-blur-md`
   - Active link underline: `h-px bg-foreground/60 w-1/2 ↔ w-0`
+
+#### T6.8: Project Detail Mobile — Cross-Device Layout Consistency
+- [x] **Status**: DONE
+- **Complexity**: Medium
+- **Dependencies**: T6.3
+- **Description**:
+  - პრობლემა: მობილურზე პროექტის შიდა გვერდი სხვადასხვა ტელეფონზე სხვაგვარად ჩანს (iPhone 14 vs 17) — სასურველია ერთი, თანმიმდევრული განლაგება ყველა ტელეფონზე
+  - Target: `src/components/projects/ProjectDetailClient.tsx` — **მხოლოდ მობილური (base) კლასები**
+  - Spec: `docs/superpowers/specs/2026-05-28-mobile-project-detail-consistency-design.md`
+  - Root cause: მობილური იყენებს `justify-center` + ფიქსირებულ `vh` სიმაღლეებს, fixed Close ღილაკთან ერთად → ცენტრი ცურავს ეკრანის სიმაღლის მიხედვით
+  - მობილური გადადის იმავე ზემოდან-მიმაგრებულ `flex-1` განლაგებაზე, რომელსაც `md:` (ტაბლეტი) უკვე იყენებს:
+    - container: base `justify-center` → `justify-start`
+    - image stage: base `hasTwoImages ? h-[64vh] : h-[46vh]` → `flex-1 min-h-0`
+    - 2-ფოტოიანი მობილური ბლოკი: `mt-[60px]` მოშორება; რჩება ვერტიკალურად დაწყობილი, თითო ფოტო `object-contain` + max-h cap
+  - სათაური/აღწერა და INFO ღილაკი — უცვლელი (ფიქსირებული `min-h`/`h`)
+  - **არ იცვლება**: `md:` (tablet), `lg:` (desktop), `short-landscape:`, dots, slide logic
+- **Acceptance Criteria**:
+  - iPhone 14/15/16/17 და 360–430px ტელეფონები იდენტურ განლაგებას აჩვენებენ (Close → ფოტო → სათაური → INFO)
+  - ორივე სტილი (1- და 2-ფოტოიანი) ვიზუალურად უცვლელია
+  - tablet (768–1023px) და desktop (≥1024px) regression-ის გარეშე
 
 ---
 
