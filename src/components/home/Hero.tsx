@@ -149,9 +149,12 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
           ctaRef.current.style.opacity = String(Math.max(0, 1 - p * 3));
           ctaRef.current.style.pointerEvents = p > 0.33 ? 'none' : 'auto';
         } else {
-          // Desktop: stays visible and docks into the header
+          // Desktop: stays visible and docks into the header.
+          // Big screens (>= 1536px) rest the CTA a bit lower per request;
+          // laptops (1024–1535) keep the original 0.72 anchor.
           const scale = 1 - p * 0.4;
-          const translateY = (1 - p) * vh * 0.72;
+          const ctaAnchor = vw >= 1536 ? 0.77 : 0.72;
+          const translateY = (1 - p) * vh * ctaAnchor;
           ctaRef.current.style.transform = `translate3d(-50%, ${translateY}px, 0) scale(${scale})`;
           ctaRef.current.style.opacity = '1';
           ctaRef.current.style.pointerEvents = 'auto';

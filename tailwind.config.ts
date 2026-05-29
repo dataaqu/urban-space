@@ -21,6 +21,9 @@ const config: Config = {
         // min-*/max-* variants are disabled when `screens` contains objects.
         '3xl': { raw: '(min-width: 2560px)' },
         '4xl': { raw: '(min-width: 3840px)' },
+        // Tall viewports (big monitors / 4K): drop the image height cap so cards
+        // can fill the full column width instead of being height-limited.
+        'tall': { raw: '(min-height: 1100px)' },
       },
       colors: {
         // full-project clone tokens
