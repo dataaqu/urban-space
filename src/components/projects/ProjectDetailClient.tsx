@@ -57,31 +57,45 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const infoOpenRef = useRef(false);
   const asideRef = useRef<HTMLElement>(null);
 
-  // The site header is sticky and its height varies by breakpoint, locale and
-  // font loading. Measure it so the slide stage fills exactly the space below
-  // it — otherwise the page slightly overflows and a scroll eats the top gap.
-  const [stageHeight, setStageHeight] = useState<string>();
+  // The sticky header's height varies by breakpoint, locale and font loading.
+  // Measure only that (it's stable — it doesn't depend on the iOS toolbar) so
+  // the fixed stage can start exactly below it. The stage itself is
+  // `position: fixed` (top below header → bottom 0), so it always spans the
+  // visible area no matter the toolbar state or the scroll position the page was
+  // entered from. No viewport-height math, so nothing drifts between entries.
+  const [headerH, setHeaderH] = useState<number>();
   useEffect(() => {
     const update = () => {
       const header = document.querySelector('header');
-      const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
-      // Use the real visible viewport instead of `100dvh`. On mobile the
-      // address bar makes `dvh` resolve inconsistently depending on the scroll
-      // state the page was entered from (the stage is overflow-hidden, so the
-      // bar never settles here). That left the fixed CLOSE/dots misaligned with
-      // the flowed content and produced an uneven bottom gap. visualViewport
-      // reports the actual visible area, so the stage always fits exactly.
-      const vh = Math.round(window.visualViewport?.height ?? window.innerHeight);
-      setStageHeight(`${vh - h}px`);
+      setHeaderH(header ? Math.round(header.getBoundingClientRect().height) : 0);
     };
     update();
     window.addEventListener('resize', update);
     window.addEventListener('orientationchange', update);
-    window.visualViewport?.addEventListener('resize', update);
     return () => {
       window.removeEventListener('resize', update);
       window.removeEventListener('orientationchange', update);
-      window.visualViewport?.removeEventListener('resize', update);
+    };
+  }, []);
+
+  // Pin the detail view to the top and freeze the document scroll for the whole
+  // time this page is mounted. The site `<body>` is `min-h-screen` (`100vh` =
+  // iOS *large* viewport), while the stage is sized to the *small* viewport, so
+  // the page is scrollable by exactly the toolbar's height. Entering from a
+  // scrolled list left the toolbar in a different state each time, shifting the
+  // whole layout. Locking scroll at the top removes that variability — the photo
+  // now lands in the same place no matter where you came from.
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtml = html.style.overflow;
+    const prevBody = body.style.overflow;
+    window.scrollTo(0, 0);
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    return () => {
+      html.style.overflow = prevHtml;
+      body.style.overflow = prevBody;
     };
   }, []);
 
@@ -223,8 +237,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
   return (
     <main
-      className="h-[calc(100svh-56px)] md:h-[calc(100svh-80px)] overflow-hidden bg-background text-foreground"
-      style={stageHeight ? { height: stageHeight } : undefined}
+      className="fixed left-0 right-0 bottom-0 top-14 md:top-20 z-10 overflow-hidden bg-background text-foreground"
+      style={headerH != null ? { top: headerH } : undefined}
     >
       {/* Close link */}
       <Link
@@ -272,7 +286,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   and contains, so the pair centres identically on every device. */}
               <div
                 key={`m-${activeIndex}`}
-                className="flex h-full w-full flex-col items-center justify-center gap-3 lg:hidden short-landscape:hidden"
+                className="flex h-full w-full flex-col items-center justify-center gap-3 pt-[8vh] lg:hidden short-landscape:hidden"
               >
                 <div className="relative w-full flex-1 min-h-0">
                   <ResponsiveProjectImage
