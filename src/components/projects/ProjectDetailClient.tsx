@@ -323,33 +323,21 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </div>
             </>
           ) : page.image1 ? (
-            <>
-              {/* Mobile portrait: intrinsic image hugs its own (capped) height
-                  so the stack centres with equal top/bottom gaps for any aspect. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                key={`m-${activeIndex}`}
-                src={page.mobileImage1 ?? page.image1}
+            <div
+              key={`d-${activeIndex}`}
+              className="relative h-full w-full"
+            >
+              <ResponsiveProjectImage
+                src={page.image1}
+                mobileSrc={page.mobileImage1}
                 alt={project.title}
-                style={imgMaxH ? { maxHeight: imgMaxH } : undefined}
-                className="block h-auto w-auto max-w-full object-contain md:hidden short-landscape:hidden"
+                fill
+                switchAt="lg"
+                className="object-contain"
+                sizes="100vw"
+                priority={activeIndex === 0}
               />
-              {/* Tablet / desktop / landscape: fill the flex stage (unchanged). */}
-              <div
-                key={`d-${activeIndex}`}
-                className="relative hidden h-full w-full md:block short-landscape:block"
-              >
-                <ResponsiveProjectImage
-                  src={page.image1}
-                  mobileSrc={page.mobileImage1}
-                  alt={project.title}
-                  fill
-                  className="object-contain"
-                  sizes="100vw"
-                  priority={activeIndex === 0}
-                />
-              </div>
-            </>
+            </div>
           ) : (
             <div className="w-full min-h-[200px] md:h-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
               {isKa ? 'სურათი არ არის' : 'No image'}
