@@ -61,9 +61,6 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   // font loading. Measure it so the slide stage fills exactly the space below
   // it — otherwise the page slightly overflows and a scroll eats the top gap.
   const [stageHeight, setStageHeight] = useState<string>();
-  // Pixel cap for the mobile image so the stack hugs the image (no letterbox
-  // bands) and stays vertically centred with equal gaps for any aspect ratio.
-  const [imgMaxH, setImgMaxH] = useState<number>();
   useEffect(() => {
     const update = () => {
       const header = document.querySelector('header');
@@ -76,7 +73,6 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       // reports the actual visible area, so the stage always fits exactly.
       const vh = Math.round(window.visualViewport?.height ?? window.innerHeight);
       setStageHeight(`${vh - h}px`);
-      setImgMaxH(Math.round((vh - h) * 0.52));
     };
     update();
     window.addEventListener('resize', update);
@@ -356,20 +352,20 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Text block — fixed min-height so info button doesn't shift */}
-        <div className="mt-6 md:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] md:min-h-[64px] short-landscape:min-h-0 flex flex-col items-center justify-start">
+        <div className="mt-6 lg:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] lg:min-h-[64px] short-landscape:min-h-0 flex flex-col items-center justify-start">
           {activeIndex === 0 && (
             <>
               <h2
                 className={`font-light tracking-[0.04em] text-foreground/90 short-landscape:text-[16px] ${
-                  isKa ? 'text-[18px] md:text-[26px]' : 'text-[22px] md:text-[32px]'
+                  isKa ? 'text-[18px] lg:text-[26px]' : 'text-[22px] lg:text-[32px]'
                 }`}
               >
                 {project.title}
               </h2>
               {project.description && (
                 <p
-                  className={`mt-3 md:mt-4 short-landscape:mt-1 text-foreground/60 leading-relaxed max-w-[640px] short-landscape:text-[11px] ${
-                    isKa ? 'text-[12px] md:text-[14px]' : 'text-[14px] md:text-[16px]'
+                  className={`mt-3 lg:mt-4 short-landscape:mt-1 text-foreground/60 leading-relaxed max-w-[640px] short-landscape:text-[11px] ${
+                    isKa ? 'text-[12px] lg:text-[14px]' : 'text-[14px] lg:text-[16px]'
                   }`}
                 >
                   {project.description}
@@ -380,14 +376,14 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Info button */}
-        <div className="shrink-0 flex items-center justify-center h-[60px] md:h-[56px] short-landscape:h-[40px] md:mt-4">
+        <div className="shrink-0 flex items-center justify-center h-[60px] lg:h-[56px] short-landscape:h-[40px] lg:mt-4">
           {hasInfo && (
             <button
               type="button"
               onClick={() => setInfoOpen(true)}
               className="group inline-flex flex-col items-center text-foreground/70 hover:text-foreground transition"
             >
-              <span className="text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase">
+              <span className="text-[10px] lg:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase">
                 {infoLabel}
               </span>
               <span className="mt-2 h-px w-10 bg-foreground/60 transition-all duration-300 group-hover:w-16" />
