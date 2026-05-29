@@ -267,9 +267,9 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
+      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center shrink-0 min-h-0 md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
+        <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <>
               {/* Mobile portrait: each photo hugs its own size — no letterbox bands,
