@@ -17,6 +17,10 @@ const config: Config = {
         // Rotated phones: landscape orientation with limited height.
         // Excludes tablets/desktops (height > 600) and portrait mobile.
         'short-landscape': { raw: '(orientation: landscape) and (max-height: 600px)' },
+        // Large desktop / 4K tiers. Named (not `min-[..]`) because arbitrary
+        // min-*/max-* variants are disabled when `screens` contains objects.
+        '3xl': { raw: '(min-width: 2560px)' },
+        '4xl': { raw: '(min-width: 3840px)' },
       },
       colors: {
         // full-project clone tokens
