@@ -61,15 +61,32 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   // font loading. Measure it so the slide stage fills exactly the space below
   // it — otherwise the page slightly overflows and a scroll eats the top gap.
   const [stageHeight, setStageHeight] = useState<string>();
+  // Pixel cap for the mobile image so the stack hugs the image (no letterbox
+  // bands) and stays vertically centred with equal gaps for any aspect ratio.
+  const [imgMaxH, setImgMaxH] = useState<number>();
   useEffect(() => {
     const update = () => {
       const header = document.querySelector('header');
       const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
-      setStageHeight(`calc(100dvh - ${h}px)`);
+      // Use the real visible viewport instead of `100dvh`. On mobile the
+      // address bar makes `dvh` resolve inconsistently depending on the scroll
+      // state the page was entered from (the stage is overflow-hidden, so the
+      // bar never settles here). That left the fixed CLOSE/dots misaligned with
+      // the flowed content and produced an uneven bottom gap. visualViewport
+      // reports the actual visible area, so the stage always fits exactly.
+      const vh = Math.round(window.visualViewport?.height ?? window.innerHeight);
+      setStageHeight(`${vh - h}px`);
+      setImgMaxH(Math.round((vh - h) * 0.52));
     };
     update();
     window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    window.visualViewport?.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+      window.visualViewport?.removeEventListener('resize', update);
+    };
   }, []);
 
   const isKa = locale === 'ka';
@@ -210,7 +227,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
   return (
     <main
-      className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-80px)] overflow-hidden bg-background text-foreground"
+      className="h-[calc(100svh-56px)] md:h-[calc(100svh-80px)] overflow-hidden bg-background text-foreground"
       style={stageHeight ? { height: stageHeight } : undefined}
     >
       {/* Close link */}
@@ -250,28 +267,30 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[52px] pb-[calc(28px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
+      <div className="flex h-full w-full flex-col items-center justify-center px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] md:justify-start md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
-        <div className="relative flex w-full items-center justify-center flex-1 min-h-0 md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
+        <div className="relative flex w-full items-center justify-center shrink-0 min-h-0 md:h-auto md:flex-1 md:min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <>
               {/* Mobile portrait: each photo hugs its own size — no letterbox bands,
                   centered as a group, capped height so the pair never overflows. */}
               <div
                 key={`m-${activeIndex}`}
-                className="flex h-full w-full flex-col items-center justify-center gap-3 md:hidden short-landscape:hidden"
+                className="flex w-full flex-col items-center justify-center gap-3 md:hidden short-landscape:hidden"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={page.mobileImage1 ?? page.image1}
                   alt={project.title}
-                  className="block h-auto max-h-[47%] w-auto max-w-full object-contain"
+                  style={imgMaxH ? { maxHeight: Math.round((imgMaxH - 12) / 2) } : undefined}
+                  className="block h-auto w-auto max-w-full object-contain"
                 />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={page.mobileImage2 ?? (page.image2 as string)}
                   alt={project.title}
-                  className="block h-auto max-h-[47%] w-auto max-w-full object-contain"
+                  style={imgMaxH ? { maxHeight: Math.round((imgMaxH - 12) / 2) } : undefined}
+                  className="block h-auto w-auto max-w-full object-contain"
                 />
               </div>
 
@@ -304,19 +323,35 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </div>
             </>
           ) : page.image1 ? (
-            <div key={activeIndex} className="relative h-full w-full">
-              <ResponsiveProjectImage
-                src={page.image1}
-                mobileSrc={page.mobileImage1}
+            <>
+              {/* Mobile portrait: intrinsic image hugs its own (capped) height
+                  so the stack centres with equal top/bottom gaps for any aspect. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={`m-${activeIndex}`}
+                src={page.mobileImage1 ?? page.image1}
                 alt={project.title}
-                fill
-                className="object-contain"
-                sizes="100vw"
-                priority={activeIndex === 0}
+                style={imgMaxH ? { maxHeight: imgMaxH } : undefined}
+                className="block h-auto w-auto max-w-full object-contain md:hidden short-landscape:hidden"
               />
-            </div>
+              {/* Tablet / desktop / landscape: fill the flex stage (unchanged). */}
+              <div
+                key={`d-${activeIndex}`}
+                className="relative hidden h-full w-full md:block short-landscape:block"
+              >
+                <ResponsiveProjectImage
+                  src={page.image1}
+                  mobileSrc={page.mobileImage1}
+                  alt={project.title}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority={activeIndex === 0}
+                />
+              </div>
+            </>
           ) : (
-            <div className="h-full w-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
+            <div className="w-full min-h-[200px] md:h-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
               {isKa ? 'სურათი არ არის' : 'No image'}
             </div>
           )}

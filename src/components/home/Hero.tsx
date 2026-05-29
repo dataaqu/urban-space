@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocale } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/routing';
 import { X } from 'lucide-react';
+import { useSwipeMenu } from '@/hooks/useSwipeMenu';
 
 interface HeroSlide {
   id: string;
@@ -53,6 +54,8 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
   const [docked, setDocked] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
+
+  useSwipeMenu(() => setMenuOpen(true), () => setMenuOpen(false));
 
   // Detect mobile/tablet layout once mounted. Until the intro loader finishes
   // we keep the hero top layer hidden on mobile so the title doesn't show
