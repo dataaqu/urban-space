@@ -251,7 +251,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
       {/* Pagination dots */}
       {totalPages > 1 && (
-        <div className="fixed right-4 md:right-6 top-[42%] -translate-y-1/2 -mt-10 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
+        <div className="fixed right-4 md:right-6 top-1/2 -translate-y-1/2 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
@@ -344,18 +344,20 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           ) : page.image1 ? (
             <div
               key={`d-${activeIndex}`}
-              className="relative h-full w-full"
+              className="flex h-full w-full items-center justify-center pt-[8vh] lg:pt-0"
             >
-              <ResponsiveProjectImage
-                src={page.image1}
-                mobileSrc={page.mobileImage1}
-                alt={project.title}
-                fill
-                switchAt="lg"
-                className="object-contain"
-                sizes="100vw"
-                priority={activeIndex === 0}
-              />
+              <div className="relative h-full w-full">
+                <ResponsiveProjectImage
+                  src={page.image1}
+                  mobileSrc={page.mobileImage1}
+                  alt={project.title}
+                  fill
+                  switchAt="lg"
+                  className="object-contain"
+                  sizes="100vw"
+                  priority={activeIndex === 0}
+                />
+              </div>
             </div>
           ) : (
             <div className="w-full min-h-[200px] md:h-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
