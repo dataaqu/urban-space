@@ -71,7 +71,7 @@ export default function ProjectsClient({
     <>
       <CategoryFilter activeCategory={activeCategory} />
       <section className="px-8 pb-20 pt-8 md:px-10 md:pb-24 md:pt-10">
-        <div className="mx-auto max-w-[1428px]">
+        <div className="mx-auto max-w-[1140px]">
           <div className="grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 sm:gap-y-20 md:grid-cols-2 md:gap-y-24 xl:gap-x-8 xl:gap-y-28 items-start">
           {visibleProjects.map((project) => {
             const projectTitle =
@@ -98,7 +98,7 @@ export default function ProjectsClient({
                       width={1600}
                       height={1200}
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      className="block h-auto w-full object-contain transition duration-700 group-hover:scale-[1.015]"
+                      className="mx-auto block h-auto w-auto max-h-[58vh] max-w-full object-contain transition duration-700 group-hover:scale-[1.015]"
                     />
                   </div>
 

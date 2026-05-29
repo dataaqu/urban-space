@@ -286,7 +286,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   and contains, so the pair centres identically on every device. */}
               <div
                 key={`m-${activeIndex}`}
-                className="flex h-full w-full flex-col items-center justify-center gap-3 pt-[8vh] lg:hidden short-landscape:hidden"
+                className="flex h-full w-full flex-col items-center justify-center gap-3 pt-[8vh] md:w-[60%] lg:hidden short-landscape:hidden"
               >
                 <div className="relative w-full flex-1 min-h-0">
                   <ResponsiveProjectImage
@@ -346,7 +346,11 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               key={`d-${activeIndex}`}
               className="flex h-full w-full items-center justify-center pt-[8vh] lg:pt-0"
             >
-              <div className="relative h-full w-full">
+              <div
+                className={`relative h-full w-full md:w-[72%] ${
+                  activeIndex === 0 ? 'lg:h-full lg:w-full' : 'lg:h-[82%] lg:w-[82%]'
+                }`}
+              >
                 <ResponsiveProjectImage
                   src={page.image1}
                   mobileSrc={page.mobileImage1}
@@ -368,7 +372,11 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Text block — fixed min-height so info button doesn't shift */}
-        <div className="mt-6 lg:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] lg:min-h-[64px] short-landscape:min-h-0 flex flex-col items-center justify-start">
+        <div
+          className={`mt-6 lg:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] short-landscape:min-h-0 flex flex-col items-center justify-start ${
+            activeIndex === 0 ? 'lg:min-h-[64px]' : 'lg:min-h-0'
+          }`}
+        >
           {activeIndex === 0 && (
             <>
               <h2
@@ -392,7 +400,13 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
 
         {/* Info button */}
-        <div className="shrink-0 flex items-center justify-center h-[60px] lg:h-[56px] short-landscape:h-[40px] lg:mt-4">
+        <div
+          className={`shrink-0 flex items-center justify-center h-[60px] lg:h-[56px] short-landscape:h-[40px] ${
+            activeIndex === 0
+              ? 'lg:mt-4'
+              : 'lg:absolute lg:inset-x-0 lg:bottom-5'
+          }`}
+        >
           {hasInfo && (
             <button
               type="button"
@@ -441,7 +455,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-6 py-6 lg:pl-16 lg:pr-10 lg:pt-3 lg:pb-8 xl:pl-20">
+          <div className="flex-1 overflow-y-auto lg:overflow-hidden px-6 py-6 lg:pl-16 lg:pr-10 lg:pt-3 lg:pb-8 xl:pl-20">
             <div
               className={`max-w-[720px] mx-auto lg:mx-0 text-foreground/75 leading-relaxed font-light ${
                 isKa ? 'text-[13px] lg:text-[15px]' : 'text-[14px] lg:text-[16px]'

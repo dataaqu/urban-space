@@ -42,7 +42,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
       <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20">
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group block">
-            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[26px] xl:text-[36px] 2xl:text-[40px]">
+            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[22px] xl:text-[30px] 2xl:text-[34px]">
               URBAN SPACE
             </div>
             {/* Tablet-only divider (matches urbanspace-mobile); hidden on mobile and desktop */}
@@ -55,7 +55,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           </Link>
 
           <nav
-            className={`absolute left-1/2 top-5 hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
+            className={`absolute left-1/2 top-[10px] xl:top-3 hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
               language === 'ka'
                 ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
                 : 'text-[15px] xl:text-[17px] 2xl:text-[19px]'
@@ -72,11 +72,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
               </Link>
               {isProjects && (
                 <div
-                  className={`absolute left-0 top-full mt-2.5 flex items-center gap-3 font-light tracking-[0.05em] leading-none ${
-                    language === 'ka'
-                      ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
-                      : 'text-[14px] xl:text-[15px] 2xl:text-[17px]'
-                  }`}
+                  className="absolute left-0 top-full mt-2.5 flex items-baseline gap-3 font-light tracking-[0.05em] leading-none text-[12px] xl:text-[13px] 2xl:text-[15px]"
                 >
                   <Link
                     href={isArchActive ? '/projects' : '/projects?category=ARCHITECTURE'}
