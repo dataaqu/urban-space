@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { Noto_Sans, Inter, Cormorant_Garamond, Noto_Sans_Georgian } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
+import ServiceWorkerCleanup from '@/components/layout/ServiceWorkerCleanup';
 import prisma from '@/lib/prisma';
 import '@/app/globals.css';
 
@@ -91,6 +92,7 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${fontVars} ${langClass}`}>
       <body className="min-h-screen flex flex-col font-sans bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
+            <ServiceWorkerCleanup />
             <ConditionalHeader social={social} />
             <main className="flex-1">{children}</main>
             <ConditionalFooter />

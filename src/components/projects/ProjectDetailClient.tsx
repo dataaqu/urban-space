@@ -244,14 +244,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       <Link
         href="/projects"
         aria-label={closeLabel}
-        className="fixed right-4 top-[72px] md:right-8 md:top-[130px] short-landscape:top-[120px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        style={{ top: headerH != null ? headerH + 16 : 72 }}
+        className="fixed right-4 md:right-8 lg:!top-[130px] short-landscape:!top-[120px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
 
       {/* Pagination dots */}
       {totalPages > 1 && (
-        <div className="fixed right-4 md:right-6 top-1/2 -translate-y-1/2 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
+        <div className="fixed right-4 lg:right-6 top-1/2 -translate-y-1/2 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
           {Array.from({ length: totalPages }).map((_, i) => (
             <button
               key={i}
@@ -277,7 +278,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       )}
 
       {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] md:pt-6 md:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
+      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
@@ -286,7 +287,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   and contains, so the pair centres identically on every device. */}
               <div
                 key={`m-${activeIndex}`}
-                className="flex h-full w-full flex-col items-center justify-center gap-3 pt-[8vh] md:w-[60%] lg:hidden short-landscape:hidden"
+                className="flex h-full w-full flex-col items-center justify-center gap-3 pt-[8vh] lg:hidden short-landscape:hidden"
               >
                 <div className="relative w-full flex-1 min-h-0">
                   <ResponsiveProjectImage
@@ -347,7 +348,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               className="flex h-full w-full items-center justify-center pt-[8vh] lg:pt-0"
             >
               <div
-                className={`relative h-full w-full md:w-[72%] ${
+                className={`relative h-full w-full ${
                   activeIndex === 0 ? 'lg:h-full lg:w-full' : 'lg:h-[82%] lg:w-[82%]'
                 }`}
               >
