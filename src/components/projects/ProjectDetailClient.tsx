@@ -272,34 +272,43 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <>
-              {/* Mobile portrait: each photo hugs its own size — no letterbox bands,
-                  centered as a group, capped height so the pair never overflows. */}
+              {/* Mobile + tablet (<lg) portrait: stacked vertically, each half fills
+                  and contains, so the pair centres identically on every device. */}
               <div
                 key={`m-${activeIndex}`}
-                className="flex w-full flex-col items-center justify-center gap-3 md:hidden short-landscape:hidden"
+                className="flex h-full w-full flex-col items-center justify-center gap-3 lg:hidden short-landscape:hidden"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={page.mobileImage1 ?? page.image1}
-                  alt={project.title}
-                  style={imgMaxH ? { maxHeight: Math.round((imgMaxH - 12) / 2) } : undefined}
-                  className="block h-auto w-auto max-w-full object-contain"
-                />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={page.mobileImage2 ?? (page.image2 as string)}
-                  alt={project.title}
-                  style={imgMaxH ? { maxHeight: Math.round((imgMaxH - 12) / 2) } : undefined}
-                  className="block h-auto w-auto max-w-full object-contain"
-                />
+                <div className="relative w-full flex-1 min-h-0">
+                  <ResponsiveProjectImage
+                    src={page.image1}
+                    mobileSrc={page.mobileImage1}
+                    alt={project.title}
+                    fill
+                    switchAt="lg"
+                    className="object-contain"
+                    sizes="100vw"
+                    priority={activeIndex === 0}
+                  />
+                </div>
+                <div className="relative w-full flex-1 min-h-0">
+                  <ResponsiveProjectImage
+                    src={page.image2 as string}
+                    mobileSrc={page.mobileImage2}
+                    alt={project.title}
+                    fill
+                    switchAt="lg"
+                    className="object-contain"
+                    sizes="100vw"
+                  />
+                </div>
               </div>
 
-              {/* Tablet / desktop / landscape: side-by-side, unchanged */}
+              {/* Desktop (lg) + landscape: side-by-side, unchanged look */}
               <div
                 key={`d-${activeIndex}`}
-                className="hidden md:flex short-landscape:flex md:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-6"
+                className="hidden lg:flex short-landscape:flex lg:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-6"
               >
-                <div className="relative md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                <div className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                   <ResponsiveProjectImage
                     src={page.image1}
                     mobileSrc={page.mobileImage1}
@@ -310,7 +319,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                     priority={activeIndex === 0}
                   />
                 </div>
-                <div className="relative md:h-[84%] md:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                <div className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
                   <ResponsiveProjectImage
                     src={page.image2 as string}
                     mobileSrc={page.mobileImage2}
