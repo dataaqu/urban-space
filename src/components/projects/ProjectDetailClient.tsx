@@ -288,7 +288,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         {/* Image + title group, vertically centred in the area above the info
             button so the photo sits in the middle of the card zone (not jammed
             against the CLOSE button). Fixed heights → same on every page. */}
-        <div className="flex-1 min-h-0 flex flex-col justify-center">
+        <div className="flex-1 min-h-0 flex flex-col justify-center translate-y-[5vh]">
         {/* Image box — fixed size. ml-4 = small left gutter; mr aligns the
             right edge with the CLOSE button centre. */}
         <div className="relative shrink-0 ml-[14%] mr-[36px] md:mr-[52px] h-[46vh]">
