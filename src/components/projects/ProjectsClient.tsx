@@ -98,7 +98,7 @@ export default function ProjectsClient({
                       width={1600}
                       height={1200}
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      className="mx-auto block h-auto w-auto max-h-[58vh] max-w-full object-contain transition duration-700 group-hover:scale-[1.015] tall:max-h-none tall:w-full"
+                      className="mx-auto block h-auto w-auto max-h-[58vh] max-w-full object-contain transition duration-700 group-hover:scale-[1.015] tall:max-h-none tall:w-full 3xl:max-h-[72vh]"
                     />
                   </div>
 
