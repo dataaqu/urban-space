@@ -285,9 +285,13 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           slot; the PROJECT INFORMATION button is pinned to the bottom so it
           never moves between pages. */}
       <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col">
-        {/* Image box — fixed size & position. ml-4 = small left gutter,
-            mr/mt align the top-right corner with the CLOSE button centre. */}
-        <div className="relative shrink-0 ml-4 mr-[36px] md:mr-[52px] mt-[22px] h-[46vh]">
+        {/* Image + title group, vertically centred in the area above the info
+            button so the photo sits in the middle of the card zone (not jammed
+            against the CLOSE button). Fixed heights → same on every page. */}
+        <div className="flex-1 min-h-0 flex flex-col justify-center">
+        {/* Image box — fixed size. ml-4 = small left gutter; mr aligns the
+            right edge with the CLOSE button centre. */}
+        <div className="relative shrink-0 ml-4 mr-[36px] md:mr-[52px] h-[46vh]">
           {hasTwoImages ? (
             <div key={`mt-${activeIndex}`} className="flex h-full w-full flex-col gap-2">
               <div className="relative w-full flex-1 min-h-0">
@@ -358,8 +362,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           )}
         </div>
 
-        {/* Spacer pushes the info button to a fixed bottom position. */}
-        <div className="flex-1 min-h-0" />
+        </div>
+        {/* end image+title centred group */}
 
         {/* Info button — pinned to the bottom, identical on every page. */}
         <div className="shrink-0 h-[60px] mb-[calc(28px+env(safe-area-inset-bottom))] flex items-center justify-center">
