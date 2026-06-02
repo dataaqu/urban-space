@@ -277,8 +277,110 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         </div>
       )}
 
-      {/* Center stack */}
-      <div className="flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
+      {/* ── PORTRAIT MOBILE + TABLET (<lg) ───────────────────────────────
+          Deterministic, fixed layout. The image box is a fixed-size container
+          (same on every page → every photo renders the same size), its
+          top-right corner sitting under the CLOSE button (right edge drops
+          straight down from CLOSE's centre). Title sits in a fixed-height
+          slot; the PROJECT INFORMATION button is pinned to the bottom so it
+          never moves between pages. */}
+      <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col">
+        {/* Image box — fixed size & position. ml-4 = small left gutter,
+            mr/mt align the top-right corner with the CLOSE button centre. */}
+        <div className="relative shrink-0 ml-4 mr-[36px] md:mr-[52px] mt-[22px] h-[46vh]">
+          {hasTwoImages ? (
+            <div key={`mt-${activeIndex}`} className="flex h-full w-full flex-col gap-2">
+              <div className="relative w-full flex-1 min-h-0">
+                <ResponsiveProjectImage
+                  src={page.image1}
+                  mobileSrc={page.mobileImage1}
+                  alt={project.title}
+                  fill
+                  switchAt="lg"
+                  className="object-contain object-center"
+                  sizes="100vw"
+                  priority={activeIndex === 0}
+                />
+              </div>
+              <div className="relative w-full flex-1 min-h-0">
+                <ResponsiveProjectImage
+                  src={page.image2 as string}
+                  mobileSrc={page.mobileImage2}
+                  alt={project.title}
+                  fill
+                  switchAt="lg"
+                  className="object-contain object-center"
+                  sizes="100vw"
+                />
+              </div>
+            </div>
+          ) : page.image1 ? (
+            <ResponsiveProjectImage
+              key={`mt-${activeIndex}`}
+              src={page.image1}
+              mobileSrc={page.mobileImage1}
+              alt={project.title}
+              fill
+              switchAt="lg"
+              className="object-contain object-center"
+              sizes="100vw"
+              priority={activeIndex === 0}
+            />
+          ) : (
+            <div className="h-full w-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
+              {isKa ? 'სურათი არ არის' : 'No image'}
+            </div>
+          )}
+        </div>
+
+        {/* Title slot — fixed height; empty on pages without a title so the
+            info button below never shifts. */}
+        <div className="shrink-0 h-[104px] px-6 pt-7 text-center">
+          {activeIndex === 0 && (
+            <>
+              <h2
+                className={`font-light tracking-[0.04em] text-foreground/90 ${
+                  isKa ? 'text-[18px]' : 'text-[22px]'
+                }`}
+              >
+                {project.title}
+              </h2>
+              {project.description && (
+                <p
+                  className={`mt-3 mx-auto text-foreground/60 leading-relaxed max-w-[640px] ${
+                    isKa ? 'text-[12px]' : 'text-[14px]'
+                  }`}
+                >
+                  {project.description}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Spacer pushes the info button to a fixed bottom position. */}
+        <div className="flex-1 min-h-0" />
+
+        {/* Info button — pinned to the bottom, identical on every page. */}
+        <div className="shrink-0 h-[60px] mb-[calc(28px+env(safe-area-inset-bottom))] flex items-center justify-center">
+          {hasInfo && (
+            <button
+              type="button"
+              onClick={() => setInfoOpen(true)}
+              className="group inline-flex flex-col items-center text-foreground/70 hover:text-foreground transition"
+            >
+              <span className="text-[10px] font-light tracking-[0.22em] uppercase">
+                {infoLabel}
+              </span>
+              <span className="mt-2 h-px w-10 bg-foreground/60 transition-all duration-300 group-hover:w-16" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Center stack — DESKTOP (lg) + rotated-phone (short-landscape) ONLY.
+          Portrait mobile + tablet use the dedicated block below. */}
+      <div className="hidden lg:flex short-landscape:flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
