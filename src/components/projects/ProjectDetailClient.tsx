@@ -5,6 +5,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import { X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import ResponsiveProjectImage from './ResponsiveProjectImage';
+import ImageLightbox from './ImageLightbox';
 
 interface PageData {
   id: string;
@@ -51,10 +52,18 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const totalPages = project.pages.length;
   const [activeIndex, setActiveIndex] = useState(0);
   const [infoOpen, setInfoOpen] = useState(false);
+  // Fullscreen image viewer: holds the full-res src to show, or null when closed.
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  // Orientation of each single image, keyed by page index (set when it loads).
+  // Per-page (not a single shared flag) so navigating between pages never
+  // applies one page's orientation to another. Portrait photos are allowed to
+  // grow larger to fill the stage; landscape ones keep their size.
+  const [portraitByIndex, setPortraitByIndex] = useState<Record<number, boolean>>({});
 
   const activeIndexRef = useRef(0);
   const lockRef = useRef(false);
   const infoOpenRef = useRef(false);
+  const lightboxOpenRef = useRef(false);
   const asideRef = useRef<HTMLElement>(null);
 
   // The sticky header's height varies by breakpoint, locale and font loading.
@@ -64,6 +73,12 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   // visible area no matter the toolbar state or the scroll position the page was
   // entered from. No viewport-height math, so nothing drifts between entries.
   const [headerH, setHeaderH] = useState<number>();
+  // Also measure the live height of the fixed <main> stage. Photo max-heights are
+  // derived from this (not vh) so they track the real visible area — including
+  // the iOS toolbar — and resolve reliably even for nested flex children, where
+  // percentage heights don't.
+  const mainRef = useRef<HTMLElement>(null);
+  const [stageH, setStageH] = useState<number>();
   useEffect(() => {
     const update = () => {
       const header = document.querySelector('header');
@@ -76,6 +91,17 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       window.removeEventListener('resize', update);
       window.removeEventListener('orientationchange', update);
     };
+  }, []);
+
+  // Track the fixed stage's live height (changes when the header height settles
+  // or the iOS toolbar shows/hides) so photo max-heights stay correct.
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    setStageH(el.clientHeight);
+    const ro = new ResizeObserver(() => setStageH(el.clientHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   // Pin the detail view to the top and freeze the document scroll for the whole
@@ -111,6 +137,10 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     infoOpenRef.current = infoOpen;
   }, [infoOpen]);
 
+  useEffect(() => {
+    lightboxOpenRef.current = lightboxSrc != null;
+  }, [lightboxSrc]);
+
   // Use `inert` (not aria-hidden) on the closed drawer so its focusable
   // children can't retain focus or be tabbed into while it's off-screen.
   // Toggled imperatively because React 18 has no typed `inert` JSX prop.
@@ -144,7 +174,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
     const change = (dir: 1 | -1) => {
       if (lockRef.current) return;
-      if (infoOpenRef.current) return;
+      if (infoOpenRef.current || lightboxOpenRef.current) return;
       const next = activeIndexRef.current + dir;
       if (next < 0 || next >= totalPages) return;
       lockRef.current = true;
@@ -158,7 +188,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     let touchStartY = 0;
 
     const onWheel = (e: WheelEvent) => {
-      if (infoOpenRef.current) return;
+      if (infoOpenRef.current || lightboxOpenRef.current) return;
       e.preventDefault();
       if (Math.abs(e.deltaY) < 10) return;
       change(e.deltaY > 0 ? 1 : -1);
@@ -169,12 +199,12 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      if (infoOpenRef.current) return;
+      if (infoOpenRef.current || lightboxOpenRef.current) return;
       e.preventDefault();
     };
 
     const onTouchEnd = (e: TouchEvent) => {
-      if (infoOpenRef.current) return;
+      if (infoOpenRef.current || lightboxOpenRef.current) return;
       const endY = e.changedTouches[0]?.clientY ?? 0;
       const diff = touchStartY - endY;
       if (Math.abs(diff) < 40) return;
@@ -182,7 +212,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     };
 
     const onKey = (e: KeyboardEvent) => {
-      if (infoOpenRef.current) return;
+      if (infoOpenRef.current || lightboxOpenRef.current) return;
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
         change(1);
@@ -235,8 +265,48 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   const pageTextHtml = useMemo(() => DOMPurify.sanitize(rawPageText), [rawPageText]);
   const hasInfo = metaInfoHtml.length > 0 || pageTextHtml.length > 0;
 
+  // True when the pointer is over the VISIBLE photo (not the empty space around
+  // it). For `object-cover` the image fills its box, so anywhere counts. For
+  // `object-contain` the image is letter-/pillar-boxed inside a larger box, so
+  // we compute the rendered image rect and exclude the surrounding whitespace.
+  const pointOnImage = (e: React.MouseEvent<HTMLDivElement>): boolean => {
+    const imgs = Array.from(e.currentTarget.querySelectorAll('img'));
+    const img =
+      imgs.find((i) => i.getBoundingClientRect().width > 0) ?? imgs[0];
+    if (!img) return true;
+    const r = img.getBoundingClientRect();
+    const nw = img.naturalWidth;
+    const nh = img.naturalHeight;
+    if (getComputedStyle(img).objectFit !== 'contain' || !nw || !nh) return true;
+    const scale = Math.min(r.width / nw, r.height / nh);
+    const cw = nw * scale;
+    const ch = nh * scale;
+    const cx = r.left + (r.width - cw) / 2;
+    const cy = r.top + (r.height - ch) / 2;
+    return (
+      e.clientX >= cx &&
+      e.clientX <= cx + cw &&
+      e.clientY >= cy &&
+      e.clientY <= cy + ch
+    );
+  };
+
+  // Open the lightbox only when the photo itself is clicked.
+  const handleImageClick = (
+    e: React.MouseEvent<HTMLDivElement>,
+    src: string | null,
+  ) => {
+    if (src && pointOnImage(e)) setLightboxSrc(src);
+  };
+
+  // Show the click cursor only while hovering the photo, default over whitespace.
+  const handleImageHover = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.currentTarget.style.cursor = pointOnImage(e) ? 'pointer' : 'default';
+  };
+
   return (
     <main
+      ref={mainRef}
       className="fixed left-0 right-0 bottom-0 top-14 md:top-20 z-10 overflow-hidden bg-background text-foreground"
       style={headerH != null ? { top: headerH } : undefined}
     >
@@ -285,61 +355,80 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           slot; the PROJECT INFORMATION button is pinned to the bottom so it
           never moves between pages. */}
       <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col">
-        {/* Image + title group, vertically centred in the area above the info
-            button so the photo sits in the middle of the card zone (not jammed
-            against the CLOSE button). Fixed heights → same on every page. */}
-        <div className="flex-1 min-h-0 flex flex-col justify-center translate-y-[5vh]">
-        {/* Image box — fixed size. ml-4 = small left gutter; mr aligns the
-            right edge with the CLOSE button centre. */}
-        <div className="relative shrink-0 ml-[14%] mr-[36px] md:mr-[52px] h-[46vh]">
-          {hasTwoImages ? (
-            <div key={`mt-${activeIndex}`} className="flex h-full w-full flex-col gap-2">
-              <div className="relative w-full flex-1 min-h-0">
-                <ResponsiveProjectImage
-                  src={page.image1}
-                  mobileSrc={page.mobileImage1}
-                  alt={project.title}
-                  fill
-                  switchAt="lg"
-                  className="object-cover object-center"
-                  sizes="100vw"
-                  priority={activeIndex === 0}
-                />
-              </div>
-              <div className="relative w-full flex-1 min-h-0">
-                <ResponsiveProjectImage
-                  src={page.image2 as string}
-                  mobileSrc={page.mobileImage2}
-                  alt={project.title}
-                  fill
-                  switchAt="lg"
-                  className="object-cover object-center"
-                  sizes="100vw"
-                />
-              </div>
-            </div>
-          ) : page.image1 ? (
-            <ResponsiveProjectImage
-              key={`mt-${activeIndex}`}
-              src={page.image1}
-              mobileSrc={page.mobileImage1}
-              alt={project.title}
-              fill
-              switchAt="lg"
-              className="object-cover object-center"
-              sizes="100vw"
-              priority={activeIndex === 0}
-            />
-          ) : (
-            <div className="h-full w-full bg-foreground/5 flex items-center justify-center text-foreground/45 text-sm">
-              {isKa ? 'სურათი არ არის' : 'No image'}
-            </div>
-          )}
-        </div>
+        {/* All vertical sizing below is a flex SHARE of THIS fixed container
+            (`main` is position:fixed bottom-0, so it tracks the real visible
+            viewport) — NEVER vh. vh on iOS = the large viewport and does not
+            match the toolbar-adjusted container, which made the photo land in a
+            different place depending on the scroll/toolbar state on entry. Flex
+            shares scale with the container, so the layout is identical every
+            time. Top spacer slightly larger than the bottom → photo sits low. */}
+        {/* Top spacer (grows) — together with the bottom one it vertically
+            centres the photo+title group. */}
+        <div className="flex-1 min-h-0" />
 
-        {/* Title slot — fixed height; empty on pages without a title so the
-            info button below never shifts. */}
-        <div className="shrink-0 h-[104px] px-6 pt-7 text-center">
+        {/* Photo(s) at NATURAL aspect (object-contain, w/h auto) — never cropped
+            and no surrounding box, so each photo hugs its own shape. Size caps
+            are % of THIS fixed container (not vh) → identical regardless of the
+            iOS toolbar. Tall photos cap on height, wide ones on width; the title
+            sits directly beneath, so the pair stays compact and centred. */}
+        {hasTwoImages ? (
+          <div
+            key={`mt-${activeIndex}`}
+            className="shrink-0 flex flex-col items-center gap-3 px-[36px] md:px-[70px]"
+          >
+            <img
+              src={page.image1}
+              alt={project.title}
+              onClick={() => setLightboxSrc(page.image1)}
+              style={{ maxHeight: stageH ? stageH * 0.34 : undefined }}
+              className="block h-auto w-auto max-w-full cursor-pointer select-none object-contain"
+            />
+            {page.image2 && (
+              <img
+                src={page.image2}
+                alt={project.title}
+                onClick={() => page.image2 && setLightboxSrc(page.image2)}
+                style={{ maxHeight: stageH ? stageH * 0.34 : undefined }}
+                className="block h-auto w-auto max-w-full cursor-pointer select-none object-contain"
+              />
+            )}
+          </div>
+        ) : page.image1 ? (
+          <img
+            key={`mt-${activeIndex}`}
+            ref={(node) => {
+              if (!node) return;
+              const idx = activeIndex;
+              const detect = () => {
+                if (!node.naturalWidth) return;
+                const v = node.naturalHeight > node.naturalWidth;
+                setPortraitByIndex((m) => (m[idx] === v ? m : { ...m, [idx]: v }));
+              };
+              if (node.complete) detect();
+              else node.addEventListener('load', detect, { once: true });
+            }}
+            src={page.image1}
+            alt={project.title}
+            onClick={() => page.image1 && setLightboxSrc(page.image1)}
+            style={{
+              maxHeight: stageH
+                ? stageH * (portraitByIndex[activeIndex] ? 0.53 : 0.52)
+                : undefined,
+            }}
+            className={`block shrink-0 mx-auto h-auto w-auto cursor-pointer select-none object-contain ${
+              portraitByIndex[activeIndex]
+                ? 'max-w-[calc(100%-128px)] md:max-w-[calc(100%-260px)]'
+                : 'max-w-[calc(100%-72px)] md:max-w-[calc(100%-160px)]'
+            }`}
+          />
+        ) : (
+          <div className="shrink-0 mx-[26px] flex h-[200px] items-center justify-center bg-foreground/5 text-sm text-foreground/45">
+            {isKa ? 'სურათი არ არის' : 'No image'}
+          </div>
+        )}
+
+        {/* Title — directly beneath the photo. */}
+        <div className="shrink-0 px-6 pt-7 text-center">
           {activeIndex === 0 && (
             <>
               <h2
@@ -362,8 +451,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           )}
         </div>
 
-        </div>
-        {/* end image+title centred group */}
+        {/* Bottom spacer (grows). */}
+        <div className="flex-1 min-h-0" />
 
         {/* Info button — pinned to the bottom, identical on every page. */}
         <div className="shrink-0 h-[60px] mb-[calc(28px+env(safe-area-inset-bottom))] flex items-center justify-center">
@@ -425,7 +514,11 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 key={`d-${activeIndex}`}
                 className="hidden lg:flex short-landscape:flex lg:flex-row short-landscape:flex-row h-full w-full items-center justify-center gap-6"
               >
-                <div className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                <div
+                  className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]"
+                  onClick={(e) => handleImageClick(e, page.image1)}
+                onMouseMove={handleImageHover}
+                >
                   <ResponsiveProjectImage
                     src={page.image1}
                     mobileSrc={page.mobileImage1}
@@ -436,7 +529,11 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                     priority={activeIndex === 0}
                   />
                 </div>
-                <div className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]">
+                <div
+                  className="relative lg:h-[84%] lg:w-[48%] short-landscape:h-full short-landscape:w-[48%]"
+                  onClick={(e) => handleImageClick(e, page.image2)}
+                onMouseMove={handleImageHover}
+                >
                   <ResponsiveProjectImage
                     src={page.image2 as string}
                     mobileSrc={page.mobileImage2}
@@ -457,6 +554,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 className={`relative h-full w-full ${
                   activeIndex === 0 ? 'lg:h-full lg:w-full' : 'lg:h-[82%] lg:w-[82%]'
                 }`}
+                onClick={(e) => handleImageClick(e, page.image1)}
+              onMouseMove={handleImageHover}
               >
                 <ResponsiveProjectImage
                   src={page.image1}
@@ -579,6 +678,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           </div>
         </div>
       </aside>
+
+      {/* Fullscreen image viewer — opens on photo click, closes on X / backdrop / Esc */}
+      {lightboxSrc && (
+        <ImageLightbox
+          src={lightboxSrc}
+          alt={project.title}
+          onClose={() => setLightboxSrc(null)}
+        />
+      )}
     </main>
   );
 }
