@@ -24,6 +24,13 @@ const config: Config = {
         // Tall viewports (big monitors / 4K): drop the image height cap so cards
         // can fill the full column width instead of being height-limited.
         'tall': { raw: '(min-height: 1100px)' },
+        // Large high-DPI screens (e.g. a 2560x1440 monitor under Windows display
+        // scaling reports ~1413px CSS width @ devicePixelRatio 2). These land in
+        // the `xl` tier (1280-1535) where the projects container is capped at
+        // 1140px and centered, leaving the images small with a big gap. This tier
+        // catches them by requiring high pixel density, so it never affects a
+        // standard FHD desktop/laptop (devicePixelRatio 1).
+        'hidpi': { raw: '(min-width: 1280px) and (min-resolution: 1.5dppx)' },
       },
       colors: {
         // full-project clone tokens

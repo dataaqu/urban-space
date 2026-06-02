@@ -70,8 +70,8 @@ export default function ProjectsClient({
   return (
     <>
       <CategoryFilter activeCategory={activeCategory} />
-      <section className="px-8 pb-20 pt-8 md:px-10 md:pb-24 md:pt-10 2xl:px-20">
-        <div className="mx-auto max-w-[1140px] 2xl:max-w-none">
+      <section className="px-8 pb-20 pt-8 md:px-10 md:pb-24 md:pt-10 hidpi:px-16 2xl:px-20">
+        <div className="mx-auto max-w-[1140px] hidpi:max-w-none 2xl:max-w-none">
           <div className="grid grid-cols-1 gap-x-6 gap-y-16 sm:grid-cols-2 sm:gap-y-20 md:grid-cols-2 md:gap-y-24 xl:gap-x-8 xl:gap-y-28 items-start">
           {visibleProjects.map((project) => {
             const projectTitle =
@@ -98,7 +98,7 @@ export default function ProjectsClient({
                       width={1600}
                       height={1200}
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      className="mx-auto block h-auto w-auto max-h-[58vh] max-w-full object-contain transition duration-700 group-hover:scale-[1.015] tall:max-h-none tall:w-full 3xl:max-h-[72vh]"
+                      className="mx-auto block h-auto w-auto max-h-[58vh] max-w-full object-contain transition duration-700 group-hover:scale-[1.015] tall:max-h-none tall:w-full hidpi:max-h-none hidpi:w-full 3xl:max-h-[72vh]"
                     />
                   </div>
 
