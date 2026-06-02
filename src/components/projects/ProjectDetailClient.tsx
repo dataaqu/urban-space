@@ -291,7 +291,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         <div className="flex-1 min-h-0 flex flex-col justify-center">
         {/* Image box — fixed size. ml-4 = small left gutter; mr aligns the
             right edge with the CLOSE button centre. */}
-        <div className="relative shrink-0 ml-4 mr-[36px] md:mr-[52px] h-[46vh]">
+        <div className="relative shrink-0 ml-[14%] mr-[36px] md:mr-[52px] h-[46vh]">
           {hasTwoImages ? (
             <div key={`mt-${activeIndex}`} className="flex h-full w-full flex-col gap-2">
               <div className="relative w-full flex-1 min-h-0">
@@ -301,7 +301,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   alt={project.title}
                   fill
                   switchAt="lg"
-                  className="object-contain object-center"
+                  className="object-cover object-center"
                   sizes="100vw"
                   priority={activeIndex === 0}
                 />
@@ -313,7 +313,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                   alt={project.title}
                   fill
                   switchAt="lg"
-                  className="object-contain object-center"
+                  className="object-cover object-center"
                   sizes="100vw"
                 />
               </div>
@@ -326,7 +326,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               alt={project.title}
               fill
               switchAt="lg"
-              className="object-contain object-center"
+              className="object-cover object-center"
               sizes="100vw"
               priority={activeIndex === 0}
             />
