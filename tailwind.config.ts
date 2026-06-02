@@ -24,16 +24,6 @@ const config: Config = {
         // Tall viewports (big monitors / 4K): drop the image height cap so cards
         // can fill the full column width instead of being height-limited.
         'tall': { raw: '(min-height: 1100px)' },
-        // "Big cards" tier for the projects grid. A 2560x1440 monitor viewed
-        // with browser zoom (or Windows display scaling) reports a CSS width in
-        // the xl band (~1413px) where the projects container is capped at 1140px
-        // and centered — leaving images small with a big vertical gap. We CANNOT
-        // detect this via devicePixelRatio: browser zoom inflates dpr but does
-        // NOT change the CSS `resolution` feature, so min-resolution misses it.
-        // So this tier is WIDTH-based: the xl band (1280-1535), OR any genuine
-        // high-DPI screen >=1280. It deliberately stops at 1535 so standard FHD
-        // (1920, which is 2xl) is untouched; 2xl+ already goes full-width.
-        'bigcards': { raw: '(min-width: 1280px) and (max-width: 1535px), (min-width: 1280px) and (min-resolution: 1.5dppx)' },
       },
       colors: {
         // full-project clone tokens
