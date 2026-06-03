@@ -39,15 +39,15 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20">
+      <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/85 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20 short-landscape:!py-2">
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group block">
-            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[22px] xl:text-[30px] 2xl:text-[34px]">
+            <div className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[22px] xl:text-[30px] 2xl:text-[34px] short-landscape:!text-[16px]">
               URBAN SPACE
             </div>
             {/* Tablet-only divider (matches urbanspace-mobile); hidden on mobile and desktop */}
-            <span className="hidden md:block lg:hidden mt-2 h-px w-24 bg-foreground/60" />
-            <div className="hidden md:block mt-1.5 text-[10px] tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[12px] xl:text-[13px] 2xl:text-[15px]">
+            <span className="hidden md:block lg:hidden mt-2 h-px w-24 bg-foreground/60 short-landscape:!hidden" />
+            <div className="hidden md:block mt-1.5 text-[10px] tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[12px] xl:text-[13px] 2xl:text-[15px] short-landscape:!hidden">
               {language === 'ka'
                 ? 'არქიტექტურა და ურბანული დაგეგმარება'
                 : 'Architecture & urban planning'}

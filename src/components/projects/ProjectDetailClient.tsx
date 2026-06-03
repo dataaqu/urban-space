@@ -315,7 +315,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         href="/projects"
         aria-label={closeLabel}
         style={{ top: headerH != null ? headerH + 16 : 72 }}
-        className="fixed right-4 md:right-8 lg:!top-[130px] short-landscape:!top-[120px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 md:right-8 lg:!top-[130px] short-landscape:!top-[56px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
@@ -473,7 +473,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
       {/* Center stack — DESKTOP (lg) + rotated-phone (short-landscape) ONLY.
           Portrait mobile + tablet use the dedicated block below. */}
-      <div className="hidden lg:flex short-landscape:flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:pt-4 short-landscape:pb-3 short-landscape:pr-16">
+      <div className="hidden lg:flex short-landscape:flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:!pt-2 short-landscape:!pb-1 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
@@ -548,10 +548,10 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           ) : page.image1 ? (
             <div
               key={`d-${activeIndex}`}
-              className="flex h-full w-full items-center justify-center pt-[8vh] lg:pt-0"
+              className="flex h-full w-full items-center justify-center pt-[8vh] lg:pt-0 short-landscape:!pt-0"
             >
               <div
-                className={`relative h-full w-full ${
+                className={`relative h-full w-full short-landscape:!h-full short-landscape:!w-full ${
                   activeIndex === 0 ? 'lg:h-full lg:w-full' : 'lg:h-[82%] lg:w-[82%]'
                 }`}
                 onClick={(e) => handleImageClick(e, page.image1)}
@@ -579,7 +579,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
         {/* Text block — fixed min-height so info button doesn't shift */}
         <div
-          className={`mt-6 lg:mt-5 short-landscape:mt-2 text-center shrink-0 min-h-[80px] short-landscape:min-h-0 flex flex-col items-center justify-start ${
+          className={`mt-6 lg:mt-5 short-landscape:!mt-1 text-center shrink-0 min-h-[80px] short-landscape:min-h-0 flex flex-col items-center justify-start ${
             activeIndex === 0 ? 'lg:min-h-[64px]' : 'lg:min-h-0'
           }`}
         >
