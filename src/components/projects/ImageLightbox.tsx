@@ -54,7 +54,7 @@ export default function ImageLightbox({ src, alt, onClose }: ImageLightboxProps)
       role="dialog"
       aria-modal="true"
       onClick={close}
-      className={`fixed inset-0 z-[60] flex items-center justify-center bg-black/95 transition-opacity duration-300 ease-out ${
+      className={`fixed inset-0 z-[60] flex items-center justify-center bg-white/70 backdrop-blur-sm transition-opacity duration-300 ease-out ${
         visible ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -65,7 +65,7 @@ export default function ImageLightbox({ src, alt, onClose }: ImageLightboxProps)
           close();
         }}
         aria-label="Close"
-        className="fixed right-4 top-4 md:right-6 md:top-6 z-[51] text-white/85 hover:text-white transition"
+        className="fixed right-4 top-4 md:right-6 md:top-6 z-[51] text-black/70 hover:text-black transition"
       >
         <X className="h-7 w-7" strokeWidth={1.25} />
       </button>

@@ -34,12 +34,12 @@ body {
 /* full-project font swap via locale class on <html> */
 html.font-inter,
 html.font-inter body {
-  font-family: 'Inter', var(--font-noto-sans), system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 html.font-georgian,
 html.font-georgian body {
-  font-family: 'Noto Sans Georgian', 'Inter', var(--font-noto-sans), system-ui, sans-serif;
+  font-family: 'Noto Sans Georgian', 'Inter', system-ui, sans-serif;
 }
 
 @layer base {

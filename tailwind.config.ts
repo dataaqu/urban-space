@@ -94,8 +94,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'var(--font-noto-sans)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-noto-sans)', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'system-ui', 'sans-serif'],
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         inter: ['Inter', 'system-ui', 'sans-serif'],
         georgian: ['"Noto Sans Georgian"', 'Inter', 'system-ui', 'sans-serif'],

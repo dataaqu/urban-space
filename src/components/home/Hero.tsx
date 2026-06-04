@@ -282,7 +282,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
       >
         <div
           ref={topbarRef}
-          className="absolute inset-x-0 top-0 h-24 bg-background/95 backdrop-blur-sm border-b border-border"
+          className="absolute inset-x-0 top-0 h-24 bg-background/95 backdrop-blur-md border-b border-border"
           style={{ opacity: 0 }}
         />
 
@@ -341,7 +341,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
           }}
         >
           <h1
-            className="text-[34px] md:text-[36px] lg:text-[42px] xl:text-[48px] 2xl:text-[56px] font-light tracking-[0.16em] leading-none whitespace-nowrap"
+            className="text-[34px] md:text-[36px] lg:text-[42px] xl:text-[52px] 2xl:text-[56px] font-light tracking-[0.16em] leading-none whitespace-nowrap"
             style={{
               fontFamily: '"Inter", system-ui, sans-serif',
               textShadow: docked ? 'none' : '0 2px 18px rgba(0,0,0,0.45)',
