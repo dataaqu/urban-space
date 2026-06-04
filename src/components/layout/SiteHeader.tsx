@@ -75,7 +75,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
               </Link>
               {isProjects && (
                 <div
-                  className="absolute left-0 top-full mt-[17px] xl:mt-[21px] flex items-baseline gap-3 font-light tracking-[0.08em] leading-none text-[12px] xl:text-[13px] 2xl:text-[15px]"
+                  className="absolute left-0 top-full mt-[23px] xl:mt-[27px] flex items-baseline gap-3 font-light tracking-[0.08em] leading-none text-[12px] xl:text-[13px] 2xl:text-[15px]"
                 >
                   <Link
                     href={isArchActive ? '/projects' : '/projects?category=ARCHITECTURE'}
