@@ -61,7 +61,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
             className={`absolute left-1/2 top-[10px] xl:top-3 hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
               language === 'ka'
                 ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
-                : 'text-[15px] xl:text-[17px] 2xl:text-[19px]'
+                : 'text-[15px] xl:text-[17px] 2xl:text-[17px]'
             }`}
           >
             <div className="relative flex flex-col items-start">
