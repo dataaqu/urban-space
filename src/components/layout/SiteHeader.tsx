@@ -43,7 +43,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group block">
             <div
-              style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+              style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
               className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[24px] xl:text-[34px] 2xl:text-[38px] short-landscape:!text-[16px]"
             >
               URBAN SPACE

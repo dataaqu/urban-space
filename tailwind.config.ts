@@ -94,11 +94,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        inter: ['Inter', 'system-ui', 'sans-serif'],
-        georgian: ['"Noto Sans Georgian"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        inter: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        georgian: ['var(--font-noto-georgian)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.075em',
