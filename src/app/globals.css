@@ -42,6 +42,28 @@ html.font-georgian body {
   font-family: var(--font-noto-georgian), var(--font-inter), system-ui, sans-serif;
 }
 
+/* On Georgian, force every text to Noto Sans Georgian — including elements that
+   hardcode Inter (logos) or Cormorant (contact headings) via inline var() styles.
+   Scoped to .font-georgian, so English (html.font-inter) is unaffected. */
+html.font-georgian {
+  --font-inter: var(--font-noto-georgian);
+  --font-cormorant: var(--font-noto-georgian);
+}
+
+/* Headings default to font-display (Inter) + tracking-tight via @layer base.
+   Inter has no Georgian glyphs, so on Georgian headings fall back to a system
+   font and look different from body text. Force them to match body — same font
+   and normal letter-spacing — so only size/weight/color differ. */
+html.font-georgian h1,
+html.font-georgian h2,
+html.font-georgian h3,
+html.font-georgian h4,
+html.font-georgian h5,
+html.font-georgian h6 {
+  font-family: var(--font-noto-georgian), system-ui, sans-serif;
+  letter-spacing: normal;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

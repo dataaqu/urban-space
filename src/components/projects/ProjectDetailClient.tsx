@@ -304,6 +304,29 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     e.currentTarget.style.cursor = pointOnImage(e) ? 'pointer' : 'default';
   };
 
+  const renderDots = () =>
+    Array.from({ length: totalPages }).map((_, i) => (
+      <button
+        key={i}
+        type="button"
+        onClick={() => {
+          if (lockRef.current) return;
+          lockRef.current = true;
+          activeIndexRef.current = i;
+          setActiveIndex(i);
+          window.setTimeout(() => {
+            lockRef.current = false;
+          }, 450);
+        }}
+        aria-label={`Slide ${i + 1}`}
+        className={`h-1 w-1 rounded-full transition-all duration-300 ${
+          activeIndex === i
+            ? 'bg-foreground scale-125'
+            : 'bg-foreground/30 hover:bg-foreground/60'
+        }`}
+      />
+    ));
+
   return (
     <main
       ref={mainRef}
@@ -315,35 +338,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
         href="/projects"
         aria-label={closeLabel}
         style={{ top: headerH != null ? headerH + 16 : 72 }}
-        className="fixed right-4 md:right-8 lg:!top-[130px] short-landscape:!top-[56px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-light tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
+        className="fixed right-4 md:right-8 mr-[10px] lg:mr-0 lg:right-6 lg:translate-x-[10px] lg:!top-[130px] short-landscape:!top-[56px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-medium tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
       >
         {closeLabel}
       </Link>
 
-      {/* Pagination dots */}
+      {/* Pagination dots — mobile/tablet (<lg): fixed to viewport right, vertically centered */}
       {totalPages > 1 && (
-        <div className="fixed right-4 lg:right-6 top-1/2 -translate-y-1/2 short-landscape:top-1/2 short-landscape:mt-0 z-30 flex flex-col gap-3">
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => {
-                if (lockRef.current) return;
-                lockRef.current = true;
-                activeIndexRef.current = i;
-                setActiveIndex(i);
-                window.setTimeout(() => {
-                  lockRef.current = false;
-                }, 450);
-              }}
-              aria-label={`Slide ${i + 1}`}
-              className={`h-1 w-1 rounded-full transition-all duration-300 ${
-                activeIndex === i
-                  ? 'bg-foreground scale-125'
-                  : 'bg-foreground/30 hover:bg-foreground/60'
-              }`}
-            />
-          ))}
+        <div className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3 lg:hidden short-landscape:hidden">
+          {renderDots()}
         </div>
       )}
 
@@ -475,6 +478,8 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           Portrait mobile + tablet use the dedicated block below. */}
       <div className="hidden lg:flex short-landscape:flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:!pt-2 short-landscape:!pb-1 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
+        {/* Wrapper: photo + description grouped so pagination dots center on the combined block */}
+        <div className="relative flex flex-col flex-1 min-h-0 w-full lg:pr-[10px] border-r-2 border-red-500">
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <>
@@ -605,7 +610,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           )}
         </div>
 
-        {/* Info button */}
+        {/* Info button — inside the wrapper so pagination centers on photo + description + info */}
         <div
           className={`shrink-0 flex items-center justify-center h-[60px] lg:h-[56px] short-landscape:h-[40px] ${
             activeIndex === 0
@@ -624,6 +629,14 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               </span>
               <span className="mt-2 h-px w-10 bg-foreground/60 transition-all duration-300 group-hover:w-16" />
             </button>
+          )}
+        </div>
+
+          {/* Pagination dots — centered vertically on the photo + description + info block */}
+          {totalPages > 1 && (
+            <div className="absolute right-0 translate-x-1/2 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3">
+              {renderDots()}
+            </div>
           )}
         </div>
       </div>

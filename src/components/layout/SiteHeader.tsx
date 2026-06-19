@@ -39,18 +39,18 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/90 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 lg:px-16 xl:px-20 short-landscape:!py-2">
+      <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/90 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 short-landscape:!py-2">
         <div className="flex w-full items-center justify-between gap-6">
-          <Link href="/" className="group block">
+          <Link href="/" className="group relative top-[10px] block">
             <div
               style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
-              className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[32px] lg:text-[24px] xl:text-[34px] 2xl:text-[38px] short-landscape:!text-[16px]"
+              className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[19.8px] lg:text-[23.1px] xl:text-[28.6px] 2xl:text-[30.8px] short-landscape:!text-[16px]"
             >
               URBAN SPACE
             </div>
             {/* Tablet-only divider (matches urbanspace-mobile); hidden on mobile and desktop */}
-            <span className="hidden md:block mt-2 h-px w-24 bg-foreground/60 short-landscape:!hidden" />
-            <div className="hidden md:block mt-1.5 text-[10px] font-light tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[12px] xl:text-[13px] 2xl:text-[15px] short-landscape:!hidden">
+            <span className="hidden md:block mt-[6.6px] h-px w-[70.4px] bg-foreground/60 short-landscape:!hidden" />
+            <div className="hidden md:block mt-[6.6px] text-[10px] font-light tracking-[0.08em] text-foreground/75 transition group-hover:text-foreground/45 md:text-[7.15px] lg:text-[8.25px] xl:text-[8.8px] 2xl:text-[9.9px] short-landscape:!hidden">
               {language === 'ka'
                 ? 'არქიტექტურა და ურბანული დაგეგმარება'
                 : 'Architecture & urban planning'}
@@ -58,7 +58,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           </Link>
 
           <nav
-            className={`absolute left-1/2 top-[10px] xl:top-3 hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
+            className={`absolute left-1/2 top-[10px] xl:top-3 mt-[10px] hidden -translate-x-1/2 items-start gap-8 xl:gap-10 2xl:gap-12 tracking-[0.06em] lg:flex ${
               language === 'ka'
                 ? 'text-[13px] xl:text-[14px] 2xl:text-[16px]'
                 : 'text-[15px] xl:text-[17px] 2xl:text-[17px]'
@@ -75,7 +75,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
               </Link>
               {isProjects && (
                 <div
-                  className="absolute left-0 top-full mt-[23px] xl:mt-[27px] flex items-baseline gap-3 font-light tracking-[0.08em] leading-none text-[12px] xl:text-[13px] 2xl:text-[15px]"
+                  className="absolute left-0 top-full mt-[11px] flex items-baseline gap-3 font-light tracking-[0.08em] leading-none text-[12px] xl:text-[13px] 2xl:text-[15px]"
                 >
                   <Link
                     href={isArchActive ? '/projects' : '/projects?category=ARCHITECTURE'}
