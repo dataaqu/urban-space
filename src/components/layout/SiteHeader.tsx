@@ -44,7 +44,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
           <Link href="/" className="group relative top-[10px] block">
             <div
               style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
-              className="text-[15px] font-light leading-none tracking-[0.16em] transition group-hover:text-foreground/60 md:text-[19.8px] lg:text-[23.1px] xl:text-[28.6px] 2xl:text-[30.8px] short-landscape:!text-[16px]"
+              className="text-[15px] font-light leading-none tracking-normal transition group-hover:text-foreground/60 md:text-[19.8px] lg:text-[23.1px] xl:text-[28.6px] 2xl:text-[30.8px] short-landscape:!text-[16px]"
             >
               URBAN SPACE
             </div>
