@@ -13,9 +13,11 @@ export function ConditionalHeader({ social }: { social: SocialLinks }) {
   const pathname = usePathname();
   // Home has its own Hero-embedded navigation
   if (pathname === '/') return null;
+  // Project detail (/projects/<id>): hide the header on mobile/tablet only (desktop unchanged)
+  const isProjectDetail = /^\/projects\/[^/]+$/.test(pathname);
   return (
     <Suspense fallback={null}>
-      <SiteHeader social={social} />
+      <SiteHeader social={social} hideBarOnMobile={isProjectDetail} />
     </Suspense>
   );
 }

@@ -12,7 +12,7 @@ interface SocialLinks {
   instagram: string;
 }
 
-export default function SiteHeader({ social }: { social?: SocialLinks }) {
+export default function SiteHeader({ social, hideBarOnMobile = false }: { social?: SocialLinks; hideBarOnMobile?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
@@ -39,7 +39,7 @@ export default function SiteHeader({ social }: { social?: SocialLinks }) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/90 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 short-landscape:!py-2">
+      <header className={`sticky top-0 z-50 border-b border-foreground/10 bg-background/90 px-8 py-4 backdrop-blur-md md:px-10 md:py-5 short-landscape:!py-2${hideBarOnMobile ? ' hidden lg:block' : ''}`}>
         <div className="flex w-full items-center justify-between gap-6">
           <Link href="/" className="group relative top-[10px] block">
             <div

@@ -82,12 +82,18 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
   useEffect(() => {
     const update = () => {
       const header = document.querySelector('header');
-      setHeaderH(header ? Math.round(header.getBoundingClientRect().height) : 0);
+      // A header hidden on this breakpoint (display:none — e.g. project detail
+      // on mobile/tablet) must contribute zero offset, no matter what its size
+      // measured to before the responsive CSS settled.
+      const hidden = !header || getComputedStyle(header).display === 'none';
+      setHeaderH(hidden ? 0 : Math.round(header!.getBoundingClientRect().height));
     };
     update();
+    const raf = requestAnimationFrame(update);
     window.addEventListener('resize', update);
     window.addEventListener('orientationchange', update);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener('resize', update);
       window.removeEventListener('orientationchange', update);
     };
@@ -357,7 +363,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           straight down from CLOSE's centre). Title sits in a fixed-height
           slot; the PROJECT INFORMATION button is pinned to the bottom so it
           never moves between pages. */}
-      <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col">
+      <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col border-r-2 border-red-500">
         {/* All vertical sizing below is a flex SHARE of THIS fixed container
             (`main` is position:fixed bottom-0, so it tracks the real visible
             viewport) — NEVER vh. vh on iOS = the large viewport and does not
@@ -374,6 +380,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             are % of THIS fixed container (not vh) → identical regardless of the
             iOS toolbar. Tall photos cap on height, wide ones on width; the title
             sits directly beneath, so the pair stays compact and centred. */}
+        <div className="shrink-0 relative w-full flex flex-col items-center">
         {hasTwoImages ? (
           <div
             key={`mt-${activeIndex}`}
@@ -430,8 +437,9 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           </div>
         )}
 
-        {/* Title — directly beneath the photo. */}
-        <div className="shrink-0 px-6 pt-7 text-center">
+        {/* Title — floats directly beneath the photo (out of flow) so it never
+            shifts the photo's vertical centring. */}
+        <div className="absolute left-0 right-0 top-full px-6 pt-7 text-center">
           {activeIndex === 0 && (
             <>
               <h2
@@ -453,12 +461,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             </>
           )}
         </div>
+        </div>{/* /photo wrapper */}
 
-        {/* Bottom spacer (grows). */}
+        {/* Bottom spacer (grows) — equal to the top spacer, so the photo above
+            sits at the exact vertical centre of the stage (where the dots are). */}
         <div className="flex-1 min-h-0" />
 
-        {/* Info button — pinned to the bottom, identical on every page. */}
-        <div className="shrink-0 h-[60px] mb-[calc(28px+env(safe-area-inset-bottom))] flex items-center justify-center">
+        {/* Info button — pinned to the very bottom, OUT of the centring flow so
+            it doesn't pull the photo above the centre. */}
+        <div className="absolute bottom-[calc(28px+env(safe-area-inset-bottom))] left-0 right-0 h-[60px] flex items-center justify-center">
           {hasInfo && (
             <button
               type="button"
