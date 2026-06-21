@@ -59,7 +59,7 @@ export default function CategoryFilter({ activeCategory }: CategoryFilterProps) 
 
   return (
     <div
-      className={`sticky top-[56px] md:top-[100px] z-30 bg-background/85 backdrop-blur-md lg:hidden ${
+      className={`sticky top-[56px] md:top-[100px] short-landscape:!top-[40px] z-30 bg-background/85 backdrop-blur-md lg:hidden ${
         hidden ? 'pointer-events-none' : ''
       }`}
       style={{
