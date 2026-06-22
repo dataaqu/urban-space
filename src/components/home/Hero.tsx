@@ -344,6 +344,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
             className="text-[34px] md:text-[36px] lg:text-[42px] xl:text-[52px] 2xl:text-[56px] font-light tracking-[0.16em] leading-none whitespace-nowrap"
             style={{
               fontFamily: 'var(--font-inter), system-ui, sans-serif',
+              letterSpacing: '0.16em',
               textShadow: docked ? 'none' : '0 2px 18px rgba(0,0,0,0.45)',
             }}
           >
