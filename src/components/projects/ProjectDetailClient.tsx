@@ -363,7 +363,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
           straight down from CLOSE's centre). Title sits in a fixed-height
           slot; the PROJECT INFORMATION button is pinned to the bottom so it
           never moves between pages. */}
-      <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col border-r-2 border-red-500">
+      <div className="lg:hidden short-landscape:hidden absolute inset-0 flex flex-col">
         {/* All vertical sizing below is a flex SHARE of THIS fixed container
             (`main` is position:fixed bottom-0, so it tracks the real visible
             viewport) — NEVER vh. vh on iOS = the large viewport and does not
@@ -490,7 +490,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       <div className="hidden lg:flex short-landscape:flex h-full w-full flex-col items-center justify-start px-6 pt-[48px] pb-[calc(48px+env(safe-area-inset-bottom))] lg:pt-6 lg:pb-5 short-landscape:justify-start short-landscape:!pt-2 short-landscape:!pb-1 short-landscape:pr-16">
         {/* Image stage — image centered, optional right-side text overlays empty right space on desktop */}
         {/* Wrapper: photo + description grouped so pagination dots center on the combined block */}
-        <div className="relative flex flex-col flex-1 min-h-0 w-full lg:pr-[10px] border-r-2 border-red-500">
+        <div className="relative flex flex-col flex-1 min-h-0 w-full lg:pr-[10px]">
         <div className="relative flex w-full items-center justify-center flex-1 min-h-0 short-landscape:h-auto short-landscape:flex-1 short-landscape:min-h-0">
           {hasTwoImages ? (
             <>
