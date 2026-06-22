@@ -21,14 +21,6 @@ export async function middleware(request: NextRequest) {
 
     // Protect all other admin routes
     const token = await getToken({ req: request });
-    // eslint-disable-next-line no-console
-    console.log('[MW DEBUG]', pathname, {
-      hasToken: !!token,
-      cookieNames: request.cookies.getAll().map((c) => c.name),
-      hasSecret: !!process.env.NEXTAUTH_SECRET,
-      nextauthUrl: process.env.NEXTAUTH_URL,
-      xfProto: request.headers.get('x-forwarded-proto'),
-    });
     if (!token) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }

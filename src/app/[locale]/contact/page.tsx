@@ -1,4 +1,6 @@
-export const revalidate = 3600;
+// Render at request time so live DB content shows on first load (Railway
+// can't reach the internal DB at build time, baking an empty snapshot).
+export const dynamic = 'force-dynamic';
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, type CSSProperties } from 'react';
 import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 import { NextIntlClientProvider } from 'next-intl';
@@ -89,7 +89,13 @@ export default async function LocaleLayout({
   const langClass = locale === 'ka' ? 'font-georgian' : 'font-inter';
 
   return (
-    <html lang={locale} className={`${fontVars} ${langClass}`}>
+    <html
+      lang={locale}
+      className={`${fontVars} ${langClass}`}
+      // Brand logo ("URBAN SPACE") must always render in real Inter, even on
+      // Georgian where globals.css remaps --font-inter to Noto Georgian.
+      style={{ '--font-brand': inter.style.fontFamily } as CSSProperties}
+    >
       <body className="min-h-screen flex flex-col font-sans bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
             <ServiceWorkerCleanup />

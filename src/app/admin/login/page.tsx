@@ -25,18 +25,6 @@ export default function AdminLoginPage() {
         redirect: false,
       });
 
-      // eslint-disable-next-line no-console
-      console.log('[LOGIN DEBUG] signIn result:', result);
-      // Probe the session endpoint to see whether the cookie actually persisted.
-      try {
-        const sess = await fetch('/api/auth/session', { cache: 'no-store' }).then((r) => r.json());
-        // eslint-disable-next-line no-console
-        console.log('[LOGIN DEBUG] /api/auth/session after login:', sess);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log('[LOGIN DEBUG] session probe failed:', err);
-      }
-
       if (result?.error) {
         setError('არასწორი ელ-ფოსტა ან პაროლი');
       } else {

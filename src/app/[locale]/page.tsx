@@ -1,4 +1,8 @@
-export const revalidate = 60;
+// Render at request time so live DB content shows on first load. Railway
+// can't reach the internal DB at build time, which otherwise bakes an empty
+// page (no slides/projects) into the static snapshot and shows it until the
+// first refresh. Data stays fast via the unstable_cache wrappers in @/lib/content.
+export const dynamic = 'force-dynamic';
 
 import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
