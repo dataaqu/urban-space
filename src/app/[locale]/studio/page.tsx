@@ -2,7 +2,6 @@
 // can't reach the internal DB at build time, baking an empty snapshot).
 export const dynamic = 'force-dynamic';
 
-import Image from 'next/image';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { getContentMap } from '@/lib/content';
 
@@ -43,15 +42,8 @@ export default async function StudioPage() {
             </div>
           </div>
 
-          <div className="relative aspect-[16/9] rounded-lg overflow-hidden">
-            <Image
-              src="/poto/about.jpeg"
-              alt="Urban Space Team"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+          {/* Reserved space for the About photo (to be added later). */}
+          <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-neutral-100" />
         </div>
       </section>
 

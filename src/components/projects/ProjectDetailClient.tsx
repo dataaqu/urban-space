@@ -6,6 +6,7 @@ import { X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import ResponsiveProjectImage from './ResponsiveProjectImage';
 import ImageLightbox from './ImageLightbox';
+import { isVideoUrl } from '@/lib/media';
 
 interface PageData {
   id: string;
@@ -262,6 +263,9 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     (isKa ? metaInfoPage.metaInfoKa : metaInfoPage.metaInfoEn) || '';
   const metaInfoHtml = useMemo(() => DOMPurify.sanitize(rawMetaInfo), [rawMetaInfo]);
   const hasTwoImages = page.type === 'DOUBLE_IMAGE' && !!page.image2;
+  // Video is only ever stored in image1 of an IMAGE_ONLY page (admin restricts
+  // it there); detect by URL so the single-image paths render <video> instead.
+  const image1IsVideo = isVideoUrl(page.image1);
   const textPage =
     project.pages.find((p) =>
       ((isKa ? p.textRightKa : p.textRightEn)?.trim() ?? '').length > 0,
@@ -403,6 +407,17 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
               />
             )}
           </div>
+        ) : page.image1 && image1IsVideo ? (
+          <video
+            key={`mt-${activeIndex}`}
+            src={page.image1}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ maxHeight: stageH ? stageH * 0.52 : undefined }}
+            className="block shrink-0 mx-auto h-auto w-auto select-none object-contain max-w-[calc(100%-72px)] md:max-w-[calc(100%-160px)]"
+          />
         ) : page.image1 ? (
           <img
             key={`mt-${activeIndex}`}
@@ -570,19 +585,30 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
                 className={`relative h-full w-full short-landscape:!h-full short-landscape:!w-full ${
                   activeIndex === 0 ? 'lg:h-full lg:w-full' : 'lg:h-[82%] lg:w-[82%]'
                 }`}
-                onClick={(e) => handleImageClick(e, page.image1)}
-              onMouseMove={handleImageHover}
+                onClick={image1IsVideo ? undefined : (e) => handleImageClick(e, page.image1)}
+                onMouseMove={image1IsVideo ? undefined : handleImageHover}
               >
-                <ResponsiveProjectImage
-                  src={page.image1}
-                  mobileSrc={page.mobileImage1}
-                  alt={project.title}
-                  fill
-                  switchAt="lg"
-                  className="object-contain"
-                  sizes="100vw"
-                  priority={activeIndex === 0}
-                />
+                {image1IsVideo ? (
+                  <video
+                    src={page.image1}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 h-full w-full object-contain"
+                  />
+                ) : (
+                  <ResponsiveProjectImage
+                    src={page.image1}
+                    mobileSrc={page.mobileImage1}
+                    alt={project.title}
+                    fill
+                    switchAt="lg"
+                    className="object-contain"
+                    sizes="100vw"
+                    priority={activeIndex === 0}
+                  />
+                )}
               </div>
             </div>
           ) : (

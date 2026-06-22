@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import RichTextEditor from './RichTextEditor';
+import { isVideoUrl } from '@/lib/media';
 import {
   Badge,
   Button,
@@ -341,7 +342,7 @@ export default function ProjectPageEditor({
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-3xl">
                       <div>
                         <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                          სურათი — Desktop
+                          სურათი ან ვიდეო — Desktop
                         </label>
                         <ImageUpload
                           value={editForm.image1}
@@ -352,23 +353,29 @@ export default function ProjectPageEditor({
                             setEditForm((prev) => ({ ...prev, image1: '' }))
                           }
                           folder="urban-space/projects"
+                          allowVideo
                         />
+                        <p className="mt-1.5 text-xs text-neutral-500">
+                          ვიდეო (mp4/webm) ჩაირთვება ავტომატურად, უხმოდ, loop-ით. იგივე ვიდეო გამოჩნდება მობილურზეც.
+                        </p>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                          სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
-                        </label>
-                        <ImageUpload
-                          value={editForm.mobileImage1 || undefined}
-                          onChange={(url) =>
-                            setEditForm((prev) => ({ ...prev, mobileImage1: url }))
-                          }
-                          onRemove={() =>
-                            setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
-                          }
-                          folder="urban-space/projects"
-                        />
-                      </div>
+                      {!isVideoUrl(editForm.image1) && (
+                        <div>
+                          <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                            სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                          </label>
+                          <ImageUpload
+                            value={editForm.mobileImage1 || undefined}
+                            onChange={(url) =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: url }))
+                            }
+                            onRemove={() =>
+                              setEditForm((prev) => ({ ...prev, mobileImage1: '' }))
+                            }
+                            folder="urban-space/projects"
+                          />
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -477,12 +484,21 @@ export default function ProjectPageEditor({
                         key={i}
                         className="h-14 w-20 overflow-hidden rounded-md bg-neutral-100 ring-1 ring-neutral-200/60"
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={src as string}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
+                        {isVideoUrl(src as string) ? (
+                          <video
+                            src={src as string}
+                            className="h-full w-full object-cover bg-black"
+                            muted
+                            playsInline
+                          />
+                        ) : (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={src as string}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        )}
                       </div>
                     ))}
                     {!page.image1 && !page.image2 && (
@@ -556,7 +572,7 @@ export default function ProjectPageEditor({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 max-w-3xl">
                 <div>
                   <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                    სურათი — Desktop
+                    სურათი ან ვიდეო — Desktop
                   </label>
                   <ImageUpload
                     value={newPage.image1 || undefined}
@@ -567,23 +583,29 @@ export default function ProjectPageEditor({
                       setNewPage((prev) => ({ ...prev, image1: '' }))
                     }
                     folder="urban-space/projects"
+                    allowVideo
                   />
+                  <p className="mt-1.5 text-xs text-neutral-500">
+                    ვიდეო (mp4/webm) ჩაირთვება ავტომატურად, უხმოდ, loop-ით. იგივე ვიდეო გამოჩნდება მობილურზეც.
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark-700 mb-1.5">
-                    სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
-                  </label>
-                  <ImageUpload
-                    value={newPage.mobileImage1 || undefined}
-                    onChange={(url) =>
-                      setNewPage((prev) => ({ ...prev, mobileImage1: url }))
-                    }
-                    onRemove={() =>
-                      setNewPage((prev) => ({ ...prev, mobileImage1: '' }))
-                    }
-                    folder="urban-space/projects"
-                  />
-                </div>
+                {!isVideoUrl(newPage.image1) && (
+                  <div>
+                    <label className="block text-sm font-medium text-dark-700 mb-1.5">
+                      სურათი — Mobile <span className="text-neutral-400 font-normal">(არასავალდებულო)</span>
+                    </label>
+                    <ImageUpload
+                      value={newPage.mobileImage1 || undefined}
+                      onChange={(url) =>
+                        setNewPage((prev) => ({ ...prev, mobileImage1: url }))
+                      }
+                      onRemove={() =>
+                        setNewPage((prev) => ({ ...prev, mobileImage1: '' }))
+                      }
+                      folder="urban-space/projects"
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

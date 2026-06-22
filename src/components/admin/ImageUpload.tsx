@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import { isVideoUrl } from '@/lib/media';
 
 interface ImageUploadProps {
   value?: string;
@@ -9,6 +10,8 @@ interface ImageUploadProps {
   onRemove?: () => void;
   folder?: string;
   className?: string;
+  /** Allow uploading a video (mp4/webm) in addition to images. */
+  allowVideo?: boolean;
 }
 
 export default function ImageUpload({
@@ -17,6 +20,7 @@ export default function ImageUpload({
   onRemove,
   folder = 'urban-space',
   className = '',
+  allowVideo = false,
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -74,22 +78,35 @@ export default function ImageUpload({
     e.preventDefault();
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && (file.type.startsWith('image/') || (allowVideo && file.type.startsWith('video/')))) {
       handleUpload(file);
     }
   };
+
+  const valueIsVideo = isVideoUrl(value);
 
   return (
     <div className={className}>
       {value ? (
         <div className="relative group rounded-lg overflow-hidden border border-gray-200">
-          <Image
-            src={value}
-            alt="Uploaded"
-            width={400}
-            height={300}
-            className="w-full h-48 object-cover"
-          />
+          {valueIsVideo ? (
+            <video
+              src={value}
+              className="w-full h-48 object-cover bg-black"
+              muted
+              loop
+              playsInline
+              autoPlay
+            />
+          ) : (
+            <Image
+              src={value}
+              alt="Uploaded"
+              width={400}
+              height={300}
+              className="w-full h-48 object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
             <button
               type="button"
@@ -131,8 +148,12 @@ export default function ImageUpload({
             </div>
           ) : (
             <div className="text-secondary-400">
-              <p className="text-3xl mb-2">📷</p>
-              <p className="text-sm">ჩააგდეთ სურათი ან დააკლიკეთ</p>
+              <p className="text-3xl mb-2">{allowVideo ? '🎬' : '📷'}</p>
+              <p className="text-sm">
+                {allowVideo
+                  ? 'ჩააგდეთ სურათი ან ვიდეო (mp4/webm) ან დააკლიკეთ'
+                  : 'ჩააგდეთ სურათი ან დააკლიკეთ'}
+              </p>
             </div>
           )}
         </div>
@@ -140,7 +161,7 @@ export default function ImageUpload({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={allowVideo ? 'image/*,video/mp4,video/webm' : 'image/*'}
         onChange={handleFileChange}
         className="hidden"
       />
