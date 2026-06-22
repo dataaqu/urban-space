@@ -88,7 +88,8 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           router.refresh();
         }
       } else {
-        toast.error('შეცდომა მოხდა');
+        const err = await res.json().catch(() => null);
+        toast.error(err?.detail || err?.error || 'შეცდომა მოხდა');
       }
     } catch {
       toast.error('შეცდომა მოხდა');

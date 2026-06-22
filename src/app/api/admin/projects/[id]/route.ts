@@ -42,10 +42,22 @@ export async function PUT(
       await deleteImageByUrl(existing.mobileImage);
     }
 
+    // Ensure slug uniqueness. `slug` is @unique, so if the generated slug is
+    // already taken by a *different* project, appending a suffix avoids a P2002
+    // crash (the create route does the same thing).
+    let slug = data.slug || `project-${params.id}`;
+    const slugOwner = await prisma.project.findUnique({
+      where: { slug },
+      select: { id: true },
+    });
+    if (slugOwner && slugOwner.id !== params.id) {
+      slug = `${slug}-${Date.now()}`;
+    }
+
     const project = await prisma.project.update({
       where: { id: params.id },
       data: {
-        slug: data.slug,
+        slug,
         titleKa: data.titleKa,
         titleEn: data.titleEn,
         categories: categories as ('ARCHITECTURE' | 'URBAN')[],
@@ -61,7 +73,12 @@ export async function PUT(
     return NextResponse.json(project);
   } catch (error) {
     console.error('Update project error:', error);
-    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
+    const message =
+      error instanceof Error ? error.message : 'Failed to update project';
+    return NextResponse.json(
+      { error: 'Failed to update project', detail: message },
+      { status: 500 },
+    );
   }
 }
 
