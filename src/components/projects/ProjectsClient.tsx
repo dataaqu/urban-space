@@ -38,13 +38,9 @@ export default function ProjectsClient({
   } else if (activeCategory === 'URBAN') {
     visibleProjects = urbanProjects;
   } else {
-    // All: architecture first, then urban-only — each project once (dedupe).
-    const seen = new Set<string>();
-    visibleProjects = [...architectureProjects, ...urbanProjects].filter((p) => {
-      if (seen.has(p.id)) return false;
-      seen.add(p.id);
-      return true;
-    });
+    // All: respect the admin-defined displayOrder (server already sorts by it);
+    // each project appears once in the array, so no regrouping/dedupe needed.
+    visibleProjects = projects;
   }
 
   if (visibleProjects.length === 0) {

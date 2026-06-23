@@ -1,7 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ArrowUp, ArrowDown, Save, Star, X, ImageOff, Plus } from 'lucide-react';
+import {
+  ArrowUp,
+  ArrowDown,
+  Save,
+  Star,
+  X,
+  ImageOff,
+  Plus,
+  GripVertical,
+} from 'lucide-react';
 import {
   Button,
   Card,
@@ -78,6 +87,36 @@ export default function ProjectsOrderClient({ projects: initial }: Props) {
       [arr[idx], arr[next]] = [arr[next], arr[idx]];
       return arr;
     });
+  };
+
+  // Native drag-and-drop reordering for the "all projects" list.
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+
+  const handleDragOver = (e: React.DragEvent, overId: string) => {
+    e.preventDefault();
+    if (overId !== dragOverId) setDragOverId(overId);
+  };
+
+  const handleDrop = (overId: string) => {
+    if (dragId && dragId !== overId) {
+      setAllOrder((prev) => {
+        const arr = [...prev];
+        const from = arr.indexOf(dragId);
+        const to = arr.indexOf(overId);
+        if (from === -1 || to === -1) return prev;
+        arr.splice(from, 1);
+        arr.splice(to, 0, dragId);
+        return arr;
+      });
+    }
+    setDragId(null);
+    setDragOverId(null);
+  };
+
+  const handleDragEnd = () => {
+    setDragId(null);
+    setDragOverId(null);
   };
 
   const handleSave = async () => {
@@ -251,7 +290,8 @@ export default function ProjectsOrderClient({ projects: initial }: Props) {
             ყველა პროექტი — განლაგება პროექტების გვერდზე
           </h2>
           <p className="mt-1 text-sm text-neutral-500">
-            ↑↓ ღილაკებით განათავსე პროექტები. ეს თანმიმდევრობა გამოიყენება{' '}
+            გადაათრიე ან ↑↓ ღილაკებით განათავსე პროექტები. ეს თანმიმდევრობა
+            გამოიყენება{' '}
             <code className="rounded bg-neutral-100 px-1 py-0.5 text-[11px]">
               /projects
             </code>{' '}
@@ -264,12 +304,31 @@ export default function ProjectsOrderClient({ projects: initial }: Props) {
             {allOrder.map((id, idx) => {
               const p = byId[id];
               if (!p) return null;
+              const isDragging = dragId === id;
+              const isDragOver = dragOverId === id && dragId !== id;
               return (
                 <li
                   key={id}
-                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-neutral-50/60"
+                  draggable
+                  onDragStart={() => setDragId(id)}
+                  onDragOver={(e) => handleDragOver(e, id)}
+                  onDrop={() => handleDrop(id)}
+                  onDragEnd={handleDragEnd}
+                  className={`flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-neutral-50/60 ${
+                    isDragging ? 'opacity-40' : ''
+                  } ${
+                    isDragOver
+                      ? 'bg-amber-50/70 ring-1 ring-inset ring-amber-300'
+                      : ''
+                  }`}
                 >
-                  <span className="w-8 flex-shrink-0 text-center text-xs font-mono text-neutral-400">
+                  <span
+                    className="flex-shrink-0 cursor-grab text-neutral-300 hover:text-neutral-500 active:cursor-grabbing"
+                    aria-hidden
+                  >
+                    <GripVertical className="h-4 w-4" />
+                  </span>
+                  <span className="w-6 flex-shrink-0 text-center text-xs font-mono text-neutral-400">
                     {idx + 1}
                   </span>
                   <div className="h-10 w-14 flex-shrink-0 overflow-hidden rounded-md bg-neutral-100 ring-1 ring-neutral-200/60">
