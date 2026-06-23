@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save } from 'lucide-react';
 import { Button, Card, Input, useToast } from './ui';
@@ -36,6 +36,9 @@ export default function ContactInfoForm({
   const [loading, setLoading] = useState(false);
   const [mapPaste, setMapPaste] = useState('');
   const [mapPasteError, setMapPasteError] = useState<string | null>(null);
+  const [mapResolving, setMapResolving] = useState(false);
+  const [mapResolved, setMapResolved] = useState(false);
+  const mapPasteRef = useRef('');
   const [form, setForm] = useState({
     phone: initial.phone ?? '',
     email: initial.email ?? '',
@@ -55,20 +58,58 @@ export default function ContactInfoForm({
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleMapPaste = (value: string) => {
+  const applyCoords = (coords: { lat: number; lng: number }) => {
+    setForm((prev) => ({
+      ...prev,
+      mapLat: coords.lat.toString(),
+      mapLng: coords.lng.toString(),
+    }));
+    setMapPasteError(null);
+    setMapResolved(true);
+  };
+
+  const handleMapPaste = async (value: string) => {
     setMapPaste(value);
+    mapPasteRef.current = value;
+    setMapResolved(false);
     if (!value.trim()) {
       setMapPasteError(null);
       return;
     }
+
+    // Inline coords (bare "lat,lng" or an address-bar URL with @/!3d!4d/q=).
     const coords = parseMapCoords(value);
     if (coords) {
-      setForm((prev) => ({
-        ...prev,
-        mapLat: coords.lat.toString(),
-        mapLng: coords.lng.toString(),
-      }));
+      applyCoords(coords);
+      return;
+    }
+
+    // Short "Share" links (maps.app.goo.gl / goo.gl/maps) carry no coords —
+    // resolve them on the server (the browser can't follow them due to CORS).
+    if (/^https?:\/\//i.test(value.trim())) {
+      setMapResolving(true);
       setMapPasteError(null);
+      try {
+        const res = await fetch('/api/admin/resolve-map', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: value.trim() }),
+        });
+        // Ignore stale responses if the input changed while resolving.
+        if (value !== mapPasteRef.current) return;
+        if (res.ok) {
+          const data = (await res.json()) as { lat: number; lng: number };
+          applyCoords(data);
+        } else {
+          setMapPasteError(
+            'ბმულიდან კოორდინატები ვერ ამოვიცანი. სცადე Google Maps-ის address bar-იდან კოპირებული URL ან "lat,lng".'
+          );
+        }
+      } catch {
+        setMapPasteError('ბმულის დამუშავება ვერ მოხერხდა.');
+      } finally {
+        if (value === mapPasteRef.current) setMapResolving(false);
+      }
     } else {
       setMapPasteError('კოორდინატები ვერ ამოვიცანი. გამოიყენე "lat,lng" ან Google Maps URL.');
     }
@@ -244,10 +285,15 @@ export default function ContactInfoForm({
             onChange={(e) => handleMapPaste(e.target.value)}
             placeholder="https://www.google.com/maps/... ან 41.7151,44.8271"
           />
-          {mapPasteError && (
+          {mapResolving && (
+            <p className="mt-1.5 text-xs text-neutral-500">
+              ბმულის დამუშავება…
+            </p>
+          )}
+          {!mapResolving && mapPasteError && (
             <p className="mt-1.5 text-xs text-red-600">{mapPasteError}</p>
           )}
-          {!mapPasteError && mapPaste && (
+          {!mapResolving && !mapPasteError && mapResolved && (
             <p className="mt-1.5 text-xs text-green-600">
               ✓ კოორდინატები განახლდა
             </p>
