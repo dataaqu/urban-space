@@ -117,6 +117,10 @@ export default function ContactInfoForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mapResolving) {
+      toast.error('დაელოდე ბმულის დამუშავებას');
+      return;
+    }
     setLoading(true);
     try {
       const contentItems = [
@@ -273,52 +277,37 @@ export default function ContactInfoForm({
         <div className="mb-6">
           <h2 className="text-base font-semibold text-dark-900">რუკის პინი</h2>
           <p className="mt-0.5 text-sm text-neutral-500">
-            ჩასვი Google Maps-ის URL ან &quot;lat,lng&quot; ფორმატით — Latitude/Longitude ავტომატურად შეივსება.
+            ჩასვი Google Maps-ის ბმული — ლოკაცია ავტომატურად ამოიცნობა და შეინახება.
+            მუშაობს როგორც &quot;Share&quot; მოკლე ბმული (maps.app.goo.gl), ისე address bar-ის სრული URL.
           </p>
         </div>
 
-        <div className="mb-5">
+        <div>
           <Input
-            label="Google Maps URL / კოორდინატები"
+            label="Google Maps ბმული"
             name="mapPaste"
             value={mapPaste}
             onChange={(e) => handleMapPaste(e.target.value)}
-            placeholder="https://www.google.com/maps/... ან 41.7151,44.8271"
+            placeholder="https://maps.app.goo.gl/... ან https://www.google.com/maps/..."
           />
           {mapResolving && (
-            <p className="mt-1.5 text-xs text-neutral-500">
-              ბმულის დამუშავება…
-            </p>
+            <p className="mt-1.5 text-xs text-neutral-500">ბმულის დამუშავება…</p>
           )}
           {!mapResolving && mapPasteError && (
             <p className="mt-1.5 text-xs text-red-600">{mapPasteError}</p>
           )}
           {!mapResolving && !mapPasteError && mapResolved && (
             <p className="mt-1.5 text-xs text-green-600">
-              ✓ კოორდინატები განახლდა
+              ✓ ლოკაცია ამოცნობილია: {form.mapLat}, {form.mapLng} — დააჭირე „შენახვა“-ს
             </p>
           )}
-        </div>
-
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <Input
-            label="Latitude"
-            name="mapLat"
-            type="number"
-            step="any"
-            value={form.mapLat}
-            onChange={handleChange}
-            placeholder="41.7151"
-          />
-          <Input
-            label="Longitude"
-            name="mapLng"
-            type="number"
-            step="any"
-            value={form.mapLng}
-            onChange={handleChange}
-            placeholder="44.8271"
-          />
+          {!mapResolving && !mapPasteError && !mapResolved && (
+            <p className="mt-1.5 text-xs text-neutral-500">
+              {form.mapLat && form.mapLng
+                ? `მიმდინარე ლოკაცია: ${form.mapLat}, ${form.mapLng}`
+                : 'ჯერ ლოკაცია არ არის დაყენებული.'}
+            </p>
+          )}
         </div>
       </Card>
 
