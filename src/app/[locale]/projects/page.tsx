@@ -5,10 +5,25 @@ export const dynamic = 'force-dynamic';
 import { getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import { ProjectCategory } from '@prisma/client';
+import { pageMetadata, type Locale } from '@/lib/seo';
 import ProjectsClient from '@/components/projects/ProjectsClient';
 
 interface ProjectsPageProps {
+  params: { locale: string };
   searchParams: { category?: string };
+}
+
+export async function generateMetadata({ params: { locale } }: ProjectsPageProps) {
+  const t = await getTranslations({ locale, namespace: 'navigation' });
+  return pageMetadata({
+    locale: locale as Locale,
+    path: '/projects',
+    title: t('projects'),
+    description:
+      locale === 'ka'
+        ? 'URBAN SPACE-ის არქიტექტურული და ურბანული პროექტების პორტფოლიო.'
+        : 'Portfolio of architecture and urban projects by URBAN SPACE.',
+  });
 }
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {

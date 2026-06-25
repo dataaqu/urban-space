@@ -4,12 +4,19 @@ export const dynamic = 'force-dynamic';
 
 import { getLocale, getTranslations } from 'next-intl/server';
 import { getContentMap } from '@/lib/content';
+import { pageMetadata, type Locale } from '@/lib/seo';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
-  const t = await getTranslations({ locale, namespace: 'navigation' });
-  return {
-    title: `${t('studio')} - URBAN SPACE`,
-  };
+  const [nav, studio] = await Promise.all([
+    getTranslations({ locale, namespace: 'navigation' }),
+    getTranslations({ locale, namespace: 'studio' }),
+  ]);
+  return pageMetadata({
+    locale: locale as Locale,
+    path: '/studio',
+    title: nav('studio'),
+    description: studio('description'),
+  });
 }
 
 export default async function StudioPage() {
@@ -25,6 +32,15 @@ export default async function StudioPage() {
     return val.split('\n').filter(Boolean);
   };
 
+  // Split a multi-paragraph field into paragraphs on blank lines.
+  const paragraphs = (key: string, fallback: string) => {
+    const val = content[key]?.[locale as 'ka' | 'en'] || fallback;
+    return val
+      .split(/\n\s*\n/)
+      .map((p) => p.trim())
+      .filter(Boolean);
+  };
+
   return (
     <div className="bg-white">
       {/* About Section */}
@@ -35,10 +51,9 @@ export default async function StudioPage() {
               {text('about.title', 'About Us')}
             </h2>
             <div className="space-y-5 xl:space-y-6 2xl:space-y-7 text-[15px] xl:text-[17px] 2xl:text-[19px] text-[#333] leading-relaxed">
-              <p>{text('about.description', '')}</p>
-              <p>{text('about.paragraph1', '')}</p>
-              <p>{text('about.paragraph2', '')}</p>
-              <p>{text('about.paragraph3', '')}</p>
+              {paragraphs('about.description', '').map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
           </div>
 

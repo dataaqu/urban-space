@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic';
 
 import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
+import { pageMetadata, type Locale } from '@/lib/seo';
 import HomeIntro from '@/components/home/HomeIntro';
 import SelectedWork from '@/components/home/SelectedWork';
 import HomeFooter from '@/components/home/HomeFooter';
@@ -29,10 +30,13 @@ const getHomeSocial = unstable_cache(
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'home.hero' });
 
-  return {
-    title: `${t('title')} - ${t('subtitle')}`,
+  return pageMetadata({
+    locale: locale as Locale,
+    path: '',
+    title: `${t('title')} — ${t('subtitle')}`,
     description: t('description'),
-  };
+    absoluteTitle: true,
+  });
 }
 
 export default async function HomePage() {

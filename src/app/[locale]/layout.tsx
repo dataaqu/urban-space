@@ -6,18 +6,61 @@ import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Noto_Sans, Inter, Cormorant_Garamond, Noto_Sans_Georgian } from 'next/font/google';
 import { routing } from '@/i18n/routing';
+import { getTranslations } from 'next-intl/server';
 import { ConditionalHeader, ConditionalFooter } from '@/components/layout/ConditionalHeader';
 import ServiceWorkerCleanup from '@/components/layout/ServiceWorkerCleanup';
 import prisma from '@/lib/prisma';
+import { SITE_URL, SITE_NAME, buildAlternates, type Locale } from '@/lib/seo';
 import '@/app/globals.css';
 
-export const metadata: Metadata = {
-  icons: {
-    icon: '/u.png',
-    shortcut: '/u.png',
-    apple: '/u.png',
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'home.hero' });
+  const description = t('description');
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${SITE_NAME} — ${t('subtitle')}`,
+      template: `%s — ${SITE_NAME}`,
+    },
+    description,
+    applicationName: SITE_NAME,
+    alternates: buildAlternates(locale as Locale),
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+    },
+    openGraph: {
+      type: 'website',
+      siteName: SITE_NAME,
+      locale: locale === 'ka' ? 'ka_GE' : 'en_US',
+      url: `${SITE_URL}/${locale}`,
+      title: `${SITE_NAME} — ${t('subtitle')}`,
+      description,
+    },
+    twitter: {
+      card: 'summary',
+      title: `${SITE_NAME} — ${t('subtitle')}`,
+      description,
+    },
+    icons: {
+      icon: '/u.png',
+      shortcut: '/u.png',
+      apple: '/u.png',
+    },
+  };
+}
 
 const getSocialLinks = unstable_cache(
   async () => {
@@ -88,6 +131,15 @@ export default async function LocaleLayout({
   const fontVars = `${notoSans.variable} ${inter.variable} ${cormorant.variable} ${notoSansGeorgian.variable}`;
   const langClass = locale === 'ka' ? 'font-georgian' : 'font-inter';
 
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: `${SITE_URL}/${locale}`,
+    logo: `${SITE_URL}/u.png`,
+    sameAs: [social.facebook, social.instagram].filter(Boolean),
+  };
+
   return (
     <html
       lang={locale}
@@ -97,6 +149,14 @@ export default async function LocaleLayout({
       style={{ '--font-brand': inter.style.fontFamily } as CSSProperties}
     >
       <body className="min-h-screen flex flex-col font-sans bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            // Escape '<' so DB-sourced social URLs can never break out of the
+            // <script> tag (JSON-LD injection hardening).
+            __html: JSON.stringify(organizationJsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
         <NextIntlClientProvider messages={messages}>
             <ServiceWorkerCleanup />
             <ConditionalHeader social={social} />

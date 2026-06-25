@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import DOMPurify from 'isomorphic-dompurify';
 import { X } from 'lucide-react';
 import { Link } from '@/i18n/routing';
@@ -134,6 +135,15 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
 
   const isKa = locale === 'ka';
   const closeLabel = isKa ? 'დახურვა' : 'Close';
+
+  // Preserve the category the user came from so closing returns to the same
+  // filtered list (e.g. /projects?category=URBAN) instead of resetting to all.
+  const searchParams = useSearchParams();
+  const fromCategory = searchParams.get('category');
+  const closeHref =
+    fromCategory && fromCategory !== 'ALL'
+      ? `/projects?category=${fromCategory}`
+      : '/projects';
   const infoLabel = isKa ? 'პროექტის ინფორმაცია' : 'Project Information';
 
   useEffect(() => {
@@ -345,7 +355,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
     >
       {/* Close link */}
       <Link
-        href="/projects"
+        href={closeHref}
         aria-label={closeLabel}
         style={{ top: headerH != null ? headerH + 16 : 72 }}
         className="fixed right-4 md:right-8 mr-[10px] lg:mr-0 lg:right-6 lg:translate-x-[10px] lg:!top-[130px] short-landscape:!top-[56px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-medium tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"
@@ -629,7 +639,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
             <>
               <h2
                 className={`font-light tracking-[0.04em] text-foreground/90 short-landscape:text-[16px] ${
-                  isKa ? 'text-[18px] lg:text-[26px]' : 'text-[22px] lg:text-[32px]'
+                  isKa ? 'text-[18px] lg:text-[22px]' : 'text-[22px] lg:text-[22px]'
                 }`}
               >
                 {project.title}

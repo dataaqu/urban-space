@@ -5,15 +5,19 @@ export const dynamic = 'force-dynamic';
 import { getLocale, getTranslations } from 'next-intl/server';
 import prisma from '@/lib/prisma';
 import { getContentMap } from '@/lib/content';
+import { pageMetadata, type Locale } from '@/lib/seo';
 import ContactPageClient from '@/components/contact/ContactPageClient';
 
 const SINGLETON_ID = 'singleton';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: 'contact' });
-  return {
-    title: `${t('title')} - URBAN SPACE`,
-  };
+  return pageMetadata({
+    locale: locale as Locale,
+    path: '/contact',
+    title: t('title'),
+    description: t('subtitle'),
+  });
 }
 
 export default async function ContactPage() {

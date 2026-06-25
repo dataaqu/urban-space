@@ -35,10 +35,7 @@ const SECTIONS = [
     icon: Building2,
     fields: [
       { key: 'about.title', label: 'სათაური', defaultKa: 'ჩვენს შესახებ', defaultEn: 'About Us' },
-      { key: 'about.description', label: 'აღწერა', defaultKa: 'Urban Space არის არქიტექტურული და ურბანული დაგეგმარების სტუდია, დაფუძნებული თბილისში, 2012 წელს.', defaultEn: 'Urban Space is an architecture and urban planning studio based in Tbilisi, founded in 2012.' },
-      { key: 'about.paragraph1', label: 'პარაგრაფი 1', defaultKa: 'სტუდია მუშაობს საცხოვრებელ, საზოგადოებრივ და მსხვილმასშტაბიან ურბანულ პროექტებზე თბილისსა და საქართველოს მასშტაბით.', defaultEn: 'The studio works on residential, public, and large-scale urban projects in Tbilisi and across Georgia.' },
-      { key: 'about.paragraph2', label: 'პარაგრაფი 2', defaultKa: '2012 წლიდან სტუდიამ 100-ზე მეტი ურბანული და არქიტექტურული პროექტი შეიმუშავა.', defaultEn: 'Since 2012, the studio has developed over 100 urban and architectural projects.' },
-      { key: 'about.paragraph3', label: 'პარაგრაფი 3', defaultKa: 'ჩვენი პრაქტიკა ორიენტირებულია კონტექსტის გაგებაზე, სივრცის მკაფიო ორგანიზაციაზე და გრძელვადიანი ურბანული და არქიტექტურული ღირებულების შექმნაზე.', defaultEn: 'Our practice is centered on understanding the context, clear spatial organization, and creating long-term urban and architectural value.' },
+      { key: 'about.description', label: 'ტექსტი (აბზაცი — ცარიელი ხაზით გამოყავი)', rows: 10, defaultKa: 'Urban Space არის არქიტექტურული და ურბანული დაგეგმარების სტუდია, დაფუძნებული თბილისში, 2012 წელს.\n\nსტუდია მუშაობს საცხოვრებელ, საზოგადოებრივ და მსხვილმასშტაბიან ურბანულ პროექტებზე თბილისსა და საქართველოს მასშტაბით.\n\n2012 წლიდან სტუდიამ 100-ზე მეტი ურბანული და არქიტექტურული პროექტი შეიმუშავა.\n\nჩვენი პრაქტიკა ორიენტირებულია კონტექსტის გაგებაზე, სივრცის მკაფიო ორგანიზაციაზე და გრძელვადიანი ურბანული და არქიტექტურული ღირებულების შექმნაზე.', defaultEn: 'Urban Space is an architecture and urban planning studio based in Tbilisi, founded in 2012.\n\nThe studio works on residential, public, and large-scale urban projects in Tbilisi and across Georgia.\n\nSince 2012, the studio has developed about 100 urban and architectural projects.\n\nOur practice is centered on understanding the context, clear spatial organization, and creating long-term urban and architectural value.' },
       { key: 'expertise.title', label: 'ექსპერტიზა - სათაური', defaultKa: 'ექსპერტიზა', defaultEn: 'Expertise' },
       { key: 'expertise.urban.title', label: 'ურბანული - სათაური', defaultKa: 'ურბანული დაგეგმარება', defaultEn: 'Urban Planning' },
       { key: 'expertise.urban.items', label: 'ურბანული - ჩამონათვალი (ახალი ხაზით)', defaultKa: 'გენერალური გეგმები – თბილისი\nდეტალური განაშენიანების გეგმები – რეგიონები', defaultEn: 'Master Plans – Tbilisi\nDetailed Development Plans – Regions' },
@@ -205,6 +202,7 @@ export default function ContentManagerPage() {
           <div className="space-y-4">
             {currentSection.fields.map((field) => {
               const single = (field as { singleValue?: boolean }).singleValue;
+              const fieldRows = (field as { rows?: number }).rows ?? 3;
               return (
                 <Card key={field.key} padded>
                   <div className="mb-4 flex items-start justify-between gap-4">
@@ -245,7 +243,7 @@ export default function ContentManagerPage() {
                               e.target.value,
                             )
                           }
-                          rows={3}
+                          rows={fieldRows}
                         />
                       </div>
                       <div>
@@ -267,7 +265,7 @@ export default function ContentManagerPage() {
                               e.target.value,
                             )
                           }
-                          rows={3}
+                          rows={fieldRows}
                         />
                       </div>
                     </div>

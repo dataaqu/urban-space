@@ -44,7 +44,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
   const titleSizing =
     locale === 'ka'
       ? 'text-[16px] md:text-[34px]'
-      : 'text-[18px] md:text-[44px]';
+      : 'text-[18px] md:text-[44px] lg:text-[32px]';
 
   const renderCard = (project: Project) => {
     const title = locale === 'ka' ? project.titleKa : project.titleEn;
@@ -68,7 +68,7 @@ export default function SelectedWork({ projects, content }: SelectedWorkProps) {
           />
         </div>
         <div className="mt-5">
-          <h3 className="text-[20px] md:text-[26px] font-normal text-[#222222]">
+          <h3 className="text-[20px] md:text-[26px] lg:text-[22px] font-light text-[#222222]">
             {title}
           </h3>
           {location && (

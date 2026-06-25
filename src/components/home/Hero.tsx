@@ -380,7 +380,7 @@ export default function Hero({ slides, content, social, splashDone = true }: Her
             href="/projects"
             className={`block text-center font-light tracking-[0.2em] hover:opacity-70 transition-opacity whitespace-nowrap ${
               language === 'ka'
-                ? 'text-[16px] md:text-[22px]'
+                ? 'text-[16px] md:text-[26px]'
                 : 'text-[18px] md:text-[26px]'
             }`}
           >

@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
+import { pageMetadata, type Locale } from '@/lib/seo';
 import ProjectDetailClient from '@/components/projects/ProjectDetailClient';
 
 interface ProjectDetailPageProps {
@@ -23,8 +24,18 @@ export async function generateMetadata({ params }: ProjectDetailPageProps) {
 
   if (!project) return { title: 'Not Found' };
 
-  const title = params.locale === 'ka' ? project.titleKa : project.titleEn;
-  return { title: `${title} - URBAN SPACE` };
+  const locale = params.locale as Locale;
+  const title = locale === 'ka' ? project.titleKa : project.titleEn;
+  const location = locale === 'ka' ? project.locationKa : project.locationEn;
+
+  return pageMetadata({
+    locale,
+    // Canonical always points at the slug URL, even if reached via id.
+    path: `/projects/${project.slug}`,
+    title,
+    description: location || undefined,
+    images: project.featuredImage ? [project.featuredImage] : undefined,
+  });
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {

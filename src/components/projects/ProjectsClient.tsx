@@ -85,7 +85,14 @@ export default function ProjectsClient({
 
             return (
               <article key={project.id} className="mx-auto w-[90%] sm:w-auto">
-                <Link href={`/projects/${project.slug}`} className="group block">
+                <Link
+                  href={
+                    activeCategory && activeCategory !== 'ALL'
+                      ? `/projects/${project.slug}?category=${activeCategory}`
+                      : `/projects/${project.slug}`
+                  }
+                  className="group block"
+                >
                   <div className="overflow-hidden bg-transparent">
                     <ResponsiveProjectImage
                       src={imageSrc}
