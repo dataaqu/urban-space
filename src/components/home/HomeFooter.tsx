@@ -43,9 +43,20 @@ function InstagramIcon({ size = 16, strokeWidth = 1.25 }: { size?: number; strok
   );
 }
 
-export default function HomeFooter() {
+export default function HomeFooter({
+  address,
+  phone,
+  facebook,
+  instagram,
+}: {
+  address: string;
+  phone: string;
+  facebook?: string;
+  instagram?: string;
+}) {
   const locale = useLocale();
   const language = locale as 'en' | 'ka';
+  const telHref = `tel:${phone.replace(/\s/g, '')}`;
 
   return (
     <footer
@@ -68,43 +79,45 @@ export default function HomeFooter() {
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-12">
             <div className="flex items-center gap-3 text-sm md:text-base font-light opacity-90">
               <MapPin size={16} strokeWidth={1.25} className="shrink-0" />
-              <span>
-                {language === 'ka'
-                  ? 'თბილისი, საბურთალო, ვაჟა-ფშაველას გამზ. 25'
-                  : 'Tbilisi, Saburtalo, Vazha-Pshavela Ave. 25'}
-              </span>
+              <span>{address}</span>
             </div>
             <a
-              href="tel:+995555123456"
+              href={telHref}
               className="flex items-center gap-3 text-sm md:text-base font-light hover:opacity-70 transition-opacity"
             >
               <Phone size={16} strokeWidth={1.25} />
-              +995 555 123 456
+              {phone}
             </a>
           </div>
 
-          <div className="flex items-center gap-8">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="flex items-center gap-2 text-sm font-light tracking-[0.2em] uppercase hover:opacity-70 transition-opacity border-b border-secondary-foreground/30 pb-1"
-            >
-              <FacebookIcon size={16} strokeWidth={1.25} />
-              Facebook
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="flex items-center gap-2 text-sm font-light tracking-[0.2em] uppercase hover:opacity-70 transition-opacity border-b border-secondary-foreground/30 pb-1"
-            >
-              <InstagramIcon size={16} strokeWidth={1.25} />
-              Instagram
-            </a>
-          </div>
+          {(facebook || instagram) && (
+            <div className="flex items-center gap-8">
+              {facebook && (
+                <a
+                  href={facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex items-center gap-2 text-sm font-light tracking-[0.2em] uppercase hover:opacity-70 transition-opacity border-b border-secondary-foreground/30 pb-1"
+                >
+                  <FacebookIcon size={16} strokeWidth={1.25} />
+                  Facebook
+                </a>
+              )}
+              {instagram && (
+                <a
+                  href={instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex items-center gap-2 text-sm font-light tracking-[0.2em] uppercase hover:opacity-70 transition-opacity border-b border-secondary-foreground/30 pb-1"
+                >
+                  <InstagramIcon size={16} strokeWidth={1.25} />
+                  Instagram
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-16 pt-8 border-t border-secondary-foreground/15 flex justify-center text-[10px] md:text-xs font-light tracking-[0.2em] opacity-60">

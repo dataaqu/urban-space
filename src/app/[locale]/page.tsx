@@ -13,17 +13,20 @@ import HomeFooter from '@/components/home/HomeFooter';
 import { getHeroSlides, getFeaturedProjects, getContentMap } from '@/lib/content';
 import prisma from '@/lib/prisma';
 
-const getHomeSocial = unstable_cache(
+const getHomeContact = unstable_cache(
   async () => {
     const dbInfo = await prisma.contactInfo
       .findUnique({ where: { id: 'singleton' } })
       .catch(() => null);
     return {
+      phone: dbInfo?.phone?.trim() || '',
+      addressKa: dbInfo?.addressKa?.trim() || '',
+      addressEn: dbInfo?.addressEn?.trim() || '',
       facebook: dbInfo?.facebook?.trim() || '',
       instagram: dbInfo?.instagram?.trim() || '',
     };
   },
-  ['contact-info-social'],
+  ['contact-info-home'],
   { revalidate: 3600, tags: ['contact-info'] },
 );
 
@@ -39,19 +42,36 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   });
 }
 
-export default async function HomePage() {
-  const [slides, featuredProjects, homeContent, social] = await Promise.all([
+export default async function HomePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  const [slides, featuredProjects, homeContent, contact] = await Promise.all([
     getHeroSlides(),
     getFeaturedProjects(),
     getContentMap('home'),
-    getHomeSocial(),
+    getHomeContact(),
   ]);
+
+  const social = { facebook: contact.facebook, instagram: contact.instagram };
+  const address =
+    (locale === 'ka' ? contact.addressKa : contact.addressEn) ||
+    (locale === 'ka'
+      ? 'თბილისი, საბურთალო, ვაჟა-ფშაველას გამზ. 25'
+      : 'Tbilisi, Saburtalo, Vazha-Pshavela Ave. 25');
+  const phone = contact.phone || '+995 555 123 456';
 
   return (
     <>
       <HomeIntro slides={slides} content={homeContent} social={social} />
       <SelectedWork projects={featuredProjects} content={homeContent} />
-      <HomeFooter />
+      <HomeFooter
+        address={address}
+        phone={phone}
+        facebook={contact.facebook}
+        instagram={contact.instagram}
+      />
     </>
   );
 }

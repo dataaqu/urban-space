@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import DOMPurify from 'isomorphic-dompurify';
 import { X } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { Link, useRouter } from '@/i18n/routing';
 import ResponsiveProjectImage from './ResponsiveProjectImage';
 import ImageLightbox from './ImageLightbox';
 import { isVideoUrl } from '@/lib/media';
@@ -145,6 +145,31 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       ? `/projects?category=${fromCategory}`
       : '/projects';
   const infoLabel = isKa ? 'პროექტის ინფორმაცია' : 'Project Information';
+
+  // When the detail was opened from the list, go back through history so Next.js
+  // restores the exact scroll position the user left. Deep links (no in-app
+  // history) fall back to the plain closeHref navigation, which lands at the top.
+  const router = useRouter();
+  const handleClose = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    let fromList = false;
+    try {
+      fromList = sessionStorage.getItem('projects:fromList') === '1';
+      if (fromList) sessionStorage.removeItem('projects:fromList');
+    } catch {}
+    if (fromList) {
+      e.preventDefault();
+      // Global CSS sets `scroll-behavior: smooth`, which would animate the
+      // history scroll-restore as a visible glide. Force an instant jump for the
+      // restore, then hand smooth scrolling back for everything else.
+      const html = document.documentElement;
+      const prev = html.style.scrollBehavior;
+      html.style.scrollBehavior = 'auto';
+      router.back();
+      window.setTimeout(() => {
+        html.style.scrollBehavior = prev;
+      }, 500);
+    }
+  };
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
@@ -356,6 +381,7 @@ export default function ProjectDetailClient({ locale, project }: ProjectDetailCl
       {/* Close link */}
       <Link
         href={closeHref}
+        onClick={handleClose}
         aria-label={closeLabel}
         style={{ top: headerH != null ? headerH + 16 : 72 }}
         className="fixed right-4 md:right-8 mr-[10px] lg:mr-0 lg:right-6 lg:translate-x-[10px] lg:!top-[130px] short-landscape:!top-[56px] z-20 text-[10px] md:text-[12px] short-landscape:text-[9px] font-medium tracking-[0.22em] uppercase text-foreground/85 hover:text-foreground transition"

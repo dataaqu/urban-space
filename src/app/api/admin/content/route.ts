@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
@@ -43,7 +43,10 @@ export async function PUT(request: NextRequest) {
       )
     );
 
-    // Invalidate cached pages so changes appear immediately on the frontend
+    // Invalidate cached pages so changes appear immediately on the frontend.
+    // getContentMap reads through an unstable_cache tagged 'site-content', so the
+    // tag must be busted too — a path revalidation alone leaves that data cached.
+    revalidateTag('site-content');
     revalidatePath('/', 'layout');
     revalidatePath('/[locale]', 'layout');
 

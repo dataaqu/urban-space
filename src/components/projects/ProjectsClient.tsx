@@ -91,6 +91,13 @@ export default function ProjectsClient({
                       ? `/projects/${project.slug}?category=${activeCategory}`
                       : `/projects/${project.slug}`
                   }
+                  onClick={() => {
+                    // Mark that we entered the detail from the list, so closing
+                    // can use history-back and restore this exact scroll spot.
+                    try {
+                      sessionStorage.setItem('projects:fromList', '1');
+                    } catch {}
+                  }}
                   className="group block"
                 >
                   <div className="overflow-hidden bg-transparent">

@@ -34,20 +34,14 @@ const SECTIONS = [
     label: 'ჩვენ შესახებ',
     icon: Building2,
     fields: [
-      { key: 'about.title', label: 'სათაური', defaultKa: 'ჩვენს შესახებ', defaultEn: 'About Us' },
-      { key: 'about.description', label: 'ტექსტი (აბზაცი — ცარიელი ხაზით გამოყავი)', rows: 10, defaultKa: 'Urban Space არის არქიტექტურული და ურბანული დაგეგმარების სტუდია, დაფუძნებული თბილისში, 2012 წელს.\n\nსტუდია მუშაობს საცხოვრებელ, საზოგადოებრივ და მსხვილმასშტაბიან ურბანულ პროექტებზე თბილისსა და საქართველოს მასშტაბით.\n\n2012 წლიდან სტუდიამ 100-ზე მეტი ურბანული და არქიტექტურული პროექტი შეიმუშავა.\n\nჩვენი პრაქტიკა ორიენტირებულია კონტექსტის გაგებაზე, სივრცის მკაფიო ორგანიზაციაზე და გრძელვადიანი ურბანული და არქიტექტურული ღირებულების შექმნაზე.', defaultEn: 'Urban Space is an architecture and urban planning studio based in Tbilisi, founded in 2012.\n\nThe studio works on residential, public, and large-scale urban projects in Tbilisi and across Georgia.\n\nSince 2012, the studio has developed about 100 urban and architectural projects.\n\nOur practice is centered on understanding the context, clear spatial organization, and creating long-term urban and architectural value.' },
-      { key: 'expertise.title', label: 'ექსპერტიზა - სათაური', defaultKa: 'ექსპერტიზა', defaultEn: 'Expertise' },
-      { key: 'expertise.urban.title', label: 'ურბანული - სათაური', defaultKa: 'ურბანული დაგეგმარება', defaultEn: 'Urban Planning' },
-      { key: 'expertise.urban.items', label: 'ურბანული - ჩამონათვალი (ახალი ხაზით)', defaultKa: 'გენერალური გეგმები – თბილისი\nდეტალური განაშენიანების გეგმები – რეგიონები', defaultEn: 'Master Plans – Tbilisi\nDetailed Development Plans – Regions' },
-      { key: 'expertise.arch.title', label: 'არქიტექტურა - სათაური', defaultKa: 'არქიტექტურა', defaultEn: 'Architecture' },
-      { key: 'expertise.arch.items', label: 'არქიტექტურა - ჩამონათვალი (ახალი ხაზით)', defaultKa: 'საცხოვრებელი და შერეული დანიშნულების კომპლექსები\nკომერციული და სასტუმრო შენობები\nსაზოგადოებრივი და საგანმანათლებლო ობიექტები', defaultEn: 'Residential and mixed-use complexes\nCommercial and hospitality buildings\nPublic and educational facilities' },
-      { key: 'principles.title', label: 'პრინციპები - სათაური', defaultKa: 'პრინციპები', defaultEn: 'Principles' },
-      { key: 'principles.items', label: 'პრინციპები - ჩამონათვალი (ახალი ხაზით)', defaultKa: 'კონტექსტზე დაფუძნებული დიზაინი\nგრძელვადიანი ურბანული და არქიტექტურული ღირებულება\nადამიანური მასშტაბი და სივრცის ხარისხი\nმდგრადი და გააზრებული დაპროექტების პროცესები', defaultEn: 'Context-based design\nLong-term urban and architectural value\nHuman scale and spatial quality\nSustainable and thoughtful design processes' },
-      { key: 'principles.quote', label: 'პრინციპები - ციტატა', defaultKa: 'გააზრებული არქიტექტურა დროთა განმავლობაში ზრდის შენობის ღირებულებას.', defaultEn: 'Well-thought-out architecture increases the value of a building over time.' },
-      { key: 'team.title', label: 'გუნდი - სათაური', defaultKa: 'გუნდი', defaultEn: 'Team' },
-      { key: 'team.description', label: 'გუნდი - აღწერა', defaultKa: 'სტუდიას ხელმძღვანელობენ გამოცდილი არქიტექტორები მარიამ ეფრემიძე და ლუკა კიკიანი. ჩვენი გუნდი მოიცავს სხვადასხვა დისციპლინის სპეციალისტებს, რომლებიც ინტეგრალურად მუშაობენ პროექტის ყველა ეტაპზე.', defaultEn: 'The studio is led by experienced architects Mariam Ephremidze and Luka Kikiani. Our team includes specialists from various disciplines, working integrally through all stages of the project.' },
-      { key: 'team.leads', label: 'ლიდერები', defaultKa: 'მარიამ ეფრემიძე    ლუკა კიკიანი', defaultEn: 'Mariam Ephremidze    Luka Kikiani' },
-      { key: 'team.leadsRole', label: 'ლიდერების პოზიცია', defaultKa: 'მთავარი არქიტექტორები', defaultEn: 'Principal Architects' },
+      { key: 'about.title', label: 'ჩვენ შესახებ — სათაური', defaultKa: 'ჩვენს შესახებ', defaultEn: 'About Us' },
+      { key: 'about.description', label: 'ჩვენ შესახებ — ტექსტი (აბზაცი = ცარიელი ხაზი)', rows: 10, defaultKa: 'Urban Space არის არქიტექტურული და ურბანული დაგეგმარების სტუდია, დაფუძნებული თბილისში, 2012 წელს.\n\nსტუდია მუშაობს საცხოვრებელ, საზოგადოებრივ და მსხვილმასშტაბიან ურბანულ პროექტებზე თბილისსა და საქართველოს მასშტაბით.\n\n2012 წლიდან სტუდიამ 100-ზე მეტი ურბანული და არქიტექტურული პროექტი შეიმუშავა.\n\nჩვენი პრაქტიკა ორიენტირებულია კონტექსტის გაგებაზე, სივრცის მკაფიო ორგანიზაციაზე და გრძელვადიანი ურბანული და არქიტექტურული ღირებულების შექმნაზე.', defaultEn: 'Urban Space is an architecture and urban planning studio based in Tbilisi, founded in 2012.\n\nThe studio works on residential, public, and large-scale urban projects in Tbilisi and across Georgia.\n\nSince 2012, the studio has developed about 100 urban and architectural projects.\n\nOur practice is centered on understanding the context, clear spatial organization, and creating long-term urban and architectural value.' },
+      { key: 'expertise.title', label: 'სვეტი 1 — სათაური', defaultKa: 'ექსპერტიზა', defaultEn: 'Expertise' },
+      { key: 'expertise.body', label: 'სვეტი 1 — ტექსტი (ჩააკოპირე მთლიანად)', rows: 12, defaultKa: 'ურბანული დაგეგმარება\nგენერალური გეგმები – თბილისი\nდეტალური განაშენიანების გეგმები – რეგიონები\n\nარქიტექტურა\nსაცხოვრებელი და შერეული დანიშნულების კომპლექსები\nკომერციული და სასტუმრო შენობები\nსაზოგადოებრივი და საგანმანათლებლო ობიექტები', defaultEn: 'Urban Planning\nMaster Plans – Tbilisi\nDetailed Development Plans – Regions\n\nArchitecture\nResidential and mixed-use complexes\nCommercial and hospitality buildings\nPublic and educational facilities' },
+      { key: 'principles.title', label: 'სვეტი 2 — სათაური', defaultKa: 'პრინციპები', defaultEn: 'Principles' },
+      { key: 'principles.body', label: 'სვეტი 2 — ტექსტი (ჩააკოპირე მთლიანად)', rows: 12, defaultKa: 'კონტექსტზე დაფუძნებული დიზაინი\nგრძელვადიანი ურბანული და არქიტექტურული ღირებულება\nადამიანური მასშტაბი და სივრცის ხარისხი\nმდგრადი და გააზრებული დაპროექტების პროცესები\n\nგააზრებული არქიტექტურა დროთა განმავლობაში ზრდის შენობის ღირებულებას.', defaultEn: 'Context-based design\nLong-term urban and architectural value\nHuman scale and spatial quality\nSustainable and thoughtful design processes\n\nWell-thought-out architecture increases the value of a building over time.' },
+      { key: 'team.title', label: 'სვეტი 3 — სათაური', defaultKa: 'გუნდი', defaultEn: 'Team' },
+      { key: 'team.body', label: 'სვეტი 3 — ტექსტი (ჩააკოპირე მთლიანად)', rows: 12, defaultKa: 'სტუდიას ხელმძღვანელობენ გამოცდილი არქიტექტორები მარიამ ეფრემიძე და ლუკა კიკიანი. ჩვენი გუნდი მოიცავს სხვადასხვა დისციპლინის სპეციალისტებს, რომლებიც ინტეგრალურად მუშაობენ პროექტის ყველა ეტაპზე.\n\nმარიამ ეფრემიძე    ლუკა კიკიანი\nმთავარი არქიტექტორები', defaultEn: 'The studio is led by experienced architects Mariam Ephremidze and Luka Kikiani. Our team includes specialists from various disciplines, working integrally through all stages of the project.\n\nMariam Ephremidze    Luka Kikiani\nPrincipal Architects' },
     ],
   },
 ];
@@ -70,11 +64,16 @@ export default function ContentManagerPage() {
             const existing = dbItems.find(
               (i) => i.section === section.id && i.key === field.key,
             );
+            // Studio fields may be intentionally left empty (hidden on the site),
+            // so keep the raw DB value — never backfill the default, which the
+            // shown placeholder communicates instead. Other sections still
+            // prefill defaults as before.
+            const keepEmpty = section.id === 'studio';
             merged.push({
               section: section.id,
               key: field.key,
-              valueKa: existing?.valueKa || field.defaultKa,
-              valueEn: existing?.valueEn || field.defaultEn,
+              valueKa: keepEmpty ? existing?.valueKa ?? '' : existing?.valueKa || field.defaultKa,
+              valueEn: keepEmpty ? existing?.valueEn ?? '' : existing?.valueEn || field.defaultEn,
             });
           }
         }
@@ -203,6 +202,9 @@ export default function ContentManagerPage() {
             {currentSection.fields.map((field) => {
               const single = (field as { singleValue?: boolean }).singleValue;
               const fieldRows = (field as { rows?: number }).rows ?? 3;
+              // Studio fields can be left blank (hidden on the site); show the
+              // default only as a placeholder hint, not as a saved value.
+              const showDefaultAsPlaceholder = currentSection.id === 'studio';
               return (
                 <Card key={field.key} padded>
                   <div className="mb-4 flex items-start justify-between gap-4">
@@ -235,6 +237,7 @@ export default function ContentManagerPage() {
                         </div>
                         <Textarea
                           value={getValue(currentSection.id, field.key, 'ka')}
+                          placeholder={showDefaultAsPlaceholder ? field.defaultKa : undefined}
                           onChange={(e) =>
                             setValue(
                               currentSection.id,
@@ -257,6 +260,7 @@ export default function ContentManagerPage() {
                         </div>
                         <Textarea
                           value={getValue(currentSection.id, field.key, 'en')}
+                          placeholder={showDefaultAsPlaceholder ? field.defaultEn : undefined}
                           onChange={(e) =>
                             setValue(
                               currentSection.id,
